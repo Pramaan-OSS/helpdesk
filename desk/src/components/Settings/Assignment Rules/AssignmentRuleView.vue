@@ -1,0 +1,667 @@
+<template>
+  <SettingsLayoutBase
+    :back-label="
+      assignmentRuleData.assignmentRuleName || __('New Assignment Rule')
+    "
+    :on-back="goBack"
+    :dirty="isDirty"
+  >
+    <template #header-actions>
+      <div class="flex items-center gap-4">
+        <div
+          class="flex items-center justify-between gap-2"
+          @click="assignmentRuleData.disabled = !assignmentRuleData.disabled"
+        >
+          <Switch size="sm" :model-value="!assignmentRuleData.disabled" />
+          <span class="text-sm text-ink-gray-7">{{ __("Enabled") }}</span>
+        </div>
+        <Button
+          :disabled="Boolean(!isDirty && assignmentRulesActiveScreen.data)"
+          :label="__('Save')"
+          theme="gray"
+          variant="solid"
+          @click="saveAssignmentRule()"
+          :loading="
+            isLoading ||
+            getAssignmentRuleData.loading ||
+            createAssignmentRuleResource.loading
+          "
+        />
+      </div>
+    </template>
+    <template #content>
+      <div
+        v-if="getAssignmentRuleData.loading"
+        class="flex items-center justify-center absolute inset-x-0 top-5.5 bottom-0"
+      >
+        <LoadingIndicator class="w-4" />
+      </div>
+      <div v-if="!getAssignmentRuleData.loading">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <FormControl
+              :type="'text'"
+              size="sm"
+              variant="subtle"
+              :placeholder="__('Name')"
+              :label="__('Name')"
+              v-model="assignmentRuleData.assignmentRuleName"
+              required
+              maxlength="50"
+              @change="validateAssignmentRule('assignmentRuleName')"
+            />
+            <ErrorMessage
+              :message="assignmentRulesErrors.assignmentRuleName"
+              class="mt-2"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <FormLabel :label="__('Priority')" />
+            <Popover bare>
+              <template #trigger>
+                <div
+                  class="flex items-center justify-between text-base rounded-4 h-7 py-1.5 ps-2 pe-2 border border-[--surface-gray-2] bg-surface-gray-2 placeholder-ink-gray-4 hover:border-outline-elevation-2 hover:bg-surface-gray-3 focus:bg-surface-base focus:border-outline-gray-4 focus:shadow-sm focus:ring-0 focus-visible:ring-2 focus-visible:ring-outline-gray-3 text-ink-gray-8 transition-colors w-full dark:[color-scheme:dark] cursor-default"
+                >
+                  <div>
+                    {{
+                      priorityOptions.find(
+                        (option) => option.value == assignmentRuleData.priority
+                      )?.label
+                    }}
+                  </div>
+                  <LucideChevronDown class="size-4" />
+                </div>
+              </template>
+              <template #default="{ close: closePopover }">
+                <div
+                  class="p-1 text-ink-gray-6 top-1 absolute bg-surface-base shadow-2xl rounded-4 w-[--reka-popper-anchor-width]"
+                >
+                  <div
+                    v-for="option in priorityOptions"
+                    :key="option.value"
+                    class="p-2 cursor-pointer hover:bg-surface-sidebar text-base flex items-center justify-between rounded-4"
+                    @click="
+                      assignmentRuleData.priority = option.value;
+                      closePopover();
+                    "
+                  >
+                    {{ option.label }}
+                    <LucideCheck
+                      v-if="assignmentRuleData.priority == option.value"
+                      class="size-4"
+                    />
+                  </div>
+                </div>
+              </template>
+            </Popover>
+          </div>
+          <div>
+            <FormControl
+              :type="'textarea'"
+              size="sm"
+              variant="subtle"
+              :placeholder="__('Description')"
+              :label="__('Description')"
+              required
+              maxlength="140"
+              @change="validateAssignmentRule('description')"
+              v-model="assignmentRuleData.description"
+            />
+            <ErrorMessage
+              :message="assignmentRulesErrors.description"
+              class="mt-2"
+            />
+          </div>
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">{{
+              __("Assignment Condition")
+            }}</span>
+            <div class="flex items-center justify-between gap-6">
+              <span class="text-p-sm text-ink-gray-6">
+                {{
+                  __(
+                    "Choose which tickets are affected by this assignment rule."
+                  )
+                }}
+                <a
+                  class="font-medium underline"
+                  href="/helpdesk/knowledge-base"
+                  target="_blank"
+                  >{{ __("Learn about conditions") }}</a
+                >
+              </span>
+              <div
+                v-if="isAssignConditionOld && assignmentRulesActiveScreen.data"
+              >
+                <HoverCard :hoverDelay="250" side="top" align="end">
+                  <template #trigger>
+                    <div
+                      class="text-sm text-ink-gray-6 flex gap-1 cursor-default text-nowrap flex items-center"
+                    >
+                      <span>{{ __("Old Condition") }}</span>
+                      <LucideInfo class="size-4" />
+                    </div>
+                  </template>
+                  <template #default>
+                    <div
+                      class="text-sm text-ink-gray-6 p-2 bg-surface-base rounded-5 max-w-96 text-wrap whitespace-pre-wrap leading-5"
+                    >
+                      <code>{{ assignmentRuleData.assignCondition }}</code>
+                    </div>
+                  </template>
+                </HoverCard>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5">
+            <div
+              class="flex flex-col gap-3 items-center text-center text-ink-gray-7 text-sm mb-2 border border-outline-gray-2 rounded-5 p-3 py-4"
+              v-if="
+                !useNewUIForAssignCondition &&
+                assignmentRuleData.assignCondition
+              "
+            >
+              <span class="text-p-sm">
+                Conditions for this rule were created from
+                <a :href="deskUrl" target="_blank" class="underline">desk</a>
+                which are not compatible with this UI, you will need to recreate
+                the conditions here if you want to manage and add new conditions
+                from this UI.
+              </span>
+              <Button
+                label="I understand, add conditions"
+                variant="subtle"
+                theme="gray"
+                @click="useNewUIForAssignCondition = true"
+              />
+            </div>
+            <AssignmentRulesSection
+              :conditions="assignmentRuleData.assignConditionJson"
+              name="assignCondition"
+              :errors="assignmentRulesErrors.assignConditionError"
+              v-else
+            />
+            <ErrorMessage
+              :message="assignmentRulesErrors.assignCondition"
+              class="mt-2"
+            />
+          </div>
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">{{
+              __("Unassignment Condition")
+            }}</span>
+            <div class="flex items-center justify-between gap-6">
+              <span class="text-p-sm text-ink-gray-6">
+                {{
+                  __(
+                    "Choose which tickets are affected by this un-assignment rule."
+                  )
+                }}
+                <a
+                  class="font-medium underline"
+                  href="/helpdesk/knowledge-base"
+                  target="_blank"
+                  >{{ __("Learn about conditions") }}</a
+                >
+              </span>
+              <div
+                v-if="
+                  isUnassignConditionOld &&
+                  assignmentRulesActiveScreen.data &&
+                  assignmentRuleData.unassignCondition
+                "
+              >
+                <HoverCard :hoverDelay="250" side="top" align="end">
+                  <template #trigger>
+                    <div
+                      class="text-sm text-ink-gray-6 flex gap-1 cursor-default text-nowrap flex items-center"
+                    >
+                      <span> {{ __("Old Condition") }} </span>
+                      <LucideInfo class="size-4" />
+                    </div>
+                  </template>
+                  <template #default>
+                    <div
+                      class="text-sm text-ink-gray-6 p-2 bg-surface-base rounded-5 max-w-96 text-wrap whitespace-pre-wrap leading-5"
+                    >
+                      <code>{{ assignmentRuleData.unassignCondition }}</code>
+                    </div>
+                  </template>
+                </HoverCard>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5">
+            <div
+              class="flex flex-col gap-3 items-center text-center text-ink-gray-7 text-sm mb-2 border border-outline-gray-2 rounded-5 p-3 py-4"
+              v-if="
+                !useNewUIForUnassignCondition &&
+                assignmentRuleData.unassignCondition
+              "
+            >
+              <span class="text-p-sm">
+                Conditions for this rule were created from
+                <a :href="deskUrl" target="_blank" class="underline">desk</a>
+                which are not compatible with this UI, you will need to recreate
+                the conditions here if you want to manage and add new conditions
+                from this UI.
+              </span>
+              <Button
+                label="I understand, add conditions"
+                variant="subtle"
+                theme="gray"
+                @click="useNewUIForUnassignCondition = true"
+              />
+            </div>
+            <AssignmentRulesSection
+              :conditions="assignmentRuleData.unassignConditionJson"
+              name="unassignCondition"
+              :errors="assignmentRulesErrors.unassignConditionError"
+              v-else
+            />
+          </div>
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">{{
+              __("Assignment Schedule")
+            }}</span>
+            <span class="text-p-sm text-ink-gray-6">
+              {{
+                __(
+                  "Choose the days of the week when this rule should be active."
+                )
+              }}
+            </span>
+          </div>
+          <div class="mt-6">
+            <AssignmentSchedule />
+          </div>
+        </div>
+        <hr class="my-8" />
+        <AssigneeRules />
+      </div>
+    </template>
+  </SettingsLayoutBase>
+
+  <ConfirmDialog
+    v-model="showConfirmDialog.show"
+    :title="showConfirmDialog.title"
+    :message="showConfirmDialog.message"
+    :onConfirm="showConfirmDialog.onConfirm"
+    :onCancel="
+      () => {
+        if (showConfirmDialog.onCancel) {
+          showConfirmDialog.onCancel();
+        } else {
+          showConfirmDialog.show = false;
+        }
+      }
+    "
+  />
+</template>
+
+<script setup lang="ts">
+import LucideCheck from "~icons/lucide/check";
+import LucideChevronDown from "~icons/lucide/chevron-down";
+import LucideInfo from "~icons/lucide/info";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import {
+  Badge,
+  Button,
+  call,
+  createResource,
+  ErrorMessage,
+  FormControl,
+  FormLabel,
+  HoverCard,
+  LoadingIndicator,
+  Popover,
+  Switch,
+  toast,
+} from "frappe-ui";
+import { onMounted, onUnmounted, provide, ref, watch } from "vue";
+import {
+  assignmentRuleData,
+  assignmentRulesActiveScreen,
+  assignmentRulesErrors,
+  resetAssignmentRuleData,
+  resetAssignmentRuleErrors,
+  validateAssignmentRule,
+} from "@/stores/assignmentRules";
+import AssigneeRules from "./AssigneeRules.vue";
+import AssignmentRulesSection from "./AssignmentRulesSection.vue";
+import AssignmentSchedule from "./AssignmentSchedule.vue";
+import { convertToConditions } from "@/utils";
+import { disableSettingModalOutsideClick } from "../settingsModal";
+import { __ } from "@/translation";
+import SettingsLayoutBase from "@/components/layouts/SettingsLayoutBase.vue";
+
+const isDirty = ref(false);
+const initialData = ref(null);
+const isLoading = ref(false);
+provide("isAssignmentRuleFormDirty", isDirty);
+
+const showConfirmDialog = ref<{
+  show: boolean;
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel?: () => void;
+}>({
+  show: false,
+  title: "",
+  message: "",
+  onConfirm: () => {},
+});
+
+const useNewUIForAssignCondition = ref(true);
+const useNewUIForUnassignCondition = ref(true);
+const isAssignConditionOld = ref(false);
+const isUnassignConditionOld = ref(false);
+const deskUrl = `${window.location.origin}/app/assignment-rule/${assignmentRulesActiveScreen.value.data?.name}`;
+
+const getAssignmentRuleData = createResource({
+  url: "frappe.client.get",
+  params: {
+    doctype: "Assignment Rule",
+    name: assignmentRulesActiveScreen.value.data?.name,
+  },
+  auto: Boolean(assignmentRulesActiveScreen.value.data),
+  onSuccess(data) {
+    let assignConditionJson;
+    let unassignConditionJson;
+    try {
+      assignConditionJson = JSON.parse(data.assign_condition_json || "[]");
+    } catch (error) {
+      toast.error(
+        "Assignment conditions are invalid or corrupt, recreate the conditions."
+      );
+      assignConditionJson = [];
+    }
+    try {
+      unassignConditionJson = JSON.parse(data.unassign_condition_json || "[]");
+    } catch (error) {
+      toast.error(
+        "Unassignment conditions are invalid or corrupt, recreate the conditions."
+      );
+      unassignConditionJson = [];
+    }
+    assignmentRuleData.value = {
+      loading: false,
+      assignCondition: data.assign_condition,
+      unassignCondition: data.unassign_condition,
+      assignConditionJson: assignConditionJson,
+      unassignConditionJson: unassignConditionJson,
+      rule: data.rule,
+      priority: data.priority,
+      users: data.users,
+      disabled: data.disabled,
+      description: data.description,
+      name: data.name,
+      assignmentRuleName: data.name,
+      assignmentDays: data.assignment_days.map((day) => day.day),
+    };
+
+    initialData.value = JSON.stringify(assignmentRuleData.value);
+
+    const assignConditionsAvailable =
+      assignmentRuleData.value.assignCondition?.length > 0;
+    const assignConditionsJsonAvailable =
+      assignmentRuleData.value.assignConditionJson?.length > 0;
+
+    if (assignConditionsAvailable && !assignConditionsJsonAvailable) {
+      useNewUIForAssignCondition.value = false;
+      isAssignConditionOld.value = true;
+    } else {
+      useNewUIForAssignCondition.value = true;
+      isAssignConditionOld.value = false;
+    }
+
+    const unassignConditionsAvailable =
+      assignmentRuleData.value.unassignCondition?.length > 0;
+    const unassignConditionsJsonAvailable =
+      assignmentRuleData.value.unassignConditionJson?.length > 0;
+
+    if (unassignConditionsAvailable && !unassignConditionsJsonAvailable) {
+      useNewUIForUnassignCondition.value = false;
+      isUnassignConditionOld.value = true;
+    } else {
+      useNewUIForUnassignCondition.value = true;
+      isUnassignConditionOld.value = false;
+    }
+  },
+});
+
+if (!assignmentRulesActiveScreen.value.data) {
+  disableSettingModalOutsideClick.value = true;
+  initialData.value = JSON.stringify(assignmentRuleData.value);
+}
+
+const goBack = () => {
+  const confirmDialogInfo = {
+    show: true,
+    title: __("Unsaved changes"),
+    message: __(
+      "Are you sure you want to go back? Unsaved changes will be lost."
+    ),
+    onConfirm: goBack,
+  };
+  if (isDirty.value && !showConfirmDialog.value.show) {
+    showConfirmDialog.value = confirmDialogInfo;
+    return;
+  }
+  // Workaround fix for settings modal not closing after going back
+  setTimeout(() => {
+    assignmentRulesActiveScreen.value = {
+      screen: "list",
+      data: null,
+    };
+  }, 250);
+  showConfirmDialog.value.show = false;
+};
+
+const saveAssignmentRule = () => {
+  const validationErrors = validateAssignmentRule(
+    undefined,
+    !useNewUIForAssignCondition.value,
+    !useNewUIForUnassignCondition.value
+  );
+
+  if (Object.values(validationErrors).some((error) => error)) {
+    toast.error(
+      __("Invalid fields, check if all are filled in and values are correct.")
+    );
+    return;
+  }
+
+  if (assignmentRulesActiveScreen.value.data) {
+    if (isAssignConditionOld.value && useNewUIForAssignCondition.value) {
+      showOverwriteConfirm();
+      return;
+    }
+    if (isUnassignConditionOld.value && useNewUIForUnassignCondition.value) {
+      showOverwriteConfirm();
+      return;
+    }
+    updateAssignmentRule();
+  } else {
+    createAssignmentRule();
+  }
+};
+
+const showOverwriteConfirm = () => {
+  showConfirmDialog.value = {
+    show: true,
+    title: "Confirm overwrite",
+    message:
+      "Your old condition will be overwritten. Are you sure you want to save?",
+    onConfirm: () => {
+      updateAssignmentRule();
+      showConfirmDialog.value.show = false;
+    },
+  };
+};
+
+const createAssignmentRule = () => {
+  createAssignmentRuleResource.submit({
+    doc: {
+      doctype: "Assignment Rule",
+      document_type: "HD Ticket",
+      rule: assignmentRuleData.value.rule,
+      priority: assignmentRuleData.value.priority,
+      users: assignmentRuleData.value.users,
+      disabled: assignmentRuleData.value.disabled,
+      description: assignmentRuleData.value.description,
+      assignment_days: assignmentRuleData.value.assignmentDays.map((day) => ({
+        day: day,
+      })),
+      name: assignmentRuleData.value.assignmentRuleName,
+      assignment_rule_name: assignmentRuleData.value.assignmentRuleName,
+      assign_condition: convertToConditions({
+        conditions: assignmentRuleData.value.assignConditionJson,
+      }),
+      unassign_condition: convertToConditions({
+        conditions: assignmentRuleData.value.unassignConditionJson,
+      }),
+      assign_condition_json: JSON.stringify(
+        assignmentRuleData.value.assignConditionJson
+      ),
+      unassign_condition_json: JSON.stringify(
+        assignmentRuleData.value.unassignConditionJson
+      ),
+    },
+  });
+};
+
+const createAssignmentRuleResource = createResource({
+  url: "frappe.client.insert",
+  onSuccess(data) {
+    toast.success(__("Assignment rule created successfully."));
+    assignmentRulesActiveScreen.value = {
+      screen: "view",
+      data: data,
+    };
+    getAssignmentRuleData.submit({
+      doctype: "Assignment Rule",
+      name: data.name,
+    });
+  },
+});
+
+const priorityOptions = [
+  { label: "Low", value: "0" },
+  { label: "Low-Medium", value: "1" },
+  { label: "Medium", value: "2" },
+  { label: "Medium-High", value: "3" },
+  { label: "High", value: "4" },
+];
+
+const updateAssignmentRule = async () => {
+  isLoading.value = true;
+
+  await call("frappe.client.set_value", {
+    doctype: "Assignment Rule",
+    document_type: "HD Ticket",
+    name: assignmentRuleData.value.name,
+    fieldname: {
+      rule: assignmentRuleData.value.rule,
+      priority: assignmentRuleData.value.priority,
+      users: assignmentRuleData.value.users,
+      disabled: assignmentRuleData.value.disabled,
+      description: assignmentRuleData.value.description,
+      assignment_days: assignmentRuleData.value.assignmentDays.map((day) => ({
+        day: day,
+      })),
+      assign_condition: useNewUIForAssignCondition.value
+        ? convertToConditions({
+            conditions: assignmentRuleData.value.assignConditionJson,
+          })
+        : assignmentRuleData.value.assignCondition,
+      unassign_condition: useNewUIForUnassignCondition.value
+        ? convertToConditions({
+            conditions: assignmentRuleData.value.unassignConditionJson,
+          })
+        : assignmentRuleData.value.unassignCondition,
+      assign_condition_json: useNewUIForAssignCondition.value
+        ? JSON.stringify(assignmentRuleData.value.assignConditionJson)
+        : null,
+      unassign_condition_json: useNewUIForUnassignCondition.value
+        ? JSON.stringify(assignmentRuleData.value.unassignConditionJson)
+        : null,
+    },
+  }).catch((er) => {
+    const error =
+      er?.messages?.[0] ||
+      __("Some error occurred while updating assignment rule");
+    toast.error(error);
+    isLoading.value = false;
+  });
+
+  if (
+    assignmentRuleData.value.name !==
+    assignmentRuleData.value.assignmentRuleName
+  ) {
+    await call("frappe.client.rename_doc", {
+      doctype: "Assignment Rule",
+      old_name: assignmentRuleData.value.name,
+      new_name: assignmentRuleData.value.assignmentRuleName,
+    }).catch(async (er) => {
+      const error =
+        er?.messages?.[0] ||
+        __("Some error occurred while renaming assignment rule");
+      toast.error(error);
+      // Reset assignment rule to previous state
+      await getAssignmentRuleData.reload();
+      isLoading.value = false;
+    });
+    await getAssignmentRuleData.submit({
+      doctype: "Assignment Rule",
+      name: assignmentRuleData.value.assignmentRuleName,
+    });
+  } else {
+    getAssignmentRuleData.reload();
+  }
+
+  isLoading.value = false;
+  toast.success(__("Assignment rule updated successfully."));
+};
+
+watch(
+  assignmentRuleData,
+  (newVal) => {
+    if (!initialData.value) return;
+    isDirty.value = JSON.stringify(newVal) != initialData.value;
+    if (isDirty.value) {
+      disableSettingModalOutsideClick.value = true;
+    } else {
+      disableSettingModalOutsideClick.value = false;
+    }
+  },
+  { deep: true }
+);
+
+const beforeUnloadHandler = (event) => {
+  if (!isDirty.value) return;
+  event.preventDefault();
+  event.returnValue = true;
+};
+
+onMounted(() => {
+  addEventListener("beforeunload", beforeUnloadHandler);
+});
+
+onUnmounted(() => {
+  resetAssignmentRuleErrors();
+  resetAssignmentRuleData();
+  removeEventListener("beforeunload", beforeUnloadHandler);
+  disableSettingModalOutsideClick.value = false;
+});
+</script>

@@ -1,0 +1,5393 @@
+# Translations template for Helpdesk.
+# Copyright (C) 2026 Frappe Technologies
+# This file is distributed under the same license as the Helpdesk project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Helpdesk VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-04 15:27+0000\n"
+"PO-Revision-Date: 2026-10-04 15:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+msgid "% SLA Fulfilled"
+msgstr ""
+
+#, python-format
+msgid "% of tickets created that were resolved within SLA"
+msgstr ""
+
+msgid "({0}s)"
+msgstr ""
+
+msgid "+{0} more"
+msgstr ""
+
+msgid "- Default Ticket Status<br>"
+msgstr ""
+
+msgid "- Ticket Reopen Status<br>"
+msgstr ""
+
+msgid "- {0} as Default Status<br>"
+msgstr ""
+
+msgid "- {0} as Reopen Status<br>"
+msgstr ""
+
+#. Description of the 'Feedback' (Select) field in DocType 'HD Article
+#. Feedback'
+msgid "0 is no feedback, 1 is Like, 2 is Dislike"
+msgstr ""
+
+msgid "1 Year"
+msgstr ""
+
+msgid "1 action"
+msgstr ""
+
+msgid "1 action will be applied after sending the email"
+msgstr ""
+
+msgid "1 person reacted to your comment"
+msgstr ""
+
+msgid "1 time"
+msgstr ""
+
+msgid "3 Months"
+msgstr ""
+
+msgid "6 Months"
+msgstr ""
+
+msgid "<br>Please update HD Settings to use a different status before disabling this status."
+msgstr ""
+
+msgid "<br>Please update the SLA(s) to use a different status before disabling this status."
+msgstr ""
+
+#. Introduction text of the email-feedback Web Form
+msgid "<div class=\"ql-editor read-mode\"><p>Let us know if we solved your issue well. It’ll help us serve you better next time.</p></div>"
+msgstr ""
+
+#. Header text in the Helpdesk Workspace
+msgid "<span class=\"h3\" style=\"\"><a href=\"/helpdesk\">Visit Helpdesk</a></span>"
+msgstr ""
+
+#. Paragraph text in the Helpdesk Workspace
+msgid "<span class=\"h4\">Helpdesk Configuration<br></span>"
+msgstr ""
+
+msgid "A Frappe partner or consultant"
+msgstr ""
+
+msgid "A friend or colleague"
+msgstr ""
+
+msgid "A short description"
+msgstr ""
+
+msgid "A ticket can have at most {0} pinned comments"
+msgstr ""
+
+msgid "A workday with this name already exists"
+msgstr ""
+
+msgid "Access all team tickets"
+msgstr ""
+
+msgid "Access denied"
+msgstr ""
+
+msgid "Access only this team's tickets"
+msgstr ""
+
+msgid "Account"
+msgstr ""
+
+msgid "Account Info & Security"
+msgstr ""
+
+#. Label of the acknowledgement_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Acknowledgement"
+msgstr ""
+
+#. Label of the action (Small Text) field in DocType 'HD Ticket Activity'
+msgid "Action"
+msgstr ""
+
+msgid "Action Required"
+msgstr ""
+
+#. Label of the actions_section (Section Break) field in DocType 'HD Saved
+#. Reply'
+#. Label of the actions (JSON) field in DocType 'HD Saved Reply'
+msgid "Actions"
+msgstr ""
+
+#. Option for the 'Category' (Select) field in DocType 'HD Agent Status'
+msgid "Active"
+msgstr ""
+
+msgid "Active now"
+msgstr ""
+
+#. Description of the 'Category' (Select) field in DocType 'HD Agent Status'
+msgid ""
+"Active: The agent is available and working.<br>\n"
+"Away: The agent is temporarily unreachable.<br>\n"
+"Unavailable: The agent is off and unavailable."
+msgstr ""
+
+msgid "Activity"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add Assignee"
+msgstr ""
+
+msgid "Add Category"
+msgstr ""
+
+msgid "Add Column"
+msgstr ""
+
+msgid "Add Email"
+msgstr ""
+
+msgid "Add Filter..."
+msgstr ""
+
+msgid "Add Holiday"
+msgstr ""
+
+msgid "Add New Article"
+msgstr ""
+
+msgid "Add Phone"
+msgstr ""
+
+msgid "Add Sort"
+msgstr ""
+
+#. Label of the add_weekly_holidays (Section Break) field in DocType 'HD
+#. Service Holiday List'
+msgid "Add Weekly Holidays"
+msgstr ""
+
+msgid "Add a comment on a ticket"
+msgstr ""
+
+msgid "Add a condition"
+msgstr ""
+
+msgid "Add a custom condition"
+msgstr ""
+
+msgid "Add a few words so we can continue"
+msgstr ""
+
+msgid "Add action"
+msgstr ""
+
+msgid "Add charts to get started"
+msgstr ""
+
+msgid "Add condition"
+msgstr ""
+
+msgid "Add condition group"
+msgstr ""
+
+msgid "Add filter"
+msgstr ""
+
+msgid "Add holidays here to make sure they’re excluded from SLA calculations."
+msgstr ""
+
+msgid "Add members to this team to get started."
+msgstr ""
+
+msgid "Add one to get started."
+msgstr ""
+
+msgid "Add recurring holidays such as weekends."
+msgstr ""
+
+msgid "Add tags"
+msgstr ""
+
+msgid "Add time targets around support milestones like first reply and resolution times."
+msgstr ""
+
+#. Label of the get_weekly_off_dates (Button) field in DocType 'HD Service
+#. Holiday List'
+msgid "Add to Holidays"
+msgstr ""
+
+msgid "Add to recipients"
+msgstr ""
+
+msgid "Add, manage agents and assign roles to them."
+msgstr ""
+
+#. Label of the about (Code) field in DocType 'HD Ticket Template'
+msgid "Additional Information"
+msgstr ""
+
+#. Name of a role
+msgid "Administrator"
+msgstr ""
+
+#. Name of a role
+#. Label of a Link in the Helpdesk Workspace
+msgid "Agent"
+msgstr ""
+
+#. Label of a Card Break in the Helpdesk Workspace
+msgid "Agent Configuration"
+msgstr ""
+
+msgid "Agent Dashboard"
+msgstr ""
+
+#. Name of a role
+msgid "Agent Manager"
+msgstr ""
+
+#. Label of the agent_name (Data) field in DocType 'HD Agent'
+msgid "Agent Name"
+msgstr ""
+
+#. Label of the agent_status (Data) field in DocType 'HD Agent Status'
+#. Label of the agent_status_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Agent Status"
+msgstr ""
+
+msgid "Agent name"
+msgstr ""
+
+msgid "Agent replies"
+msgstr ""
+
+msgid "Agent reply"
+msgstr ""
+
+#. Option for the 'Visible to' (Select) field in DocType 'HD Ticket Template
+#. Field'
+msgid "Agents"
+msgstr ""
+
+msgid "Agents & Teams"
+msgstr ""
+
+msgid "Agents involved"
+msgstr ""
+
+msgid "Agents will no longer be able to view and create saved replies with global scope."
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "All SLAs on track"
+msgstr ""
+
+msgid "All Time"
+msgstr ""
+
+msgid "All articles from this category will move to General category."
+msgstr ""
+
+msgid "All comments and emails from both tickets will be merged into the selected ticket"
+msgstr ""
+
+msgid "All your assigned tickets have been responded to"
+msgstr ""
+
+#. Label of the allow_anyone_to_create_tickets (Check) field in DocType 'HD
+#. Settings'
+msgid "Allow anyone to create tickets"
+msgstr ""
+
+#. Description of the 'Enable comment reactions' (Check) field in DocType 'HD
+#. Settings'
+msgid "Allow users to react to comments with emojis"
+msgstr ""
+
+msgid "Allow users to react to comments with emojis."
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Amber"
+msgstr ""
+
+msgid "An event or conference"
+msgstr ""
+
+msgid "Anyone will be able to create tickets without any permission. e.g. from webform."
+msgstr ""
+
+msgid "Appearance"
+msgstr ""
+
+msgid "Appears in the left sidebar. Recommended size is minimum 32x32 px in PNG or SVG."
+msgstr ""
+
+#. Description of the 'Favicon' (Attach Image) field in DocType 'HD Settings'
+msgid "Appears next to the title in your browser tab. Recommended size is minimum 32x32 px in PNG or ICO"
+msgstr ""
+
+msgid "Appears next to the title in your browser tab. Recommended size is minimum 32x32 px in PNG or ICO."
+msgstr ""
+
+msgid "Applied to the ticket when this reply is sent"
+msgstr ""
+
+msgid "Applied {0} saved reply action(s)"
+msgstr ""
+
+msgid "Applies 1 action when sent"
+msgstr ""
+
+msgid "Applies {0} actions when sent"
+msgstr ""
+
+#. Label of the apply_sla_for_resolution (Check) field in DocType 'HD Service
+#. Level Agreement'
+msgid "Apply SLA for Resolution Time"
+msgstr ""
+
+#. Label of the apply_to (Select) field in DocType 'HD Form Script'
+msgid "Apply To"
+msgstr ""
+
+#. Label of the apply_on_new_page (Check) field in DocType 'HD Form Script'
+msgid "Apply on new page"
+msgstr ""
+
+#. Label of the enable_outside_hours_banner (Check) field in DocType 'HD
+#. Settings'
+msgid "Apply outside working hours"
+msgstr ""
+
+#. Label of the apply_to_customer_portal (Check) field in DocType 'HD Form
+#. Script'
+msgid "Apply to customer portal"
+msgstr ""
+
+msgid "Applying \"{0}\" discards the reply you have now, along with its {1} action(s)."
+msgstr ""
+
+#. Option for the 'Status' (Select) field in DocType 'HD Article'
+msgid "Archived"
+msgstr ""
+
+msgid "Are you sure you want to change tabs? Unsaved changes will be lost."
+msgstr ""
+
+msgid "Are you sure you want to close this ticket?"
+msgstr ""
+
+msgid "Are you sure you want to delete these articles?"
+msgstr ""
+
+msgid "Are you sure you want to delete this contact? The contact will be permanently deleted and unlinked from any associated customers and tickets."
+msgstr ""
+
+msgid "Are you sure you want to delete this customer? The reference to this customer will be removed from all the related tickets."
+msgstr ""
+
+msgid "Are you sure you want to delete this ticket? This is an irreversible action and cannot be undone."
+msgstr ""
+
+msgid "Are you sure you want to discard changes?"
+msgstr ""
+
+msgid "Are you sure you want to discard this article?"
+msgstr ""
+
+msgid "Are you sure you want to leave? Unsaved changes will be lost."
+msgstr ""
+
+msgid "Are you sure you want to remove the logo?"
+msgstr ""
+
+msgid "Are you sure you want to remove this contact from the customer?"
+msgstr ""
+
+msgid "Are you sure you want to reset the content? Current content will be overridden."
+msgstr ""
+
+#. Label of the article (Link) field in DocType 'HD Article Feedback'
+msgid "Article"
+msgstr ""
+
+msgid "Article body cannot be set as empty."
+msgstr ""
+
+msgid "Article created successfully."
+msgstr ""
+
+msgid "Article deleted successfully."
+msgstr ""
+
+msgid "Article link copied to clipboard"
+msgstr ""
+
+msgid "Article title cannot be set as empty"
+msgstr ""
+
+msgid "Article updated successfully."
+msgstr ""
+
+msgid "Articles deleted successfully."
+msgstr ""
+
+msgid "Articles moved successfully."
+msgstr ""
+
+msgid "Assign"
+msgstr ""
+
+msgid "Assign a ticket to an agent"
+msgstr ""
+
+msgid "Assign ticket"
+msgstr ""
+
+msgid "Assign {0} tickets"
+msgstr ""
+
+msgid "Assigned"
+msgstr ""
+
+msgid "Assigned To"
+msgstr ""
+
+msgid "Assigned {0} ticket(s)"
+msgstr ""
+
+msgid "Assignee"
+msgstr ""
+
+msgid "Assignee Rules"
+msgstr ""
+
+msgid "Assignees"
+msgstr ""
+
+msgid "Assignees updated successfully."
+msgstr ""
+
+msgid "Assigning tickets"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD Notification'
+msgid "Assignment"
+msgstr ""
+
+msgid "Assignment Condition"
+msgstr ""
+
+#. Label of the filters_section (Section Break) field in DocType 'HD Service
+#. Level Agreement'
+msgid "Assignment Conditions"
+msgstr ""
+
+#. Label of the assignment_rule (Link) field in DocType 'HD Team'
+#. Label of a Link in the Helpdesk Workspace
+msgid "Assignment Rule"
+msgstr ""
+
+#. Label of the assignment_rules_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Assignment Rules"
+msgstr ""
+
+msgid "Assignment Rules automatically route tickets to the right team members based on predefined conditions."
+msgstr ""
+
+msgid "Assignment Schedule"
+msgstr ""
+
+msgid "Assignment rule"
+msgstr ""
+
+msgid "Assignment rule created successfully."
+msgstr ""
+
+msgid "Assignment rule deleted successfully."
+msgstr ""
+
+msgid "Assignment rule duplicated successfully."
+msgstr ""
+
+msgid "Assignment rule updated successfully."
+msgstr ""
+
+msgid "Assignment rule {0} updated successfully."
+msgstr ""
+
+msgid "At least one enabled status for <u>{0}</u> category must be enabled."
+msgstr ""
+
+msgid "At least one feedback option must be enabled for rating {0}"
+msgstr ""
+
+msgid "At least one team is required"
+msgstr ""
+
+msgid "Attach file"
+msgstr ""
+
+#. Label of a field in the tickets Web Form
+msgid "Attachment"
+msgstr ""
+
+#. Label of the author (Link) field in DocType 'HD Article'
+msgid "Author"
+msgstr ""
+
+#. Label of the auto_update_status (Check) field in DocType 'HD Settings'
+msgid "Auto update status"
+msgstr ""
+
+#. Label of the auto_close_after_days (Int) field in DocType 'HD Settings'
+msgid "Auto-close after (Days)"
+msgstr ""
+
+msgid "Auto-close tickets that remain in a status for the specified number of days."
+msgstr ""
+
+#. Description of the 'Condition' (Code) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Auto-generated from the portal view — do not edit directly unless you know what you're doing! "
+msgstr ""
+
+msgid "Auto-reply received from {0}."
+msgstr ""
+
+#. Label of the auto_set_customer_from_contact (Check) field in DocType 'HD
+#. Settings'
+msgid "Auto-set customer from contact"
+msgstr ""
+
+#. Label of the auto_close_tickets (Check) field in DocType 'HD Settings'
+msgid "Automatically Close Tickets when"
+msgstr ""
+
+msgid "Automatically close stale tickets"
+msgstr ""
+
+#. Description of the 'Auto-set customer from contact' (Check) field in DocType
+#. 'HD Settings'
+msgid "Automatically set the customer on a ticket based on the contact's linked customer(s)"
+msgstr ""
+
+#. Label of a Card Break in the Helpdesk Workspace
+msgid "Automation"
+msgstr ""
+
+#. Label of the availability (Link) field in DocType 'HD Agent'
+msgid "Availability"
+msgstr ""
+
+#. Label of the availability_changed_by (Link) field in DocType 'HD Agent'
+msgid "Availability Changed By"
+msgstr ""
+
+#. Label of the availability_changed_on (Datetime) field in DocType 'HD Agent'
+msgid "Availability Changed On"
+msgstr ""
+
+#. Label of the avg_response_time (Duration) field in DocType 'HD Ticket'
+msgid "Average Response Time"
+msgstr ""
+
+msgid "Average feedback rating per day is around {0} stars"
+msgstr ""
+
+msgid "Average response and resolution metrics not available"
+msgstr ""
+
+msgid "Average tickets per day is around {0}"
+msgstr ""
+
+msgid "Average time the customer took to reply to an agent"
+msgstr ""
+
+msgid "Average time to reply after a customer message"
+msgstr ""
+
+msgid "Avg. Feedback Rating"
+msgstr ""
+
+msgid "Avg. Feedback Received"
+msgstr ""
+
+msgid "Avg. First Response"
+msgstr ""
+
+msgid "Avg. First Response Time"
+msgstr ""
+
+msgid "Avg. Resolution"
+msgstr ""
+
+msgid "Avg. Resolution Time"
+msgstr ""
+
+msgid "Avg. Time Metrics"
+msgstr ""
+
+msgid "Avg. agent response gap"
+msgstr ""
+
+msgid "Avg. customer response gap"
+msgstr ""
+
+msgid "Avg. feedback rating for tickets resolved in this period"
+msgstr ""
+
+msgid "Avg. first response time"
+msgstr ""
+
+msgid "Avg. resolution time"
+msgstr ""
+
+msgid "Avg. time taken to first respond to a ticket"
+msgstr ""
+
+msgid "Avg. time taken to resolve a ticket"
+msgstr ""
+
+#. Option for the 'Category' (Select) field in DocType 'HD Agent Status'
+msgid "Away"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Back to Tickets"
+msgstr ""
+
+#. Label of the base_support_rotation (Link) field in DocType 'HD Settings'
+msgid "Base Support Rotation"
+msgstr ""
+
+msgid "Based On"
+msgstr ""
+
+msgid "Based on your HR Policy, select your leave allocation period's end date"
+msgstr ""
+
+msgid "Based on your HR Policy, select your leave allocation period's start date"
+msgstr ""
+
+msgid "Bcc"
+msgstr ""
+
+msgid "Bcc:"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Black"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Blue"
+msgstr ""
+
+msgid "Brand name"
+msgstr ""
+
+#. Label of the branding_tab (Tab Break) field in DocType 'HD Settings'
+msgid "Branding"
+msgstr ""
+
+msgid "Bulk Operation Failed"
+msgstr ""
+
+msgid "Bulk Operation Successful"
+msgstr ""
+
+msgid "Bulk reply sent successfully to 1 ticket."
+msgstr ""
+
+msgid "Bulk reply sent successfully to {0} tickets."
+msgstr ""
+
+msgid "Business Holidays"
+msgstr ""
+
+msgid "Busy"
+msgstr ""
+
+msgid "CSV"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Call Details"
+msgstr ""
+
+msgid "Call Logs"
+msgstr ""
+
+msgid "Call Received By"
+msgstr ""
+
+msgid "Call contact"
+msgstr ""
+
+msgid "Call duration in seconds"
+msgstr ""
+
+msgid "Caller"
+msgstr ""
+
+msgid "Calls"
+msgstr ""
+
+msgid "Can invite new agents, manage tickets, create custom views and manage public views."
+msgstr ""
+
+msgid "Can manage all aspects of Helpdesk."
+msgstr ""
+
+msgid "Can raise tickets on behalf of the org and manage the tickets they raised."
+msgstr ""
+
+msgid "Can view all tickets raised by the org and assign other members as managers."
+msgstr ""
+
+msgid "Can view tickets raised by all contacts of the customer."
+msgstr ""
+
+msgid "Can work on tickets, create custom views and manage private views."
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Cancel Invitation"
+msgstr ""
+
+msgid "Canceled"
+msgstr ""
+
+msgid "Cannot Sync Customers"
+msgstr ""
+
+msgid "Cannot disable this status as it is linked in HD Settings:<br><br>"
+msgstr ""
+
+msgid "Cannot disable this status as it is linked in the following SLAs:<br><br>"
+msgstr ""
+
+msgid "Cannot enable rule without adding users in it"
+msgstr ""
+
+msgid "Cannot merge General category"
+msgstr ""
+
+msgid "Cannot rename: an unrelated {0} '{1}' already exists on the other side. Resolve the conflict manually first."
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+#. Label of the category (Select) field in DocType 'HD Agent Status'
+#. Label of the category (Link) field in DocType 'HD Article'
+#. Label of the category (Select) field in DocType 'HD Ticket Status'
+msgid "Category"
+msgstr ""
+
+msgid "Category '{0}' link copied to clipboard"
+msgstr ""
+
+msgid "Category created successfully."
+msgstr ""
+
+msgid "Category deleted successfully."
+msgstr ""
+
+msgid "Category is required"
+msgstr ""
+
+msgid "Category merged successfully."
+msgstr ""
+
+msgid "Category must have atleast one article"
+msgstr ""
+
+msgid "Category updated successfully."
+msgstr ""
+
+msgid "Cc"
+msgstr ""
+
+msgid "Cc:"
+msgstr ""
+
+msgid "Change"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Change Photo"
+msgstr ""
+
+msgid "Change language of the application."
+msgstr ""
+
+msgid "Change operator ({0})"
+msgstr ""
+
+msgid "Change priority"
+msgstr ""
+
+msgid "Change status"
+msgstr ""
+
+msgid "Change team"
+msgstr ""
+
+msgid "Change ticket type"
+msgstr ""
+
+msgid "Change timezone of the application."
+msgstr ""
+
+msgid "Change your account password for security."
+msgstr ""
+
+#. Label of a Card Break in the Helpdesk Workspace
+msgid "Channels"
+msgstr ""
+
+msgid "Check this:"
+msgstr ""
+
+msgid "Child field"
+msgstr ""
+
+msgid "Choose a field"
+msgstr ""
+
+msgid "Choose how long this SLA policy will be active."
+msgstr ""
+
+msgid "Choose how tickets are distributed among selected assignees."
+msgstr ""
+
+msgid "Choose the days of the week when this rule should be active."
+msgstr ""
+
+msgid "Choose the duration of this holiday list."
+msgstr ""
+
+msgid "Choose the email service provider you want to configure."
+msgstr ""
+
+msgid "Choose which tickets are affected by this assignment rule."
+msgstr ""
+
+msgid "Choose which tickets are affected by this policy."
+msgstr ""
+
+msgid "Choose which tickets are affected by this un-assignment rule."
+msgstr ""
+
+msgid "Choose who can view and use this response."
+msgstr ""
+
+msgid "Choose who receives the tickets."
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Clear Sort"
+msgstr ""
+
+#. Label of the clear_table (Button) field in DocType 'HD Service Holiday List'
+msgid "Clear Table"
+msgstr ""
+
+msgid "Clear all"
+msgstr ""
+
+msgid "Clear all Filter"
+msgstr ""
+
+msgid "Clear all actions"
+msgstr ""
+
+msgid "Clear all filters"
+msgstr ""
+
+msgid "Click on Add to Holidays. This will populate the holidays table with all the dates that fall on the selected weekly off. Repeat the process for populating the dates for all your weekly holidays"
+msgstr ""
+
+msgid "Click to copy"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Close Ticket"
+msgstr ""
+
+#. Option in a Select field in the tickets Web Form
+msgid "Closed"
+msgstr ""
+
+msgid "Closed or rated tickets cannot be updated by non-agents"
+msgstr ""
+
+#. Label of the color (Select) field in DocType 'HD Agent Status'
+#. Label of the color (Color) field in DocType 'HD Service Holiday List'
+#. Label of the color (Select) field in DocType 'HD Ticket Status'
+msgid "Color"
+msgstr ""
+
+#. Label of the columns (Code) field in DocType 'HD View'
+msgid "Columns"
+msgstr ""
+
+msgid "Comma separated emails to invite."
+msgstr ""
+
+msgid "Comma separated values"
+msgstr ""
+
+msgid "Command Palette"
+msgstr ""
+
+#. Label of the reference_comment (Link) field in DocType 'HD Notification'
+msgid "Comment"
+msgstr ""
+
+msgid "Comment cannot be empty."
+msgstr ""
+
+msgid "Comment deleted"
+msgstr ""
+
+msgid "Comment updated successfully."
+msgstr ""
+
+msgid "Commented"
+msgstr ""
+
+#. Label of the commented_by (Link) field in DocType 'HD Ticket Comment'
+msgid "Commented By"
+msgstr ""
+
+#. Label of the comments_section (Section Break) field in DocType 'HD Settings'
+msgid "Comments"
+msgstr ""
+
+msgid "Communication"
+msgstr ""
+
+msgid "Communication ID is required"
+msgstr ""
+
+#. Option for the 'Customer Type' (Select) field in DocType 'HD Customer'
+msgid "Company"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+#. Label of the condition (Code) field in DocType 'HD Service Level Agreement'
+#. Label of the condition_json (Code) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Condition"
+msgstr ""
+
+msgid "Configure"
+msgstr ""
+
+msgid "Configure your telephony settings."
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Confirm Changes"
+msgstr ""
+
+msgid "Confirm Password"
+msgstr ""
+
+msgid "Confirm overwrite"
+msgstr ""
+
+msgid "Connect my support email"
+msgstr ""
+
+msgid "Connect your support email"
+msgstr ""
+
+#. Label of the contact (Link) field in DocType 'HD Ticket'
+msgid "Contact"
+msgstr ""
+
+#. Label of the contact_html (HTML) field in DocType 'HD Customer'
+msgid "Contact HTML"
+msgstr ""
+
+msgid "Contact removed successfully"
+msgstr ""
+
+msgid "Contact updated successfully."
+msgstr ""
+
+msgid "Contact {0} has no email address"
+msgstr ""
+
+#. Label of the contacts (Table) field in DocType 'HD Customer'
+msgid "Contacts"
+msgstr ""
+
+msgid "Contacts added successfully"
+msgstr ""
+
+#. Label of the content_section (Section Break) field in DocType 'HD Article'
+#. Label of the content (Text Editor) field in DocType 'HD Article'
+#. Label of the content (Text Editor) field in DocType 'HD Ticket Comment'
+msgid "Content"
+msgstr ""
+
+msgid "Conversation Summary"
+msgstr ""
+
+msgid "Copy link"
+msgstr ""
+
+msgid "Copy ticket URL"
+msgstr ""
+
+msgid "Copy ticket id"
+msgstr ""
+
+msgid "Could not add the comment"
+msgstr ""
+
+msgid "Could not an email due to: {0}"
+msgstr ""
+
+msgid "Could not apply actions from the saved reply."
+msgstr ""
+
+msgid "Could not confirm the merge. Reloading the ticket."
+msgstr ""
+
+msgid "Could not delete the comment"
+msgstr ""
+
+msgid "Could not find the `name` column in tabHD Ticket"
+msgstr ""
+
+msgid "Could not migrate contacts for {0} customer(s): {1}. Fix the underlying data and re-run the patch."
+msgstr ""
+
+msgid "Could not note parked mail on ticket"
+msgstr ""
+
+msgid "Could not pin the comment"
+msgstr ""
+
+msgid "Could not send an acknowledgement email due to: {0}"
+msgstr ""
+
+msgid "Could not send feedback email,due to: {0}"
+msgstr ""
+
+msgid "Could not send the reply"
+msgstr ""
+
+#. Label of the country (Link) field in DocType 'HD Customer'
+msgid "Country"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Create & invite a contact"
+msgstr ""
+
+msgid "Create Contact"
+msgstr ""
+
+msgid "Create Customer"
+msgstr ""
+
+msgid "Create New"
+msgstr ""
+
+msgid "Create View"
+msgstr ""
+
+msgid "Create a ticket"
+msgstr ""
+
+msgid "Create an article"
+msgstr ""
+
+msgid "Create and manage teams and assign agents to specific teams."
+msgstr ""
+
+msgid "Create field dependencies to dynamically update options based on user selections. Learn more about field dependencies"
+msgstr ""
+
+msgid "Create my first ticket"
+msgstr ""
+
+msgid "Create new business holiday"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Created by"
+msgstr ""
+
+msgid "Creating a ticket"
+msgstr ""
+
+msgid "Current icon"
+msgstr ""
+
+msgid "Custom Actions"
+msgstr ""
+
+#. Label of the outside_working_hours_message (Small Text) field in DocType 'HD
+#. Settings'
+msgid "Custom Outside Working Hours Message"
+msgstr ""
+
+msgid "Custom Range"
+msgstr ""
+
+msgid "Custom Views"
+msgstr ""
+
+#. Label of the customer (Link) field in DocType 'HD Ticket'
+msgid "Customer"
+msgstr ""
+
+msgid "Customer Manager"
+msgstr ""
+
+#. Label of the customer_name (Data) field in DocType 'HD Customer'
+msgid "Customer Name"
+msgstr ""
+
+msgid "Customer Portal"
+msgstr ""
+
+#. Label of the customer_type (Select) field in DocType 'HD Customer'
+msgid "Customer Type"
+msgstr ""
+
+msgid "Customer created"
+msgstr ""
+
+msgid "Customer created · invitation sent to {0}"
+msgstr ""
+
+msgid "Customer message"
+msgstr ""
+
+msgid "Customer messages"
+msgstr ""
+
+msgid "Customer name cannot be empty"
+msgstr ""
+
+msgid "Customer portal"
+msgstr ""
+
+msgid "Customer portal permissions have changed"
+msgstr ""
+
+msgid "Customer portal update"
+msgstr ""
+
+msgid "Customer updated"
+msgstr ""
+
+msgid "Customers"
+msgstr ""
+
+msgid "Customers & Contacts"
+msgstr ""
+
+msgid "Customers are in sync"
+msgstr ""
+
+msgid "Customers now see only the ticket fields meant for them. All other fields are visible to agents only."
+msgstr ""
+
+msgid "Customizations"
+msgstr ""
+
+msgid "Customize Form"
+msgstr ""
+
+msgid "Customize your email notification preferences to stay informed about important updates and activities."
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Cyan"
+msgstr ""
+
+msgid "Daily volume of the top {0} tags"
+msgstr ""
+
+msgid "Danger"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Dashboard saved"
+msgstr ""
+
+#. Label of the holiday_date (Date) field in DocType 'HD Holiday'
+msgid "Date"
+msgstr ""
+
+msgid "Day count for auto closing tickets cannot be negative or zero"
+msgstr ""
+
+msgid "Days"
+msgstr ""
+
+msgid "Default Inbox"
+msgstr ""
+
+#. Label of the default_priority (Link) field in DocType 'HD Service Level
+#. Agreement'
+#. Label of the default_priority (Check) field in DocType 'HD Service Level
+#. Priority'
+msgid "Default Priority"
+msgstr ""
+
+#. Label of the default_sla (Check) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Default SLA"
+msgstr ""
+
+msgid "Default SLA turned off"
+msgstr ""
+
+msgid "Default Sending"
+msgstr ""
+
+msgid "Default Sending and Inbox"
+msgstr ""
+
+#. Label of the default_ticket_status (Link) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Default Ticket Status"
+msgstr ""
+
+msgid "Default Views"
+msgstr ""
+
+msgid "Default actions"
+msgstr ""
+
+#. Label of the default_agent_status (Link) field in DocType 'HD Settings'
+msgid "Default agent status"
+msgstr ""
+
+msgid "Default calling medium for logged in user"
+msgstr ""
+
+msgid "Default medium"
+msgstr ""
+
+#. Label of the default_priority (Link) field in DocType 'HD Settings'
+msgid "Default priority"
+msgstr ""
+
+msgid "Default template can not be deleted"
+msgstr ""
+
+#. Label of the default_ticket_status (Link) field in DocType 'HD Settings'
+msgid "Default ticket status"
+msgstr ""
+
+#. Label of the default_ticket_type (Link) field in DocType 'HD Settings'
+msgid "Default ticket type"
+msgstr ""
+
+msgid "Define who receives the tickets and how they’re distributed among agents."
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete Customer"
+msgstr ""
+
+msgid "Delete articles"
+msgstr ""
+
+msgid "Delete category?"
+msgstr ""
+
+msgid "Delete {0} ticket(s)"
+msgstr ""
+
+msgid "Deleting comment"
+msgstr ""
+
+msgid "Delivery failed: the reply to this ticket could not be delivered to {0}."
+msgstr ""
+
+msgid "Delivery failed: the reply to this ticket could not be delivered."
+msgstr ""
+
+#. Label of the description (Text) field in DocType 'HD Article Category'
+#. Label of the description (Text Editor) field in DocType 'HD Holiday'
+#. Label of the description (Data) field in DocType 'HD Service Holiday List'
+#. Label of the description (Data) field in DocType 'HD Service Level
+#. Agreement'
+#. Label of the description (Text Editor) field in DocType 'HD Ticket'
+#. Label of the description (Small Text) field in DocType 'HD Ticket Priority'
+#. Label of the description (Small Text) field in DocType 'HD Ticket Type'
+#. Label of a field in the tickets Web Form
+msgid "Description"
+msgstr ""
+
+#. Label of the description_template (Text Editor) field in DocType 'HD Ticket
+#. Template'
+msgid "Description Template"
+msgstr ""
+
+#. Label of the description_weight (Int) field in DocType 'HD Settings'
+msgid "Description Weight"
+msgstr ""
+
+msgid "Detailed explanation"
+msgstr ""
+
+#. Label of the details_section (Section Break) field in DocType 'HD
+#. Notification'
+#. Label of the sb_details (Section Break) field in DocType 'HD Ticket'
+msgid "Details"
+msgstr ""
+
+msgid "Disable global saved replies"
+msgstr ""
+
+#. Label of the disable_saved_replies_global_scope (Check) field in DocType 'HD
+#. Settings'
+msgid "Disable saved replies with scope 'Global'"
+msgstr ""
+
+msgid "Disable signup"
+msgstr ""
+
+#. Label of the disabled (Check) field in DocType 'HD Team'
+#. Label of the disabled (Check) field in DocType 'HD Ticket Feedback Option'
+#. Label of the disabled (Check) field in DocType 'HD Ticket Priority'
+#. Label of the disabled (Check) field in DocType 'HD Ticket Type'
+msgid "Disabled"
+msgstr ""
+
+msgid "Disables all email notifications for the ticket - including creation, updates, and alerts."
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "Discard Article"
+msgstr ""
+
+msgid "Discard changes?"
+msgstr ""
+
+msgid "Display a customizable banner message when customers raise tickets outside your working hours."
+msgstr ""
+
+#. Description of the 'Ignore Restrictions' (Check) field in DocType 'HD Team'
+msgid "Do not apply filters and restrictions to agents of this team"
+msgstr ""
+
+#. Label of the do_not_restrict_tickets_without_an_agent_group (Check) field in
+#. DocType 'HD Settings'
+msgid "Do not restrict tickets without a Team"
+msgstr ""
+
+msgid "Do not restrict tickets without a team"
+msgstr ""
+
+#. Label of the dt (Link) field in DocType 'HD Form Script'
+#. Label of the dt (Link) field in DocType 'HD View'
+msgid "DocType"
+msgstr ""
+
+msgid "Docs"
+msgstr ""
+
+#. Label of the document_type (Link) field in DocType 'HD Field Layout'
+msgid "Document Type"
+msgstr ""
+
+msgid "Doe"
+msgstr ""
+
+#. Label of the domain (Data) field in DocType 'HD Customer'
+msgid "Domain"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+#. Option for the 'Status' (Select) field in DocType 'HD Article'
+msgid "Draft"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Duplicate Assignment Rule"
+msgstr ""
+
+msgid "Duplicate Holiday List"
+msgstr ""
+
+msgid "Duplicate SLA Policy"
+msgstr ""
+
+msgid "Duplicate Saved reply"
+msgstr ""
+
+msgid "Duplicate action: {0}"
+msgstr ""
+
+msgid "Duplicate contacts are not allowed"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration is required"
+msgstr ""
+
+msgid "ERPNext"
+msgstr ""
+
+#. Label of the erpnext_customer (Data) field in DocType 'HD Customer'
+msgid "ERPNext Customer"
+msgstr ""
+
+#. Name of a DocType
+msgid "ERPNext HD Settings"
+msgstr ""
+
+msgid "ERPNext Integration is disabled"
+msgstr ""
+
+msgid "ERPNext Integration is enabled"
+msgstr ""
+
+msgid "ERPNext app"
+msgstr ""
+
+msgid "ERPNext integration is not enabled"
+msgstr ""
+
+msgid "ERPNext is not installed on your site. Please install ERPNext to enable this setting"
+msgstr ""
+
+msgid "Earlier, every contact could see all the tickets of their company. Now, contacts only see the tickets they raised themselves."
+msgstr ""
+
+msgid "Easily invite new agents, managers, or admins."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit Call Log"
+msgstr ""
+
+msgid "Edit Contact"
+msgstr ""
+
+msgid "Edit Customer"
+msgstr ""
+
+msgid "Edit Domain"
+msgstr ""
+
+msgid "Edit Email"
+msgstr ""
+
+msgid "Edit Title"
+msgstr ""
+
+msgid "Edit your email account"
+msgstr ""
+
+#. Label of the editable_after_creation (Check) field in DocType 'HD Ticket
+#. Template Field'
+msgid "Editable after creation"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+#. Label of the email_account (Link) field in DocType 'HD Ticket'
+#. Label of a Link in the Helpdesk Workspace
+msgid "Email Account"
+msgstr ""
+
+msgid "Email Accounts"
+msgstr ""
+
+#. Label of the feedback_email_content (Text) field in DocType 'HD Settings'
+#. Label of the acknowledgement_email_content (Text) field in DocType 'HD
+#. Settings'
+#. Label of the reply_email_to_agent_content (Text) field in DocType 'HD
+#. Settings'
+#. Label of the reply_via_agent_email_content (Text) field in DocType 'HD
+#. Settings'
+msgid "Email Content"
+msgstr ""
+
+#. Label of the email_id (Data) field in DocType 'HD Customer'
+msgid "Email ID"
+msgstr ""
+
+#. Label of the email_customisations_tab (Tab Break) field in DocType 'HD
+#. Settings'
+msgid "Email Notifications"
+msgstr ""
+
+msgid "Email Settings"
+msgstr ""
+
+msgid "Email account created"
+msgstr ""
+
+msgid "Email account name"
+msgstr ""
+
+msgid "Email account updated successfully"
+msgstr ""
+
+#. Description of the 'Email ID' (Data) field in DocType 'HD Customer'
+msgid "Email address of the primary contact"
+msgstr ""
+
+msgid "Email settings updated successfully."
+msgstr ""
+
+msgid "Emails"
+msgstr ""
+
+msgid "Emails & Signature"
+msgstr ""
+
+msgid "Emails pulled successfully"
+msgstr ""
+
+#. Label of the emoji (Data) field in DocType 'HD Comment Reaction'
+msgid "Emoji"
+msgstr ""
+
+msgid "Empty - Choose a field to sort by"
+msgstr ""
+
+msgid "Enable ERPNext Integration"
+msgstr ""
+
+#. Label of the enable_comment_reactions (Check) field in DocType 'HD Settings'
+msgid "Enable comment reactions"
+msgstr ""
+
+#. Label of the is_feedback_mandatory (Check) field in DocType 'HD Settings'
+msgid "Enable feedback for Customer Portal"
+msgstr ""
+
+#. Label of the end_date (Date) field in DocType 'HD Service Level Agreement'
+msgid "End Date"
+msgstr ""
+
+#. Label of the end_time (Time) field in DocType 'HD Service Day'
+msgid "End Time"
+msgstr ""
+
+msgid "Enter a name for this HD Service Holiday List."
+msgstr ""
+
+msgid "Enter brand name"
+msgstr ""
+
+msgid "Enter email address"
+msgstr ""
+
+msgid "Enter the new name for the team"
+msgstr ""
+
+msgid "Enter the primary contact's email"
+msgstr ""
+
+msgid "Enter the primary contact's first name"
+msgstr ""
+
+msgid "Error moving article to category"
+msgstr ""
+
+msgid "Error processing email at index {0}, message: {1}"
+msgstr ""
+
+msgid "Error while connecting to email account {0}"
+msgstr ""
+
+#. Option for the 'Visible to' (Select) field in DocType 'HD Ticket Template
+#. Field'
+msgid "Everyone"
+msgstr ""
+
+#. Description of the 'Visible to' (Select) field in DocType 'HD Ticket
+#. Template Field'
+msgid "Everyone lets both agents and customers see this field. Agents shows it only in the agent view. This controls the ticket form only. Raise the field's permission level in Customize Form to hide it from the API layer as well."
+msgstr ""
+
+msgid "Excel"
+msgstr ""
+
+msgid "Existing contacts are being made customer managers in the background"
+msgstr ""
+
+msgid "Existing users join instantly. Others get an invite."
+msgstr ""
+
+msgid "Explore customer portal"
+msgstr ""
+
+msgid "Explore the product first"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Export All {0} Record(s)"
+msgstr ""
+
+msgid "Export Type"
+msgstr ""
+
+#. Option for the 'SLA Status' (Select) field in DocType 'HD Ticket'
+msgid "Failed"
+msgstr ""
+
+msgid "Failed SLAs"
+msgstr ""
+
+msgid "Failed to create category"
+msgstr ""
+
+msgid "Failed to create email account, Invalid credentials"
+msgstr ""
+
+msgid "Failed to delete ticket."
+msgstr ""
+
+msgid "Failed to load analytics"
+msgstr ""
+
+msgid "Failed to pull emails"
+msgstr ""
+
+msgid "Failed to update Assignees."
+msgstr ""
+
+msgid "Failed to update assignment rule {0}."
+msgstr ""
+
+msgid "Failed to update category."
+msgstr ""
+
+msgid "Failed to update email account, Invalid credentials"
+msgstr ""
+
+msgid "Failed to update field dependency."
+msgstr ""
+
+msgid "Failed to update tags"
+msgstr ""
+
+#. Label of the favicon (Attach Image) field in DocType 'HD Settings'
+msgid "Favicon"
+msgstr ""
+
+#. Label of the feedback (Select) field in DocType 'HD Article Feedback'
+#. Label of the feedback_section (Section Break) field in DocType 'HD Settings'
+#. Label of the feedback_tab (Tab Break) field in DocType 'HD Ticket'
+msgid "Feedback"
+msgstr ""
+
+#. Label of the feedback_extra (Small Text) field in DocType 'HD Email
+#. Feedback'
+#. Label of a field in the email-feedback Web Form
+msgid "Feedback "
+msgstr ""
+
+#. Label of the feedback_extra (Long Text) field in DocType 'HD Ticket'
+msgid "Feedback (Extra)"
+msgstr ""
+
+#. Label of the feedback (Link) field in DocType 'HD Ticket'
+msgid "Feedback (Option)"
+msgstr ""
+
+msgid "Feedback Already Exists"
+msgstr ""
+
+#. Label of the feedback_rating (Rating) field in DocType 'HD Email Feedback'
+#. Label of a field in the email-feedback Web Form
+msgid "Feedback Rating"
+msgstr ""
+
+msgid "Feedback Trend"
+msgstr ""
+
+msgid "Feedback email has been sent to the customer"
+msgstr ""
+
+msgid "Feedback from this contact will appear here once available."
+msgstr ""
+
+msgid "Feedback submitted successfully."
+msgstr ""
+
+msgid "Field"
+msgstr ""
+
+#. Label of the fieldname (Data) field in DocType 'HD Ticket Template Field'
+msgid "Field (fieldname)"
+msgstr ""
+
+msgid "Field Dependencies"
+msgstr ""
+
+msgid "Field Dependency"
+msgstr ""
+
+msgid "Field Dependency created successfully"
+msgstr ""
+
+msgid "Field Dependency updated successfully"
+msgstr ""
+
+msgid "Field `{0}` does not exist in Ticket"
+msgstr ""
+
+msgid "Field `{0}` is a secret and can never be shown to customers."
+msgstr ""
+
+msgid "Field `{0}` is internal and cannot be shown to customers. Lower its permission level in Customize Form to show it in the ticket form."
+msgstr ""
+
+msgid "Field `{0}` is not allowed in Ticket Template"
+msgstr ""
+
+msgid "Field `{0}` is set by the system and cannot be shown to customers."
+msgstr ""
+
+msgid "Field dependency deleted successfully."
+msgstr ""
+
+msgid "Field dependency updated successfully."
+msgstr ""
+
+#. Label of the fields (Table) field in DocType 'HD Ticket Template'
+msgid "Fields"
+msgstr ""
+
+#. Label of the filters_tab (Tab Break) field in DocType 'HD View'
+#. Label of the filters (Code) field in DocType 'HD View'
+msgid "Filters"
+msgstr ""
+
+msgid "Find out all of the variables that can be used in the content"
+msgstr ""
+
+msgid "Finding past conversations"
+msgstr ""
+
+msgid "Finish"
+msgstr ""
+
+msgid "First Name"
+msgstr ""
+
+#. Label of the first_responded_on (Datetime) field in DocType 'HD Ticket'
+msgid "First Responded On"
+msgstr ""
+
+msgid "First Response"
+msgstr ""
+
+#. Option for the 'SLA Status' (Select) field in DocType 'HD Ticket'
+msgid "First Response Due"
+msgstr ""
+
+#. Label of the first_response_failed_by (Duration) field in DocType 'HD
+#. Ticket'
+msgid "First Response Failed By"
+msgstr ""
+
+#. Label of the response_time (Duration) field in DocType 'HD Service Level
+#. Priority'
+#. Label of the first_response_time (Duration) field in DocType 'HD Ticket'
+msgid "First Response Time"
+msgstr ""
+
+#. Name of a report
+msgid "First Response Time for Tickets"
+msgstr ""
+
+msgid "First response"
+msgstr ""
+
+msgid "First response due"
+msgstr ""
+
+msgid "First response overdue"
+msgstr ""
+
+msgid "Follow-up"
+msgstr ""
+
+#. Option for the 'Apply To' (Select) field in DocType 'HD Form Script'
+msgid "Form"
+msgstr ""
+
+msgid "Frappe Discuss"
+msgstr ""
+
+msgid "Pramaan Helpdesk Mobile"
+msgstr ""
+
+msgid "Freshdesk"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Friday"
+msgstr ""
+
+#. Label of the user_from (Link) field in DocType 'HD Notification'
+msgid "From"
+msgstr ""
+
+#. Label of the from_date (Date) field in DocType 'HD Service Holiday List'
+msgid "From Date"
+msgstr ""
+
+msgid "From date"
+msgstr ""
+
+msgid "From is required"
+msgstr ""
+
+#. Option for the 'SLA Status' (Select) field in DocType 'HD Ticket'
+msgid "Fulfilled"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+#. Label of a Link in the Helpdesk Workspace
+msgid "General Settings"
+msgstr ""
+
+msgid "General category can't be deleted"
+msgstr ""
+
+msgid "General category name can't be changed"
+msgstr ""
+
+msgid "General is a reserved category name. Please use a different name to proceed."
+msgstr ""
+
+msgid "Getting Started"
+msgstr ""
+
+msgid "GitHub"
+msgstr ""
+
+#. Option for the 'Scope' (Select) field in DocType 'HD Saved Reply'
+msgid "Global"
+msgstr ""
+
+msgid "Go to pinned comment {0}"
+msgstr ""
+
+msgid "Google Ads"
+msgstr ""
+
+msgid "Got it"
+msgstr ""
+
+msgid "Grant Manager Access"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Gray"
+msgstr ""
+
+msgid "Great! All your tickets are within SLA"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Green"
+msgstr ""
+
+#. Label of the group_by_tab (Tab Break) field in DocType 'HD View'
+msgid "Group By"
+msgstr ""
+
+#. Label of the group_by_field (Data) field in DocType 'HD View'
+msgid "Group By Field"
+msgstr ""
+
+msgid "Guide users to articles before tickets."
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Agent"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Agent Status"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Article"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Article Category"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Article Feedback"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Comment Reaction"
+msgstr ""
+
+#. Name of a role
+#. Name of a DocType
+msgid "HD Customer"
+msgstr ""
+
+#. Name of a role
+msgid "HD Customer Manager"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Customer Member"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Email Feedback"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Field Layout"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Form Script"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Holiday"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Notification"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Saved Reply"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Saved Reply Team"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Service Day"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Service Holiday List"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Service Level Agreement"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Service Level Priority"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Settings"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Stopword"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Synonym"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Synonyms"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Team"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Team Member"
+msgstr ""
+
+#. Name of a DocType
+#. Label of the ticket (Link) field in DocType 'HD Ticket Activity'
+msgid "HD Ticket"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Activity"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Comment"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Feedback Option"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Priority"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Status"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Template"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Template Field"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD Ticket Type"
+msgstr ""
+
+#. Name of a DocType
+msgid "HD View"
+msgstr ""
+
+#. Label of the headings_weight (Int) field in DocType 'HD Settings'
+msgid "Headings Weight"
+msgstr ""
+
+msgid "Hello {{ contact }}, \\n\\nWe are sorry for the inconvenience, we will get back to you soon. \\n\\nRegards, \\n{{ full_name }}"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "HelpDesk"
+msgstr ""
+
+#. Name of a Workspace
+msgid "Helpdesk"
+msgstr ""
+
+#. Label of a Card Break in the Helpdesk Workspace
+msgid "Helpdesk Reports"
+msgstr ""
+
+msgid "Here, your weekly offs are pre-populated based on the previous selections. You can add more rows to also add public and national holidays individually."
+msgstr ""
+
+msgid "Hey"
+msgstr ""
+
+msgid "Hide actions"
+msgstr ""
+
+#. Option for the 'Level' (Select) field in DocType 'HD Ticket Priority'
+msgid "High"
+msgstr ""
+
+#. Option in a Select field in the tickets Web Form
+msgid "Hold"
+msgstr ""
+
+#. Label of the holiday_list (Link) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Holiday List"
+msgstr ""
+
+#. Label of the holiday_list_name (Data) field in DocType 'HD Service Holiday
+#. List'
+msgid "Holiday List Name"
+msgstr ""
+
+msgid "Holiday list created successfully."
+msgstr ""
+
+msgid "Holiday list deleted successfully."
+msgstr ""
+
+msgid "Holiday list duplicated successfully."
+msgstr ""
+
+msgid "Holiday list updated successfully."
+msgstr ""
+
+#. Label of the holidays_section (Section Break) field in DocType 'HD Service
+#. Holiday List'
+#. Label of the holidays (Table) field in DocType 'HD Service Holiday List'
+msgid "Holidays"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "How big is your support team?"
+msgstr ""
+
+msgid "How did you hear about Pramaan Helpdesk?"
+msgstr ""
+
+msgid "How do your customers currently contact your support team?"
+msgstr ""
+
+msgid "How would you like your customers to create support tickets in Pramaan Helpdesk?"
+msgstr ""
+
+msgid "I understand, add conditions"
+msgstr ""
+
+msgid "I'm not sure yet"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+#. Label of the icon (Data) field in DocType 'HD Article Category'
+#. Label of the icon (Data) field in DocType 'HD View'
+msgid "Icon"
+msgstr ""
+
+#. Description of the 'Enabled' (Check) field in DocType 'HD Settings'
+msgid "If enabled, a ticket creation acknowledgement email will be sent to the user right after creating an email ticket"
+msgstr ""
+
+#. Description of the 'Enabled' (Check) field in DocType 'HD Settings'
+msgid "If enabled, an email is sent to all of the recipients associated with an agent's reply"
+msgstr ""
+
+#. Description of the 'Enabled' (Check) field in DocType 'HD Settings'
+msgid "If enabled, an email will be sent to all of the assigned agents after a reply from one of the contacts"
+msgstr ""
+
+#. Description of the 'Allow anyone to create tickets' (Check) field in DocType
+#. 'HD Settings'
+msgid "If enabled, anyone will be able to create tickets (without any permission). "
+msgstr ""
+
+#. Description of the 'Enabled' (Check) field in DocType 'HD Settings'
+msgid "If enabled, feedback email will be sent to the customer when you mark a ticket as the status selected below.\n"
+msgstr ""
+
+#. Description of the 'Enable feedback for Customer Portal' (Check) field in
+#. DocType 'HD Settings'
+msgid "If enabled, the feedback dialog will be shown, when a user tries to close a ticket. \n"
+msgstr ""
+
+msgid "If you created custom agent roles, raise their permission level to 8 in Role Permission Manager so they can see agent-only fields."
+msgstr ""
+
+msgid "If your issue isn't resolved, raise a support ticket"
+msgstr ""
+
+#. Label of the ignore_restrictions (Check) field in DocType 'HD Team'
+msgid "Ignore Restrictions"
+msgstr ""
+
+#. Label of the user_image (Attach Image) field in DocType 'HD Agent'
+#. Label of the image (Attach Image) field in DocType 'HD Customer'
+msgid "Image"
+msgstr ""
+
+msgid "Image removed successfully."
+msgstr ""
+
+#. Description of the 'Logo' (Attach Image) field in DocType 'HD Settings'
+msgid "Image to be used in various places, including Login and Signup pages. An image with transparent background and 160 x 32 is preferred"
+msgstr ""
+
+msgid "Image updated successfully."
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "In person"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "Inbound Call"
+msgstr ""
+
+msgid "Inbox"
+msgstr ""
+
+msgid "Incoming"
+msgstr ""
+
+#. Option for the 'Customer Type' (Select) field in DocType 'HD Customer'
+msgid "Individual"
+msgstr ""
+
+msgid "Initiated"
+msgstr ""
+
+msgid "Install the"
+msgstr ""
+
+#. Label of the instantly_send_email (Check) field in DocType 'HD Settings'
+msgid "Instantly send e-mail"
+msgstr ""
+
+msgid "Insufficient Permission for {0}"
+msgstr ""
+
+msgid "Intercom"
+msgstr ""
+
+msgid "Internal comments"
+msgstr ""
+
+msgid "Internal note. Type / for commands"
+msgstr ""
+
+msgid "Introduction"
+msgstr ""
+
+msgid "Invalid action {0}: {1} does not exist or is disabled"
+msgstr ""
+
+msgid "Invalid action: {0}"
+msgstr ""
+
+msgid "Invalid availability"
+msgstr ""
+
+msgid "Invalid email address"
+msgstr ""
+
+msgid "Invalid emoji. Only preset emojis are allowed: {0}"
+msgstr ""
+
+msgid "Invalid fields, check if all are filled in and values are correct."
+msgstr ""
+
+msgid "Invalid notification"
+msgstr ""
+
+msgid "Invalid phone number"
+msgstr ""
+
+msgid "Invalid role {0}"
+msgstr ""
+
+msgid "Invitation Expired"
+msgstr ""
+
+msgid "Invitation cancelled successfully"
+msgstr ""
+
+msgid "Invitation expired. Resend to invite again."
+msgstr ""
+
+msgid "Invite"
+msgstr ""
+
+msgid "Invite Agents"
+msgstr ""
+
+msgid "Invite Contact"
+msgstr ""
+
+msgid "Invite agent"
+msgstr ""
+
+msgid "Invite agents"
+msgstr ""
+
+msgid "Invite as User"
+msgstr ""
+
+msgid "Invite by email"
+msgstr ""
+
+msgid "Invite my support team"
+msgstr ""
+
+msgid "Invite sent. Waiting for the user to accept."
+msgstr ""
+
+msgid "Invite via email"
+msgstr ""
+
+msgid "Invited"
+msgstr ""
+
+msgid "Invited by"
+msgstr ""
+
+#. Label of the is_active (Check) field in DocType 'HD Agent'
+msgid "Is Active"
+msgstr ""
+
+#. Label of the is_customer_portal (Check) field in DocType 'HD View'
+msgid "Is Customer Portal"
+msgstr ""
+
+#. Label of the is_default (Check) field in DocType 'HD View'
+msgid "Is Default"
+msgstr ""
+
+#. Label of the is_manager (Check) field in DocType 'HD Customer Member'
+msgid "Is Manager"
+msgstr ""
+
+#. Label of the is_standard (Check) field in DocType 'HD Form Script'
+#. Label of the is_standard (Check) field in DocType 'HD View'
+msgid "Is Standard"
+msgstr ""
+
+#. Label of the apply_to_system (Check) field in DocType 'HD Field Layout'
+msgid "Is applied to system"
+msgstr ""
+
+#. Label of the initial_helpdesk_name_setup_skipped (Check) field in DocType
+#. 'HD Settings'
+msgid "Is name setup skipped"
+msgstr ""
+
+#. Label of the is_pinned (Check) field in DocType 'HD Ticket Comment'
+msgid "Is pinned"
+msgstr ""
+
+#. Label of the setup_complete (Check) field in DocType 'HD Settings'
+msgid "Is setup complete"
+msgstr ""
+
+msgid "Jira Service Management"
+msgstr ""
+
+msgid "John"
+msgstr ""
+
+msgid "KB"
+msgstr ""
+
+msgid "Keeping track of customer requests"
+msgstr ""
+
+#. Label of the key (Data) field in DocType 'HD Email Feedback'
+#. Label of the key (Data) field in DocType 'HD Ticket'
+#. Label of a field in the email-feedback Web Form
+msgid "Key"
+msgstr ""
+
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#. Label of the knowledge_base_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Knowledge Base"
+msgstr ""
+
+#. Label of the label (Data) field in DocType 'HD Ticket Feedback Option'
+#. Label of the label_agent (Data) field in DocType 'HD Ticket Status'
+#. Label of the label (Data) field in DocType 'HD View'
+msgid "Label"
+msgstr ""
+
+#. Label of the label_customer (Data) field in DocType 'HD Ticket Status'
+msgid "Label (customer view)"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD Field Layout'
+msgid "Landing Page"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Language & Time"
+msgstr ""
+
+msgid "Last"
+msgstr ""
+
+msgid "Last 3 Months"
+msgstr ""
+
+msgid "Last 30 Days"
+msgstr ""
+
+msgid "Last 60 Days"
+msgstr ""
+
+msgid "Last 7 Days"
+msgstr ""
+
+msgid "Last 90 Days"
+msgstr ""
+
+#. Label of the last_agent_response (Datetime) field in DocType 'HD Ticket'
+msgid "Last Agent Response"
+msgstr ""
+
+#. Label of the last_customer_response (Datetime) field in DocType 'HD Ticket'
+msgid "Last Customer Response"
+msgstr ""
+
+msgid "Last Month"
+msgstr ""
+
+msgid "Last Name"
+msgstr ""
+
+msgid "Last Week"
+msgstr ""
+
+msgid "Last month"
+msgstr ""
+
+msgid "Last seen"
+msgstr ""
+
+msgid "Last user assigned by this rule"
+msgstr ""
+
+msgid "Latest"
+msgstr ""
+
+#. Label of the layout (Code) field in DocType 'HD Field Layout'
+msgid "Layout"
+msgstr ""
+
+msgid "Learn about conditions"
+msgstr ""
+
+msgid "Learn more"
+msgstr ""
+
+msgid "Learn more in the"
+msgstr ""
+
+#. Description of the 'Apply outside working hours' (Check) field in DocType
+#. 'HD Settings'
+msgid "Let customers know they're raising a ticket outside working hours, and when they can expect a reply."
+msgstr ""
+
+#. Label of the level (Select) field in DocType 'HD Ticket Priority'
+msgid "Level"
+msgstr ""
+
+msgid "LinkedIn"
+msgstr ""
+
+#. Option for the 'Apply To' (Select) field in DocType 'HD Form Script'
+#. Label of the list_tab (Tab Break) field in DocType 'HD View'
+msgid "List"
+msgstr ""
+
+msgid "List View"
+msgstr ""
+
+msgid "Listen"
+msgstr ""
+
+msgid "Live chat"
+msgstr ""
+
+#. Label of the load_default_columns (Check) field in DocType 'HD View'
+msgid "Load Default Columns"
+msgstr ""
+
+msgid "Load More"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Log a Call"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+#. Label of the brand_logo (Attach Image) field in DocType 'HD Settings'
+msgid "Logo"
+msgstr ""
+
+msgid "Longest wait"
+msgstr ""
+
+#. Option for the 'Level' (Select) field in DocType 'HD Ticket Priority'
+msgid "Low"
+msgstr ""
+
+#. Description of the 'Rank' (Int) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Lower rank is applied first. 0 means unranked, and is applied last."
+msgstr ""
+
+msgid "Mail"
+msgstr ""
+
+msgid "Make a Call"
+msgstr ""
+
+msgid "Make all existing contacts customer managers"
+msgstr ""
+
+msgid "Make feedback mandatory"
+msgstr ""
+
+msgid "Make it public"
+msgstr ""
+
+msgid "Manage general settings of your app."
+msgstr ""
+
+msgid "Manage pre-defined responses that can be used to respond to customer queries."
+msgstr ""
+
+msgid "Manage your account emails and email signature for communication."
+msgstr ""
+
+msgid "Manage your email accounts and configure incoming and outgoing settings."
+msgstr ""
+
+msgid "Manage your email signature."
+msgstr ""
+
+msgid "Manage your personal preferences."
+msgstr ""
+
+msgid "Manage your profile information."
+msgstr ""
+
+msgid "Manager"
+msgstr ""
+
+msgid "Managing customer conversations across channels"
+msgstr ""
+
+msgid "Mark all as read"
+msgstr ""
+
+msgid "Masters"
+msgstr ""
+
+msgid "Measuring team performance"
+msgstr ""
+
+#. Option for the 'Level' (Select) field in DocType 'HD Ticket Priority'
+msgid "Medium"
+msgstr ""
+
+msgid "Members"
+msgstr ""
+
+msgid "Members ({0})"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD Notification'
+msgid "Mention"
+msgstr ""
+
+msgid "Merge"
+msgstr ""
+
+msgid "Merge Ticket"
+msgstr ""
+
+#. Label of the merged_with (Link) field in DocType 'HD Ticket'
+msgid "Merged With"
+msgstr ""
+
+#. Label of the message (Text) field in DocType 'HD Notification'
+#. Label of the message (Text Editor) field in DocType 'HD Saved Reply'
+msgid "Message"
+msgstr ""
+
+#. Label of the misc_tab (Tab Break) field in DocType 'HD Settings'
+msgid "Misc"
+msgstr ""
+
+msgid "Missing or delayed responses"
+msgstr ""
+
+msgid "Mobile App Installation"
+msgstr ""
+
+#. Label of the mobile_no (Data) field in DocType 'HD Customer'
+msgid "Mobile No"
+msgstr ""
+
+msgid "Mobile Number"
+msgstr ""
+
+#. Description of the 'Mobile No' (Data) field in DocType 'HD Customer'
+msgid "Mobile no. of the primary contact"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Monday"
+msgstr ""
+
+msgid "Monthly"
+msgstr ""
+
+msgid "More Details"
+msgstr ""
+
+msgid "Most used tags in this period"
+msgstr ""
+
+msgid "Move To"
+msgstr ""
+
+msgid "My Dashboard"
+msgstr ""
+
+msgid "My Organization"
+msgstr ""
+
+msgid "My Recent Activity"
+msgstr ""
+
+msgid "My Stats"
+msgstr ""
+
+msgid "My Team(s)"
+msgstr ""
+
+msgid "My Tickets"
+msgstr ""
+
+#. Label of the category_name (Data) field in DocType 'HD Article Category'
+#. Label of the contact_name (Link) field in DocType 'HD Customer Member'
+#. Label of the brand_name (Data) field in DocType 'HD Settings'
+#. Label of the team_name (Data) field in DocType 'HD Team'
+msgid "Name"
+msgstr ""
+
+#. Label of the name_weight (Int) field in DocType 'HD Settings'
+msgid "Name Weight"
+msgstr ""
+
+msgid "Name is required"
+msgstr ""
+
+#. Description of the 'Label (customer view)' (Data) field in DocType 'HD
+#. Ticket Status'
+msgid "Name shown on the customer portal<br> (e.g., Replied → Awaiting Response)."
+msgstr ""
+
+msgid "Navigate"
+msgstr ""
+
+msgid "Navigation"
+msgstr ""
+
+msgid "Negative"
+msgstr ""
+
+msgid "Negative first"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "New Article"
+msgstr ""
+
+msgid "New Assignment Rule"
+msgstr ""
+
+msgid "New Assignment Rule Name"
+msgstr ""
+
+msgid "New Business Holiday"
+msgstr ""
+
+msgid "New Call Log"
+msgstr ""
+
+msgid "New Field Dependency"
+msgstr ""
+
+msgid "New Holiday List Name"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "New SLA Policy"
+msgstr ""
+
+msgid "New SLA Policy Name"
+msgstr ""
+
+msgid "New Saved Reply"
+msgstr ""
+
+msgid "New Saved reply Name"
+msgstr ""
+
+msgid "New Subject"
+msgstr ""
+
+msgid "New Team"
+msgstr ""
+
+msgid "New Ticket"
+msgstr ""
+
+#. Description of the 'Default agent status' (Link) field in DocType 'HD
+#. Settings'
+msgid "New agents start on this status, and agents are moved here when the status they are on is disabled."
+msgstr ""
+
+msgid "New and old title cannot be same"
+msgstr ""
+
+msgid "New and updated customers sync automatically between Helpdesk and ERPNext."
+msgstr ""
+
+msgid "New team"
+msgstr ""
+
+msgid "New title is required"
+msgstr ""
+
+msgid "New users will have to be manually registered by system managers."
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Next ticket"
+msgstr ""
+
+msgid "No Answer"
+msgstr ""
+
+msgid "No Data Found"
+msgstr ""
+
+msgid "No Email Account found for {0}"
+msgstr ""
+
+msgid "No Holiday list found"
+msgstr ""
+
+msgid "No SLA found"
+msgstr ""
+
+msgid "No Team"
+msgstr ""
+
+msgid "No actions yet. Add one to update the ticket when this reply is sent"
+msgstr ""
+
+msgid "No active tickets"
+msgstr ""
+
+msgid "No additional comments"
+msgstr ""
+
+msgid "No agents found"
+msgstr ""
+
+msgid "No agents in this team"
+msgstr ""
+
+msgid "No articles found for the applied filters. Try adjusting or clearing your filters."
+msgstr ""
+
+msgid "No articles found in the following category."
+msgstr ""
+
+msgid "No assignment rule found"
+msgstr ""
+
+msgid "No average metrics"
+msgstr ""
+
+msgid "No categories available"
+msgstr ""
+
+msgid "No charts added"
+msgstr ""
+
+msgid "No commands found"
+msgstr ""
+
+msgid "No contacts found"
+msgstr ""
+
+msgid "No contacts found for the applied filters. Try adjusting or clearing your filters."
+msgstr ""
+
+msgid "No contacts to add"
+msgstr ""
+
+msgid "No country found"
+msgstr ""
+
+msgid "No customers found for the applied filters. Try adjusting or clearing your filters."
+msgstr ""
+
+msgid "No email account found"
+msgstr ""
+
+msgid "No feedback"
+msgstr ""
+
+msgid "No feedback yet"
+msgstr ""
+
+msgid "No fields found"
+msgstr ""
+
+msgid "No members found"
+msgstr ""
+
+msgid "No new notifications"
+msgstr ""
+
+msgid "No new tickets assigned to you in the last 7 days"
+msgstr ""
+
+msgid "No one"
+msgstr ""
+
+msgid "No pending tickets"
+msgstr ""
+
+msgid "No reason"
+msgstr ""
+
+msgid "No recent activity"
+msgstr ""
+
+msgid "No recently assigned tickets"
+msgstr ""
+
+msgid "No results"
+msgstr ""
+
+msgid "No results for \"{0}\""
+msgstr ""
+
+msgid "No results found"
+msgstr ""
+
+msgid "No reviews found"
+msgstr ""
+
+msgid "No saved replies found"
+msgstr ""
+
+msgid "No tags yet, type to create one"
+msgstr ""
+
+msgid "No tickets found"
+msgstr ""
+
+msgid "No tickets found for the applied filters. Try adjusting or clearing your filters."
+msgstr ""
+
+msgid "No tickets found for this view. Try adjusting your filters or creating a new view."
+msgstr ""
+
+msgid "No tickets found to preview."
+msgstr ""
+
+msgid "No tickets selected"
+msgstr ""
+
+msgid "No user linked to contact {0}"
+msgstr ""
+
+msgid "No {0} yet"
+msgstr ""
+
+msgid "Not Allowed"
+msgstr ""
+
+msgid "Not Assigned"
+msgstr ""
+
+msgid "Not Saved"
+msgstr ""
+
+msgid "Not Set"
+msgstr ""
+
+msgid "Not Specified"
+msgstr ""
+
+msgid "Not installed"
+msgstr ""
+
+msgid "Not permitted"
+msgstr ""
+
+msgid "Nothing left in {0}"
+msgstr ""
+
+#. Label of a Link in the Helpdesk Workspace
+msgid "Notification Settings"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Notion"
+msgstr ""
+
+msgid "Old Condition"
+msgstr ""
+
+msgid "Old Conditions"
+msgstr ""
+
+#. Label of the on_hold_since (Datetime) field in DocType 'HD Ticket'
+msgid "On Hold Since"
+msgstr ""
+
+msgid "On ticket status"
+msgstr ""
+
+msgid "Once a ticket is raised, customers can only close it, rate it, or edit fields marked 'Editable after creation' in HD Ticket Template."
+msgstr ""
+
+msgid "Only administrators can delete tickets."
+msgstr ""
+
+msgid "Only one default view is allowed per user for {0}"
+msgstr ""
+
+msgid "Only one of Assign Agent or Assign to Me is allowed"
+msgstr ""
+
+msgid "Only the 'color' and 'order' fields of the 'Closed' status can be modified."
+msgstr ""
+
+msgid "Only users with the role of "
+msgstr ""
+
+#. Option for the 'Category' (Select) field in DocType 'HD Ticket Status'
+#. Option in a Select field in the tickets Web Form
+msgid "Open"
+msgstr ""
+
+msgid "Open command palette"
+msgstr ""
+
+msgid "Open comment box"
+msgstr ""
+
+msgid "Open customer"
+msgstr ""
+
+msgid "Open help"
+msgstr ""
+
+msgid "Open in Desk"
+msgstr ""
+
+msgid "Open reply box"
+msgstr ""
+
+msgid "Open settings"
+msgstr ""
+
+#. Description of the 'Category' (Select) field in DocType 'HD Ticket Status'
+msgid ""
+"Open: SLA continues. <br>\n"
+"Paused: SLA is paused. <br>\n"
+"Resolved: SLA timer stops."
+msgstr ""
+
+#. Label of the opening_date (Date) field in DocType 'HD Ticket'
+msgid "Opening Date"
+msgstr ""
+
+#. Label of the opening_time (Time) field in DocType 'HD Ticket'
+msgid "Opening Time"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Orange"
+msgstr ""
+
+#. Label of the order (Int) field in DocType 'HD Ticket Status'
+msgid "Order"
+msgstr ""
+
+#. Label of the order_by_tab (Tab Break) field in DocType 'HD View'
+#. Label of the order_by (Code) field in DocType 'HD View'
+msgid "Order By"
+msgstr ""
+
+msgid "Organization Dashboard"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Outbound Call"
+msgstr ""
+
+msgid "Outgoing"
+msgstr ""
+
+msgid "Outside working hours notice"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Owner"
+msgstr ""
+
+msgid "Page not found"
+msgstr ""
+
+msgid "Parent field"
+msgstr ""
+
+msgid "Parent field, child field, and parent-child mapping are required."
+msgstr ""
+
+#. Option for the 'Customer Type' (Select) field in DocType 'HD Customer'
+msgid "Partnership"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password must be at least 8 characters"
+msgstr ""
+
+msgid "Password must contain lowercase, uppercase, number, and symbol"
+msgstr ""
+
+msgid "Password updated successfully."
+msgstr ""
+
+msgid "Passwords do not match"
+msgstr ""
+
+msgid "Passwords match"
+msgstr ""
+
+#. Option for the 'SLA Status' (Select) field in DocType 'HD Ticket'
+#. Option for the 'Category' (Select) field in DocType 'HD Ticket Status'
+msgid "Paused"
+msgstr ""
+
+msgid "Paused {0} so far"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Pending Invites"
+msgstr ""
+
+msgid "Pending Tickets"
+msgstr ""
+
+msgid "Percentage of total tickets by channel"
+msgstr ""
+
+msgid "Percentage of total tickets by priority"
+msgstr ""
+
+msgid "Percentage of total tickets by team"
+msgstr ""
+
+msgid "Percentage of total tickets by type"
+msgstr ""
+
+msgid "Period"
+msgstr ""
+
+#. Label of the persona_captured (Check) field in DocType 'HD Settings'
+msgid "Persona Captured"
+msgstr ""
+
+#. Option for the 'Scope' (Select) field in DocType 'HD Saved Reply'
+msgid "Personal"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Phone calls"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid "Pick an option"
+msgstr ""
+
+msgid "Pin"
+msgstr ""
+
+msgid "Pin to sidebar"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Pink"
+msgstr ""
+
+#. Label of the pinned (Check) field in DocType 'HD View'
+msgid "Pinned"
+msgstr ""
+
+#. Label of the placeholder (Data) field in DocType 'HD Ticket Template Field'
+msgid "Placeholder"
+msgstr ""
+
+msgid "Please add this priority in the <a href='/app/hd-service-level-agreement'>required SLA documents</a>"
+msgstr ""
+
+msgid "Please apply the actions manually"
+msgstr ""
+
+msgid "Please create a new ticket to proceed with the next step."
+msgstr ""
+
+msgid "Please enter a subject to continue"
+msgstr ""
+
+msgid "Please enter a valid phone number"
+msgstr ""
+
+msgid "Please enter at least one valid email to send an invite."
+msgstr ""
+
+msgid "Please fill all required fields"
+msgstr ""
+
+msgid "Please fix the errors in the form"
+msgstr ""
+
+msgid "Please provide saved_reply_id"
+msgstr ""
+
+msgid "Please select at least one restriction option for teams in the settings."
+msgstr ""
+
+msgid "Please select weekly off day"
+msgstr ""
+
+msgid "Please wait, media is uploading"
+msgstr ""
+
+msgid "Policy name"
+msgstr ""
+
+msgid "Portal"
+msgstr ""
+
+msgid "Positive"
+msgstr ""
+
+msgid "Positive first"
+msgstr ""
+
+#. Label of the prefer_knowledge_base (Check) field in DocType 'HD Settings'
+msgid "Prefer knowledge base"
+msgstr ""
+
+msgid "Preferences"
+msgstr ""
+
+msgid "Preferences updated successfully."
+msgstr ""
+
+msgid "Presets"
+msgstr ""
+
+msgid "Press enter to search"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Previous ticket"
+msgstr ""
+
+msgid "Primary"
+msgstr ""
+
+#. Label of the primary_contact (Link) field in DocType 'HD Customer'
+msgid "Primary Contact"
+msgstr ""
+
+msgid "Primary contact must be one of the listed contacts"
+msgstr ""
+
+msgid "Primary contact updated"
+msgstr ""
+
+#. Label of the priorities (Table) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Priorities"
+msgstr ""
+
+#. Label of the priority (Link) field in DocType 'HD Service Level Priority'
+#. Label of the priority_section (Section Break) field in DocType 'HD Settings'
+#. Label of the priority (Link) field in DocType 'HD Ticket'
+#. Label of the priority (Link) field in DocType 'HD Ticket Type'
+#. Label of a field in the tickets Web Form
+msgid "Priority"
+msgstr ""
+
+msgid "Priority in use"
+msgstr ""
+
+msgid "Priority {0} has been repeated."
+msgstr ""
+
+msgid "Private Views"
+msgstr ""
+
+msgid "Product Experts"
+msgstr ""
+
+msgid "Product experts"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Profile updated successfully."
+msgstr ""
+
+#. Label of the public (Check) field in DocType 'HD View'
+msgid "Public"
+msgstr ""
+
+msgid "Public Views"
+msgstr ""
+
+msgid "Publish"
+msgstr ""
+
+#. Option for the 'Status' (Select) field in DocType 'HD Article'
+msgid "Published"
+msgstr ""
+
+#. Label of the published_on (Datetime) field in DocType 'HD Article'
+msgid "Published On"
+msgstr ""
+
+msgid "Published articles must have content."
+msgstr ""
+
+msgid "Pull Emails"
+msgstr ""
+
+msgid "Pulling emails, this may take a few minutes."
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Purple"
+msgstr ""
+
+msgid "Quarterly"
+msgstr ""
+
+msgid "Queued"
+msgstr ""
+
+#. Label of the raised_by (Data) field in DocType 'HD Ticket'
+msgid "Raised By (Email)"
+msgstr ""
+
+msgid "Range"
+msgstr ""
+
+#. Label of the rank (Int) field in DocType 'HD Service Level Agreement'
+msgid "Rank"
+msgstr ""
+
+#. Title of the email-feedback Web Form
+msgid "Rate Your Support Experience"
+msgstr ""
+
+msgid "Rate this ticket"
+msgstr ""
+
+msgid "Rated Tickets"
+msgstr ""
+
+#. Label of the feedback_rating (Rating) field in DocType 'HD Ticket'
+#. Label of the rating (Rating) field in DocType 'HD Ticket Feedback Option'
+msgid "Rating"
+msgstr ""
+
+msgid "Rating must be between 0.2 and 1.0"
+msgstr ""
+
+msgid "Rating {0} is not allowed"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD Notification'
+msgid "Reaction"
+msgstr ""
+
+#. Label of the reactions (Table) field in DocType 'HD Ticket Comment'
+msgid "Reactions"
+msgstr ""
+
+msgid "Reactions are only supported on ticket comments"
+msgstr ""
+
+#. Label of the read (Check) field in DocType 'HD Notification'
+msgid "Read"
+msgstr ""
+
+msgid "Reason"
+msgstr ""
+
+msgid "Recent"
+msgstr ""
+
+msgid "Recent Tickets"
+msgstr ""
+
+msgid "Recurring Holidays"
+msgstr ""
+
+#. Label of the recurring_holidays (JSON) field in DocType 'HD Service Holiday
+#. List'
+msgid "Recurring holidays"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Red"
+msgstr ""
+
+msgid "Reddit"
+msgstr ""
+
+#. Label of the reference_tab (Tab Break) field in DocType 'HD Ticket'
+msgid "Reference"
+msgstr ""
+
+#. Label of the reference_ticket (Link) field in DocType 'HD Ticket Comment'
+msgid "Reference Ticket"
+msgstr ""
+
+#. Label of the references_tab (Tab Break) field in DocType 'HD Customer'
+#. Label of the references_section (Section Break) field in DocType 'HD
+#. Notification'
+msgid "References"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Regenerate Search Index"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Remove Contact"
+msgstr ""
+
+msgid "Remove Logo"
+msgstr ""
+
+msgid "Remove Photo"
+msgstr ""
+
+msgid "Remove comment"
+msgstr ""
+
+msgid "Remove context"
+msgstr ""
+
+msgid "Remove filter"
+msgstr ""
+
+msgid "Remove image"
+msgstr ""
+
+msgid "Remove primary"
+msgstr ""
+
+msgid "Remove {0}"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename (Ctrl + ⏎)"
+msgstr ""
+
+msgid "Rename (⌘ + ⏎)"
+msgstr ""
+
+msgid "Rename team"
+msgstr ""
+
+msgid "Replace"
+msgstr ""
+
+msgid "Replace filter"
+msgstr ""
+
+msgid "Replace image"
+msgstr ""
+
+msgid "Replace saved reply"
+msgstr ""
+
+msgid "Replace with an icon..."
+msgstr ""
+
+#. Option in a Select field in the tickets Web Form
+msgid "Replied"
+msgstr ""
+
+msgid "Reply"
+msgstr ""
+
+msgid "Reply All"
+msgstr ""
+
+#. Label of the reply_from_agent_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Reply From Agent"
+msgstr ""
+
+#. Label of the reply_from_contact_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Reply From Contact"
+msgstr ""
+
+msgid "Reply from agent"
+msgstr ""
+
+msgid "Reply from contact"
+msgstr ""
+
+msgid "Reply on a ticket"
+msgstr ""
+
+#. Label of the required (Check) field in DocType 'HD Ticket Template Field'
+msgid "Required"
+msgstr ""
+
+msgid "Resend Invite"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Reset Content"
+msgstr ""
+
+msgid "Reset content"
+msgstr ""
+
+msgid "Reset to Default"
+msgstr ""
+
+msgid "Reset to default"
+msgstr ""
+
+#. Label of the resolution_tab (Tab Break) field in DocType 'HD Ticket'
+msgid "Resolution"
+msgstr ""
+
+#. Label of the resolution_by (Datetime) field in DocType 'HD Ticket'
+msgid "Resolution By"
+msgstr ""
+
+#. Label of the resolution_date (Datetime) field in DocType 'HD Ticket'
+msgid "Resolution Date"
+msgstr ""
+
+#. Label of the resolution_details (Text Editor) field in DocType 'HD Ticket'
+msgid "Resolution Details"
+msgstr ""
+
+#. Option for the 'SLA Status' (Select) field in DocType 'HD Ticket'
+msgid "Resolution Due"
+msgstr ""
+
+#. Label of the resolution_failed_by (Duration) field in DocType 'HD Ticket'
+msgid "Resolution Failed By"
+msgstr ""
+
+#. Label of the resolution_time (Duration) field in DocType 'HD Service Level
+#. Priority'
+#. Label of the resolution_time (Duration) field in DocType 'HD Ticket'
+msgid "Resolution Time"
+msgstr ""
+
+msgid "Resolution due"
+msgstr ""
+
+msgid "Resolution overdue"
+msgstr ""
+
+#. Option for the 'Category' (Select) field in DocType 'HD Ticket Status'
+msgid "Resolved"
+msgstr ""
+
+msgid "Resolved late"
+msgstr ""
+
+msgid "Responded late"
+msgstr ""
+
+#. Label of the response_tab (Tab Break) field in DocType 'HD Ticket'
+msgid "Response"
+msgstr ""
+
+#. Label of the response_by (Datetime) field in DocType 'HD Ticket'
+msgid "Response By"
+msgstr ""
+
+msgid "Response Time for {0} priority in row {1} can't be greater than Resolution Time."
+msgstr ""
+
+#. Label of the response_and_resolution_time_section (Section Break) field in
+#. DocType 'HD Service Level Agreement'
+msgid "Response and Resolution"
+msgstr ""
+
+msgid "Response is required"
+msgstr ""
+
+#. Label of the assign_within_team (Check) field in DocType 'HD Settings'
+msgid "Restrict agent assignment to selected Team"
+msgstr ""
+
+msgid "Restrict agent assignment to selected team"
+msgstr ""
+
+#. Label of the restrict_tickets_by_agent_group (Check) field in DocType 'HD
+#. Settings'
+msgid "Restrict tickets by Team"
+msgstr ""
+
+msgid "Restrict tickets by team"
+msgstr ""
+
+msgid "Restrict tickets to be viewed and managed by team members only."
+msgstr ""
+
+msgid "Restrict visibility to these teams"
+msgstr ""
+
+msgid "Retry"
+msgstr ""
+
+msgid "Reviews"
+msgstr ""
+
+msgid "Revoke Invite"
+msgstr ""
+
+msgid "Revoke Manager Access"
+msgstr ""
+
+msgid "Ringing"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Role updated successfully"
+msgstr ""
+
+#. Label of the route_name (Data) field in DocType 'HD View'
+msgid "Route Name"
+msgstr ""
+
+msgid "Row actions"
+msgstr ""
+
+#. Label of the rows (Code) field in DocType 'HD View'
+msgid "Rows"
+msgstr ""
+
+msgid "Run an initial sync to reconcile existing records. New ones update automatically."
+msgstr ""
+
+#. Label of the sla (Link) field in DocType 'HD Ticket'
+#. Label of the sla_tab (Tab Break) field in DocType 'HD Ticket'
+msgid "SLA"
+msgstr ""
+
+msgid "SLA Alerts"
+msgstr ""
+
+#. Label of the service_level_agreement_creation (Datetime) field in DocType
+#. 'HD Ticket'
+msgid "SLA Creation"
+msgstr ""
+
+#. Label of the sla_mapping_section (Section Break) field in DocType 'HD Ticket
+#. Status'
+msgid "SLA Mapping"
+msgstr ""
+
+#. Label of the agreement_status (Select) field in DocType 'HD Ticket'
+msgid "SLA Status"
+msgstr ""
+
+msgid "SLA changed"
+msgstr ""
+
+msgid "SLA disabled"
+msgstr ""
+
+msgid "SLA met"
+msgstr ""
+
+msgid "SLA missed"
+msgstr ""
+
+msgid "SLA missed / longest wait"
+msgstr ""
+
+msgid "SLA paused"
+msgstr ""
+
+msgid "SLA policy created successfully."
+msgstr ""
+
+msgid "SLA policy deleted successfully."
+msgstr ""
+
+msgid "SLA policy duplicated successfully."
+msgstr ""
+
+msgid "SLA policy status updated successfully."
+msgstr ""
+
+msgid "SLA policy updated successfully."
+msgstr ""
+
+msgid "SLAs align your team and customers with defined timelines for a reliable experience. Learn more about SLA "
+msgstr ""
+
+msgid "Salesforce Service Cloud"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Saturday"
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+msgid "Saved Replies"
+msgstr ""
+
+msgid "Saved Views"
+msgstr ""
+
+msgid "Saved replies"
+msgstr ""
+
+msgid "Saved reply deleted successfully."
+msgstr ""
+
+msgid "Saved reply duplicated successfully."
+msgstr ""
+
+msgid "Saved reply saved successfully."
+msgstr ""
+
+msgid "Saved reply updated successfully."
+msgstr ""
+
+msgid "Scaling support as we grow"
+msgstr ""
+
+msgid "Schedule name"
+msgstr ""
+
+#. Label of the scope (Select) field in DocType 'HD Saved Reply'
+msgid "Scope"
+msgstr ""
+
+#. Label of the script (Code) field in DocType 'HD Form Script'
+msgid "Script"
+msgstr ""
+
+#. Label of the search_tab (Tab Break) field in DocType 'HD Settings'
+msgid "Search"
+msgstr ""
+
+msgid "Search Index Regenerated"
+msgstr ""
+
+msgid "Search Score"
+msgstr ""
+
+msgid "Search agents..."
+msgstr ""
+
+msgid "Search by ID or Subject"
+msgstr ""
+
+msgid "Search commands"
+msgstr ""
+
+msgid "Search commands for {0}"
+msgstr ""
+
+msgid "Search country"
+msgstr ""
+
+msgid "Search fields..."
+msgstr ""
+
+msgid "Search index does not exist. Please build the index first."
+msgstr ""
+
+msgid "Search index not available. Build it by running helpdesk.search_sqlite.build_index."
+msgstr ""
+
+msgid "Search is temporarily unavailable. Please try again later."
+msgstr ""
+
+msgid "Search or create tags"
+msgstr ""
+
+msgid "Search query must be at least 2 characters"
+msgstr ""
+
+msgid "Search ticket"
+msgstr ""
+
+msgid "Search tickets or type a command…"
+msgstr ""
+
+msgid "Search tickets, comments, and communications..."
+msgstr ""
+
+msgid "Search..."
+msgstr ""
+
+msgid "Searched for:"
+msgstr ""
+
+msgid "Searching..."
+msgstr ""
+
+msgid "Searching…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "See all {0} tickets"
+msgstr ""
+
+msgid "See how"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Select Category"
+msgstr ""
+
+msgid "Select Child Field values"
+msgstr ""
+
+msgid "Select Customer"
+msgstr ""
+
+msgid "Select Ticket"
+msgstr ""
+
+msgid "Select a Default Priority."
+msgstr ""
+
+msgid "Select a field"
+msgstr ""
+
+msgid "Select a rating"
+msgstr ""
+
+msgid "Select action"
+msgstr ""
+
+msgid "Select agents"
+msgstr ""
+
+msgid "Select an icon..."
+msgstr ""
+
+msgid "Select country"
+msgstr ""
+
+msgid "Select language"
+msgstr ""
+
+msgid "Select range"
+msgstr ""
+
+msgid "Select tags"
+msgstr ""
+
+msgid "Select team size"
+msgstr ""
+
+msgid "Select teams"
+msgstr ""
+
+msgid "Select ticket to preview"
+msgstr ""
+
+msgid "Select timezone"
+msgstr ""
+
+msgid "Select what type all tickets get by default."
+msgstr ""
+
+msgid "Select your weekly off day"
+msgstr ""
+
+msgid "Select {0}"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Send Invites"
+msgstr ""
+
+msgid "Send Reply"
+msgstr ""
+
+#. Label of the send_email_feedback_on_status (Link) field in DocType 'HD
+#. Settings'
+msgid "Send feedback when"
+msgstr ""
+
+msgid "Send reset password email"
+msgstr ""
+
+msgid "Send to {0} tickets"
+msgstr ""
+
+msgid "Sent to all of the agents assigned to the ticket whenever a contact has replied."
+msgstr ""
+
+msgid "Sent to all of the recipients associated with the ticket whenever an agent has replied."
+msgstr ""
+
+msgid "Sent to the user right after creating an email ticket."
+msgstr ""
+
+msgid "Sent to the user who has raised the ticket after the ticket is closed or resolved."
+msgstr ""
+
+msgid "Service Level Agreement"
+msgstr ""
+
+msgid "Service Level Agreements (SLAs)"
+msgstr ""
+
+#. Label of the service_level (Data) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Service Level Name"
+msgstr ""
+
+msgid "Service not supported"
+msgstr ""
+
+msgid "Set"
+msgstr ""
+
+msgid "Set Assignee"
+msgstr ""
+
+msgid "Set Phone Number"
+msgstr ""
+
+msgid "Set Primary Contact"
+msgstr ""
+
+msgid "Set Resolution Time for Priority {0} in row {1}."
+msgstr ""
+
+msgid "Set Response Time for Priority {0} in row {1}."
+msgstr ""
+
+msgid "Set a default agent status in HD Settings."
+msgstr ""
+
+msgid "Set as Primary"
+msgstr ""
+
+msgid "Set as default SLA"
+msgstr ""
+
+msgid "Set as primary"
+msgstr ""
+
+#. Description of the 'Persona Captured' (Check) field in DocType 'HD Settings'
+msgid "Set once an admin completes the onboarding persona questionnaire"
+msgstr ""
+
+msgid "Set status"
+msgstr ""
+
+msgid "Set the default status assigned when a ticket is created, and the status to apply when a ticket is reopened. If not specified, the default status from HD Settings will be used."
+msgstr ""
+
+msgid "Set up a customer portal"
+msgstr ""
+
+msgid "Set working days, hours, and holidays by selecting a predefined schedule or creating a new one."
+msgstr ""
+
+msgid "Set your availability so your team knows when you're reachable."
+msgstr ""
+
+msgid "Set your team’s working days, hours, and holidays using a template or custom schedule."
+msgstr ""
+
+msgid "Setting <strong>{0}</strong> as the default SLA removes <strong>{1}</strong> as the default SLA. You’ll need to add a condition in <strong>{1}</strong> for the SLA to work."
+msgstr ""
+
+msgid "Setting up"
+msgstr ""
+
+#. Label of the column_break_feto (Column Break) field in DocType 'HD Team'
+msgid "Settings"
+msgstr ""
+
+msgid "Settings updated"
+msgstr ""
+
+msgid "Settings updated successfully."
+msgstr ""
+
+#. Label of the setup_section (Section Break) field in DocType 'HD Settings'
+msgid "Setup"
+msgstr ""
+
+msgid "Setup Email"
+msgstr ""
+
+msgid "Setup SLA"
+msgstr ""
+
+msgid "Share"
+msgstr ""
+
+#. Label of the share_feedback_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Share Feedback"
+msgstr ""
+
+msgid "Share feedback"
+msgstr ""
+
+msgid "Shared email inbox (Gmail, Outlook, etc.)"
+msgstr ""
+
+msgid "Shortcuts"
+msgstr ""
+
+#. Label of the show_customer_portal_permission_notice (Check) field in DocType
+#. 'HD Settings'
+msgid "Show Customer Portal Permission Notice"
+msgstr ""
+
+#. Label of the show_ticket_field_permission_notice (Check) field in DocType
+#. 'HD Settings'
+msgid "Show Ticket Field Permission Notice"
+msgstr ""
+
+msgid "Show actions"
+msgstr ""
+
+#. Label of the different_view (Check) field in DocType 'HD Ticket Status'
+msgid "Show end users a different view"
+msgstr ""
+
+msgid "Show keyboard shortcuts"
+msgstr ""
+
+msgid "Show less"
+msgstr ""
+
+msgid "Show more"
+msgstr ""
+
+msgid "Showing {0} of {1} {2}"
+msgstr ""
+
+msgid "Signature"
+msgstr ""
+
+msgid "Similar Tickets"
+msgstr ""
+
+#. Description of the 'Condition' (Code) field in DocType 'HD Service Level
+#. Agreement'
+msgid "Simple Python Expression, Example: doc.status == 'Open' and doc.ticket_type == 'Bug'"
+msgstr ""
+
+#. Label of the skip_email_workflow (Check) field in DocType 'HD Settings'
+msgid "Skip e-mail workflow"
+msgstr ""
+
+msgid "Skip email workflow"
+msgstr ""
+
+msgid "Skip for now"
+msgstr ""
+
+msgid "Skipped {0} saved reply action(s) that are no longer valid"
+msgstr ""
+
+msgid "Social media"
+msgstr ""
+
+msgid "Some error occurred while renaming assignment rule"
+msgstr ""
+
+msgid "Some error occurred while renaming holiday list"
+msgstr ""
+
+msgid "Some error occurred while renaming saved reply"
+msgstr ""
+
+msgid "Some error occurred while updating assignment rule"
+msgstr ""
+
+msgid "Some error occurred while updating holiday list"
+msgstr ""
+
+msgid "Some fields are now hidden from customers"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Source and target category cannot be same"
+msgstr ""
+
+msgid "Source and target ticket cannot be same"
+msgstr ""
+
+msgid "Source ticket does not exist"
+msgstr ""
+
+msgid "Split Ticket"
+msgstr ""
+
+#. Label of the split_and_merge_section (Section Break) field in DocType 'HD
+#. Ticket'
+msgid "Split and Merge"
+msgstr ""
+
+msgid "Spreadsheets"
+msgstr ""
+
+msgid "Standard Form Scripts can't be modified, duplicate the script instead."
+msgstr ""
+
+msgid "Standard Views cannot be deleted."
+msgstr ""
+
+#. Label of the start_date (Date) field in DocType 'HD Service Level Agreement'
+msgid "Start Date"
+msgstr ""
+
+#. Label of the start_time (Time) field in DocType 'HD Service Day'
+msgid "Start Time"
+msgstr ""
+
+msgid "Start Time can't be greater than or equal to End Time in row <u>{0}</u>."
+msgstr ""
+
+#. Label of the status (Select) field in DocType 'HD Article'
+#. Label of the status_section (Section Break) field in DocType 'HD Settings'
+#. Label of the status (Link) field in DocType 'HD Ticket'
+#. Label of a field in the tickets Web Form
+msgid "Status"
+msgstr ""
+
+#. Label of the auto_close_status (Link) field in DocType 'HD Settings'
+msgid "Status "
+msgstr ""
+
+#. Label of the status_category (Data) field in DocType 'HD Ticket'
+msgid "Status Category"
+msgstr ""
+
+#. Label of the status_details (Section Break) field in DocType 'HD Service
+#. Level Agreement'
+msgid "Status Details"
+msgstr ""
+
+#. Label of the status_order (Int) field in DocType 'HD Agent Status'
+msgid "Status Order"
+msgstr ""
+
+msgid "Status is required"
+msgstr ""
+
+#. Description of the 'Ticket Reopen status' (Link) field in DocType 'HD
+#. Service Level Agreement'
+msgid ""
+"Status of the ticket, when a customer replies on the ticket with this SLA.\n"
+"\n"
+"If not selected, the value will be takes from HD Settings DocType."
+msgstr ""
+
+#. Description of the 'Ticket Reopen status' (Link) field in DocType 'HD
+#. Settings'
+msgid "Status of the ticket, when a customer replies on the ticket."
+msgstr ""
+
+#. Description of the 'Default Ticket Status' (Link) field in DocType 'HD
+#. Service Level Agreement'
+msgid ""
+"Status of the ticket, when it is created in the system with this SLA.\n"
+"If not selected, the value will be taken from HD Settings DocType"
+msgstr ""
+
+#. Description of the 'Default ticket status' (Link) field in DocType 'HD
+#. Settings'
+msgid "Status of the ticket, when it is created in the system."
+msgstr ""
+
+#. Label of the subject (Data) field in DocType 'HD Ticket'
+#. Label of a field in the tickets Web Form
+msgid "Subject"
+msgstr ""
+
+#. Label of the subject_weight (Int) field in DocType 'HD Settings'
+msgid "Subject Weight"
+msgstr ""
+
+msgid "Subject is required"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+#. Label of the summary (Text Editor) field in DocType 'HD Ticket'
+msgid "Summary"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Sunday"
+msgstr ""
+
+msgid "Support"
+msgstr ""
+
+#. Name of a report
+msgid "Support Hour Distribution"
+msgstr ""
+
+#. Label of a Link in the Helpdesk Workspace
+msgid "Support Policy"
+msgstr ""
+
+#. Name of a role
+msgid "Support Team"
+msgstr ""
+
+msgid "Support portal"
+msgstr ""
+
+msgid "Switch between light, dark, or system theme"
+msgstr ""
+
+msgid "Switch between outgoing email accounts when sending emails from your configured accounts."
+msgstr ""
+
+msgid "Sync Customers"
+msgstr ""
+
+msgid "Sync all customers between ERPNext and Helpdesk? The sync runs in the background and can take a few minutes depending on the number of customers."
+msgstr ""
+
+msgid "Sync completed successfully"
+msgstr ""
+
+msgid "Sync customers between Helpdesk and ERPNext."
+msgstr ""
+
+msgid "Sync now"
+msgstr ""
+
+msgid "Sync started"
+msgstr ""
+
+msgid "Sync your existing customers"
+msgstr ""
+
+msgid "Syncing…"
+msgstr ""
+
+#. Label of the synonyms (Table) field in DocType 'HD Synonyms'
+msgid "Synonyms"
+msgstr ""
+
+#. Label of the is_system (Check) field in DocType 'HD Ticket Type'
+msgid "System"
+msgstr ""
+
+#. Name of a role
+msgid "System Manager"
+msgstr ""
+
+msgid "System types can not be deleted"
+msgstr ""
+
+msgid "Tag"
+msgstr ""
+
+msgid "Tag Trend"
+msgstr ""
+
+msgid "Tag cannot contain commas"
+msgstr ""
+
+msgid "Tag label is required"
+msgstr ""
+
+msgid "Tag {0} cannot be both added and removed"
+msgstr ""
+
+msgid "Tampered Access"
+msgstr ""
+
+msgid "Target ticket does not exist"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Teal"
+msgstr ""
+
+#. Option for the 'Scope' (Select) field in DocType 'HD Saved Reply'
+#. Label of the team (Link) field in DocType 'HD Saved Reply Team'
+#. Label of the agent_group (Link) field in DocType 'HD Ticket'
+#. Label of a Link in the Helpdesk Workspace
+msgid "Team"
+msgstr ""
+
+msgid "Team Name"
+msgstr ""
+
+#. Label of the agent_groups_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Team Restrictions"
+msgstr ""
+
+msgid "Team can now access all tickets."
+msgstr ""
+
+msgid "Team changed"
+msgstr ""
+
+msgid "Team created"
+msgstr ""
+
+msgid "Team created successfully."
+msgstr ""
+
+msgid "Team deleted successfully."
+msgstr ""
+
+msgid "Team disabled successfully."
+msgstr ""
+
+msgid "Team enabled successfully."
+msgstr ""
+
+msgid "Team name"
+msgstr ""
+
+msgid "Team renamed successfully."
+msgstr ""
+
+msgid "Team will only see their own tickets."
+msgstr ""
+
+#. Label of the teams (Table MultiSelect) field in DocType 'HD Saved Reply'
+msgid "Teams"
+msgstr ""
+
+msgid "Telephony"
+msgstr ""
+
+msgid "Tell us about your organization"
+msgstr ""
+
+msgid "Tell us more"
+msgstr ""
+
+#. Label of the template (Link) field in DocType 'HD Ticket'
+msgid "Template"
+msgstr ""
+
+#. Label of the template_name (Data) field in DocType 'HD Ticket Template'
+msgid "Template Name"
+msgstr ""
+
+msgid "The 'Closed' status cannot be renamed."
+msgstr ""
+
+msgid "The Assign Condition JSON '{0}' is invalid: </br> {1}"
+msgstr ""
+
+msgid "The Unassign Condition JSON '{0}' is invalid: </br> {1}"
+msgstr ""
+
+msgid "The assignment condition '{0}' is invalid: {1}"
+msgstr ""
+
+msgid "The assignment condition json '{0}' is invalid: {1}"
+msgstr ""
+
+msgid "The contact {0} is linked to multiple customers. Please select the customer manually."
+msgstr ""
+
+msgid "The default agent status must be enabled."
+msgstr ""
+
+msgid "The feedback dialog will be shown, when a user tries to close a ticket from the customer portal."
+msgstr ""
+
+msgid "The holiday on {0} is not between From Date and To Date"
+msgstr ""
+
+msgid "The number of days must be 1 or more"
+msgstr ""
+
+msgid "The selected customer {0} is not linked to the contact {1}.Please select a valid customer or update the contact's linked customers."
+msgstr ""
+
+msgid "The status for sending feedback must be of <u>Resolved</u> category."
+msgstr ""
+
+msgid "The ticket status will automatically change whenever the agent respond to a ticket."
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
+msgid "There are no categories published at the moment."
+msgstr ""
+
+msgid "There should be at least 1 assignment rule for ticket"
+msgstr ""
+
+msgid "They'll get access to tickets raised by everyone in the organisation."
+msgstr ""
+
+msgid "They'll only see their own tickets going forward."
+msgstr ""
+
+msgid "This Assignment Rule is linked to the Team {0}.</br> User {1} is added in the Assignment Rule but not in the linked Team. Please add the user in the {2} to ensure proper team structure."
+msgstr ""
+
+msgid "This action is irreversible."
+msgstr ""
+
+msgid "This contact will become the primary point of contact and will be able to view tickets raised by all other contacts in the organisation."
+msgstr ""
+
+msgid "This date is calculated based on configured SLAs, working hours, and holidays."
+msgstr ""
+
+#. Description of a DocType
+msgid "This doctype will be deprecated in the future"
+msgstr ""
+
+#. Description of the 'Instantly send e-mail' (Check) field in DocType 'HD
+#. Settings'
+msgid "This field is used to send an email instantly without adding it into the queue. If this field is checked, the email will be sent immediately after clicking the \"Send\" button, instead of being added to the email queue for later processing."
+msgstr ""
+
+#. Description of the 'Skip e-mail workflow' (Check) field in DocType 'HD
+#. Settings'
+msgid "This field is used to skip email-related workflows for tickets. If this field is checked, no emails will be sent related to tickets, such as new ticket creation, status updates, or notifications."
+msgstr ""
+
+msgid "This helps us personalize your Helpdesk experience."
+msgstr ""
+
+msgid "This method is only meant for developer mode"
+msgstr ""
+
+msgid "This ticket (#{0}) has been merged with ticket <a href = '/helpdesk/tickets/{1}'>#{1}</a>."
+msgstr ""
+
+msgid "This ticket has been split to a new ticket. Please follow up on ticket <a href={0}>#{1}</a>."
+msgstr ""
+
+msgid "This view is public. Changes made will be visible to everyone."
+msgstr ""
+
+msgid "This will reset the content to the default message."
+msgstr ""
+
+msgid "Through a support portal"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Thursday"
+msgstr ""
+
+#. Label of the ticket (Link) field in DocType 'HD Email Feedback'
+#. Label of the reference_ticket (Link) field in DocType 'HD Notification'
+#. Label of the ticket_tab (Tab Break) field in DocType 'HD Settings'
+#. Title of the tickets Web Form
+msgid "Ticket"
+msgstr ""
+
+msgid "Ticket #{0} is already merged"
+msgstr ""
+
+msgid "Ticket #{0}: We've received your request"
+msgstr ""
+
+#. Name of a report
+#. Label of a Link in the Helpdesk Workspace
+msgid "Ticket Analytics"
+msgstr ""
+
+#. Label of a Card Break in the Helpdesk Workspace
+msgid "Ticket Configuration"
+msgstr ""
+
+msgid "Ticket ID"
+msgstr ""
+
+msgid "Ticket Management"
+msgstr ""
+
+#. Label of the is_merged (Check) field in DocType 'HD Ticket'
+msgid "Ticket Merged"
+msgstr ""
+
+msgid "Ticket Not Found"
+msgstr ""
+
+msgid "Ticket Priority"
+msgstr ""
+
+#. Label of the ticket_reopen_status (Link) field in DocType 'HD Service Level
+#. Agreement'
+#. Label of the ticket_reopen_status (Link) field in DocType 'HD Settings'
+msgid "Ticket Reopen status"
+msgstr ""
+
+#. Label of the ticket_routing_section (Section Break) field in DocType 'HD
+#. Settings'
+msgid "Ticket Routing"
+msgstr ""
+
+msgid "Ticket Settings"
+msgstr ""
+
+#. Label of the ticket_split_from (Link) field in DocType 'HD Ticket'
+msgid "Ticket Split From"
+msgstr ""
+
+msgid "Ticket Subject"
+msgstr ""
+
+#. Name of a report
+#. Label of a Link in the Helpdesk Workspace
+msgid "Ticket Summary"
+msgstr ""
+
+msgid "Ticket Timeline"
+msgstr ""
+
+msgid "Ticket Trend"
+msgstr ""
+
+#. Label of the ticket_type_section (Section Break) field in DocType 'HD
+#. Settings'
+#. Label of the ticket_type (Link) field in DocType 'HD Ticket'
+#. Label of a Link in the Helpdesk Workspace
+msgid "Ticket Type"
+msgstr ""
+
+msgid "Ticket closed successfully."
+msgstr ""
+
+msgid "Ticket deleted successfully."
+msgstr ""
+
+msgid "Ticket does not exist."
+msgstr ""
+
+msgid "Ticket fields have changed"
+msgstr ""
+
+msgid "Ticket fields update"
+msgstr ""
+
+msgid "Ticket form successfully updated"
+msgstr ""
+
+msgid "Ticket merged successfully."
+msgstr ""
+
+msgid "Ticket must be resolved with a feedback"
+msgstr ""
+
+msgid "Ticket not found"
+msgstr ""
+
+msgid "Ticket not found for the provided key."
+msgstr ""
+
+msgid "Ticket not found."
+msgstr ""
+
+#. Label of the raised_outside_working_hours (Check) field in DocType 'HD
+#. Ticket'
+msgid "Ticket raised outside working hours"
+msgstr ""
+
+msgid "Ticket split successfully."
+msgstr ""
+
+msgid "Ticket status"
+msgstr ""
+
+msgid "Ticket to merged with is required"
+msgstr ""
+
+msgid "Ticket updated successfully."
+msgstr ""
+
+msgid "Ticket {0} not found."
+msgstr ""
+
+#. Name of a report
+msgid "Ticket-Search Analysis"
+msgstr ""
+
+msgid "Tickets"
+msgstr ""
+
+msgid "Tickets approaching or breached SLA"
+msgstr ""
+
+msgid "Tickets assigned to you in the last 7 days"
+msgstr ""
+
+msgid "Tickets by Channel"
+msgstr ""
+
+msgid "Tickets by Priority"
+msgstr ""
+
+msgid "Tickets by Team"
+msgstr ""
+
+msgid "Tickets by Type"
+msgstr ""
+
+msgid "Tickets can only be assigned to agents"
+msgstr ""
+
+msgid "Tickets must meet the following conditions:"
+msgstr ""
+
+msgid "Tickets recently raised by this contact/customer"
+msgstr ""
+
+msgid "Tickets that are awaiting your response"
+msgstr ""
+
+msgid "Tickets with similar queries"
+msgstr ""
+
+msgid "Tickets you act on will show up here"
+msgstr ""
+
+msgid "Time on hold with the SLA clock paused"
+msgstr ""
+
+msgid "Timezone"
+msgstr ""
+
+#. Label of the title (Data) field in DocType 'HD Article'
+#. Label of the title (Data) field in DocType 'HD Saved Reply'
+msgid "Title"
+msgstr ""
+
+#. Label of the title_slug (Data) field in DocType 'HD Article'
+msgid "Title Slug"
+msgstr ""
+
+msgid "Title is required"
+msgstr ""
+
+#. Label of the user_to (Link) field in DocType 'HD Notification'
+msgid "To"
+msgstr ""
+
+#. Label of the to_date (Date) field in DocType 'HD Service Holiday List'
+msgid "To Date"
+msgstr ""
+
+msgid "To Date cannot be before From Date"
+msgstr ""
+
+msgid "To date"
+msgstr ""
+
+msgid "To is required"
+msgstr ""
+
+msgid "To know more about setting up email accounts, click"
+msgstr ""
+
+msgid "Today"
+msgstr ""
+
+msgid "Toggle theme"
+msgstr ""
+
+msgid "Top Result"
+msgstr ""
+
+msgid "Top Tags"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+#. Label of the total_hold_time (Duration) field in DocType 'HD Ticket'
+msgid "Total Hold Time"
+msgstr ""
+
+#. Label of the total_holidays (Int) field in DocType 'HD Service Holiday List'
+msgid "Total Holidays"
+msgstr ""
+
+msgid "Total Ticket"
+msgstr ""
+
+msgid "Total hold time"
+msgstr ""
+
+msgid "Total number of tickets created"
+msgstr ""
+
+msgid "Total tickets by priority"
+msgstr ""
+
+msgid "Total tickets by team"
+msgstr ""
+
+msgid "Total tickets by type"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Tuesday"
+msgstr ""
+
+#. Label of the type (Select) field in DocType 'HD Field Layout'
+#. Label of the notification_type (Select) field in DocType 'HD Notification'
+#. Label of the type (Select) field in DocType 'HD View'
+msgid "Type"
+msgstr ""
+
+msgid "Type a message"
+msgstr ""
+
+msgid "Type an email address"
+msgstr ""
+
+msgid "Type is required"
+msgstr ""
+
+#. Label of the url_method (Data) field in DocType 'HD Ticket Template Field'
+msgid "URL/Method"
+msgstr ""
+
+msgid "Unable to send email. Please setup default outgoing email account."
+msgstr ""
+
+msgid "Unassignment Condition"
+msgstr ""
+
+msgid "Unauthorized Access"
+msgstr ""
+
+msgid "Unauthorized access."
+msgstr ""
+
+#. Option for the 'Category' (Select) field in DocType 'HD Agent Status'
+msgid "Unavailable"
+msgstr ""
+
+msgid "Understanding ticket view"
+msgstr ""
+
+msgid "Unknown banner {0}"
+msgstr ""
+
+msgid "Unpin"
+msgstr ""
+
+msgid "Unpublish"
+msgstr ""
+
+msgid "Unsaved"
+msgstr ""
+
+msgid "Unsupported doctype '{0}' for ticket stats."
+msgstr ""
+
+msgid "Untitled"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Update Account"
+msgstr ""
+
+#. Label of the update_status_to (Link) field in DocType 'HD Settings'
+msgid "Update status to"
+msgstr ""
+
+msgid "Update {0} tickets"
+msgstr ""
+
+msgid "Updated {0} of {1} tickets"
+msgstr ""
+
+msgid "Updated {0} tickets"
+msgstr ""
+
+msgid "Updating {0} tickets…"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload Photo"
+msgstr ""
+
+msgid "Upload an image in PNG or JPG format"
+msgstr ""
+
+msgid "Upload image"
+msgstr ""
+
+msgid "Uploading {0}%"
+msgstr ""
+
+#. Option for the 'Level' (Select) field in DocType 'HD Ticket Priority'
+msgid "Urgent"
+msgstr ""
+
+#. Label of the user (Link) field in DocType 'HD Agent'
+#. Label of the user (Link) field in DocType 'HD Article Feedback'
+#. Label of the user (Data) field in DocType 'HD Comment Reaction'
+#. Label of the user (Link) field in DocType 'HD Field Layout'
+#. Label of the user (Link) field in DocType 'HD Team Member'
+#. Label of the user (Link) field in DocType 'HD View'
+msgid "User"
+msgstr ""
+
+#. Label of the user_resolution_time (Duration) field in DocType 'HD Ticket'
+msgid "User Resolution Time"
+msgstr ""
+
+msgid "User Reviews"
+msgstr ""
+
+msgid "User Signup"
+msgstr ""
+
+#. Label of the users (Table MultiSelect) field in DocType 'HD Team'
+msgid "Users"
+msgstr ""
+
+#. Label of the agreement_details_section (Section Break) field in DocType 'HD
+#. Service Level Agreement'
+msgid "Valid From"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Values can't be empty"
+msgstr ""
+
+#. Label of the via_customer_portal (Check) field in DocType 'HD Ticket'
+#. Label of a field in the tickets Web Form
+msgid "Via Customer Portal"
+msgstr ""
+
+msgid "Via WhatsApp"
+msgstr ""
+
+msgid "Via email"
+msgstr ""
+
+msgid "View Assignment rule"
+msgstr ""
+
+msgid "Viewed"
+msgstr ""
+
+#. Label of the views (Int) field in DocType 'HD Article'
+msgid "Views"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Violet"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+#. Label of the visible_to (Select) field in DocType 'HD Ticket Template Field'
+msgid "Visible to"
+msgstr ""
+
+msgid "Visible to your team only, never sent to the customer."
+msgstr ""
+
+msgid "Was this article Helpful?"
+msgstr ""
+
+msgid "We don't use any helpdesk yet"
+msgstr ""
+
+msgid "We have changed how customer portal permissions work"
+msgstr ""
+
+msgid "Web form"
+msgstr ""
+
+#. Option for the 'Workday' (Select) field in DocType 'HD Service Day'
+#. Option for the 'Weekly Off' (Select) field in DocType 'HD Service Holiday
+#. List'
+msgid "Wednesday"
+msgstr ""
+
+msgid "Weekly"
+msgstr ""
+
+#. Label of the weekly_off (Check) field in DocType 'HD Holiday'
+#. Label of the weekly_off (Select) field in DocType 'HD Service Holiday List'
+msgid "Weekly Off"
+msgstr ""
+
+msgid "Welcome to Pramaan Helpdesk"
+msgstr ""
+
+msgid "What changed:"
+msgstr ""
+
+msgid "What do you currently use to manage customer support?"
+msgstr ""
+
+msgid "What is your organization's name?"
+msgstr ""
+
+msgid "What makes support hard right now?"
+msgstr ""
+
+msgid "What would you like to do first in Pramaan Helpdesk?"
+msgstr ""
+
+msgid "What's your biggest support challenge today?"
+msgstr ""
+
+msgid "WhatsApp"
+msgstr ""
+
+#. Description of the 'Auto update status' (Check) field in DocType 'HD
+#. Settings'
+msgid "When enabled, the ticket status will automatically change to the status selected below whenever the agent responds to a ticket.\n"
+msgstr ""
+
+msgid "When more than one policy matches, the lower rank is applied first. 0 means unranked, and is applied last."
+msgstr ""
+
+msgid "Where did you hear about us?"
+msgstr ""
+
+msgid "Which channel do they use?"
+msgstr ""
+
+msgid "Which tool does your team use?"
+msgstr ""
+
+#. Label of the word (Data) field in DocType 'HD Stopword'
+#. Label of the word (Data) field in DocType 'HD Synonyms'
+msgid "Word"
+msgstr ""
+
+msgid "Work Schedule and Holidays"
+msgstr ""
+
+#. Label of the workday (Select) field in DocType 'HD Service Day'
+msgid "Workday"
+msgstr ""
+
+msgid "Workday added successfully."
+msgstr ""
+
+msgid "Workday updated successfully."
+msgstr ""
+
+msgid "Workday {0} has been repeated."
+msgstr ""
+
+#. Label of the workflow_tab (Tab Break) field in DocType 'HD Settings'
+msgid "Workflow"
+msgstr ""
+
+msgid "Workflow & Knowledge Base Settings"
+msgstr ""
+
+#. Label of the support_and_resolution_section_break (Section Break) field in
+#. DocType 'HD Service Level Agreement'
+#. Label of the support_and_resolution (Table) field in DocType 'HD Service
+#. Level Agreement'
+msgid "Working Hours"
+msgstr ""
+
+msgid "Write your article here..."
+msgstr ""
+
+msgid "Write your email signature here."
+msgstr ""
+
+msgid "Write your reply..."
+msgstr ""
+
+msgid "X (Twitter)"
+msgstr ""
+
+msgid "Yearly"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+#. Option for the 'Color' (Select) field in DocType 'HD Ticket Status'
+msgid "Yellow"
+msgstr ""
+
+msgid "You are not allowed to view another agent's stats."
+msgstr ""
+
+msgid "You are not allowed to view this dashboard data."
+msgstr ""
+
+msgid "You are not permitted to access this resource."
+msgstr ""
+
+msgid "You are not permitted to add a comment"
+msgstr ""
+
+msgid "You are not permitted to reply as an agent"
+msgstr ""
+
+msgid "You are now offline."
+msgstr ""
+
+msgid "You are now online."
+msgstr ""
+
+msgid "You can change the default calling medium from the settings"
+msgstr ""
+
+msgid "You can only raise tickets for your own contact."
+msgstr ""
+
+msgid "You cannot change {0} after the ticket is raised"
+msgstr ""
+
+msgid "You cannot set more than one Default Priority."
+msgstr ""
+
+msgid "You do not have permission to access Assignment Rules"
+msgstr ""
+
+msgid "You do not have permission to access this resource"
+msgstr ""
+
+msgid "You do not have permission to change {0}"
+msgstr ""
+
+msgid "You do not have permission to update contacts"
+msgstr ""
+
+msgid "You don't have access to this ticket, or it no longer exists."
+msgstr ""
+
+msgid "You don't have permission to view this page, or it no longer exists."
+msgstr ""
+
+msgid "You have already provided feedback for this ticket."
+msgstr ""
+
+msgid "You won't see this notice again."
+msgstr ""
+
+msgid "YouTube"
+msgstr ""
+
+msgid "Your old conditions will be overwritten. Are you sure you want to save?"
+msgstr ""
+
+msgid "Your performance is"
+msgstr ""
+
+msgid "Zendesk"
+msgstr ""
+
+msgid "Zoho Desk"
+msgstr ""
+
+msgid "actions must be a list of objects"
+msgstr ""
+
+msgid "active ticket"
+msgstr ""
+
+msgid "active tickets"
+msgstr ""
+
+msgid "assignees"
+msgstr ""
+
+msgid "average"
+msgstr ""
+
+msgid "back to email event list"
+msgstr ""
+
+msgid "can see every ticket of their company and manage its contacts."
+msgstr ""
+
+msgid "clock resumes when the ticket reopens"
+msgstr ""
+
+msgid "clock stopped"
+msgstr ""
+
+msgid "customize {0}"
+msgstr ""
+
+msgid "days"
+msgstr ""
+
+msgid "documentation"
+msgstr ""
+
+msgid "due {0}"
+msgstr ""
+
+msgid "e.g. Acme Inc."
+msgstr ""
+
+msgid "emails/ comments"
+msgstr ""
+
+msgid "excellent"
+msgstr ""
+
+msgid "from this email onwards will be moved to new ticket."
+msgstr ""
+
+msgid "good"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD View'
+msgid "group_by"
+msgstr ""
+
+msgid "has made a call"
+msgstr ""
+
+msgid "has reached out"
+msgstr ""
+
+msgid "here"
+msgstr ""
+
+msgid "here."
+msgstr ""
+
+msgid "hrs"
+msgstr ""
+
+msgid "in"
+msgstr ""
+
+msgid "just now"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD View'
+msgid "kanban"
+msgstr ""
+
+#. Option for the 'Type' (Select) field in DocType 'HD View'
+msgid "list"
+msgstr ""
+
+msgid "next day"
+msgstr ""
+
+msgid "pending"
+msgstr ""
+
+msgid "poor"
+msgstr ""
+
+msgid "published by"
+msgstr ""
+
+#. Option for the 'Color' (Select) field in DocType 'HD Agent Status'
+msgid "purple"
+msgstr ""
+
+msgid "reviews"
+msgstr ""
+
+msgid "since {0}"
+msgstr ""
+
+msgid "stars"
+msgstr ""
+
+#. Label of the synonym (Data) field in DocType 'HD Synonym'
+msgid "synonym"
+msgstr ""
+
+msgid "the customer"
+msgstr ""
+
+msgid "ticket"
+msgstr ""
+
+msgid "to enable this integration."
+msgstr ""
+
+msgid "via Email"
+msgstr ""
+
+msgid "via Portal"
+msgstr ""
+
+msgid "views"
+msgstr ""
+
+msgid "{0} Customers"
+msgstr ""
+
+msgid "{0} actions"
+msgstr ""
+
+msgid "{0} actions after sending"
+msgstr ""
+
+msgid "{0} actions will be applied after sending the email"
+msgstr ""
+
+msgid "{0} are successfully hidden from customers in the ticket form. Raise their permission levels in {1} to hide them from the API layer. Read more about permission levels {2}."
+msgstr ""
+
+msgid "{0} days"
+msgstr ""
+
+msgid "{0} is already added"
+msgstr ""
+
+msgid "{0} is an Invalid Email Address"
+msgstr ""
+
+msgid "{0} is currently away."
+msgstr ""
+
+msgid "{0} is currently unavailable."
+msgstr ""
+
+msgid "{0} is not an existing contact"
+msgstr ""
+
+msgid "{0} is not an existing user"
+msgstr ""
+
+msgid "{0} is required"
+msgstr ""
+
+msgid "{0} is successfully hidden from customers in the ticket form. Raise its permission level in {1} to hide it from the API layer. Read more about permission levels {2}."
+msgstr ""
+
+msgid "{0} is the default agent status. Set a different default in HD Settings first."
+msgstr ""
+
+msgid "{0} item(s) deleted successfully"
+msgstr ""
+
+msgid "{0} item(s) queued for deletion"
+msgstr ""
+
+msgid "{0} matches"
+msgstr ""
+
+msgid "{0} on {1}"
+msgstr ""
+
+msgid "{0} open tickets use priority {1}. They lose this SLA the next time they are updated."
+msgstr ""
+
+msgid "{0} open tickets will lose this SLA the next time they are updated, unless another policy matches them."
+msgstr ""
+
+msgid "{0} people reacted to your comment"
+msgstr ""
+
+msgid "{0} reopened ticket #{1}"
+msgstr ""
+
+msgid "{0} replied"
+msgstr ""
+
+msgid "{0} results"
+msgstr ""
+
+msgid "{0} reviews"
+msgstr ""
+
+msgid "{0} times"
+msgstr ""
+
+msgid "{0} wait"
+msgstr ""
+
+msgid "{0} · Last active {1}"
+msgstr ""
+
+msgid "{0} · longest wait"
+msgstr ""

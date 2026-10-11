@@ -1,0 +1,914 @@
+<template>
+  <!-- View Controls -->
+  <div
+    :class="[
+      'flex items-center justify-between gap-2 px-5 pb-4 pt-4',
+      list?.data?.data?.length > 0 ? 'relative' : 'absolute inset-x-0',
+    ]"
+    v-if="showViewControls"
+  >
+    <QuickFilters v-if="!isMobileView" />
+    <div v-if="!isMobileView" class="-ms-2 h-5 border-s"></div>
+    <div
+      class="flex items-start gap-2 justify-end h-full py-1 ps-0.5"
+      v-if="!isMobileView"
+    >
+      <Button
+        :label="__('Save Changes')"
+        v-if="isViewUpdated && canSaveView"
+        @click="handleViewUpdate"
+      />
+      <Reload @click="handleReload" :loading="list.loading" />
+      <Filter />
+      <SortBy :hide-label="isMobileView" />
+      <ColumnSettings
+        :hide-label="isMobileView"
+        v-if="!options.hideColumnSetting"
+      />
+    </div>
+    <div v-else class="flex justify-between items-center w-full">
+      <Filter />
+      <div class="flex items-center gap-2">
+        <Reload @click="handleReload" :loading="list.loading" />
+        <SortBy :hide-label="isMobileView" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div
+    v-if="list.loading && !list.data?.data?.length"
+    class="flex items-center justify-center h-full w-full absolute top-0 z-100"
+  >
+    <LoadingIndicator class="size-6 text-ink-gray-4" />
+  </div>
+  <!-- List View -->
+  <ListView
+    v-else-if="list.data?.data.length > 0"
+    class="flex-1"
+    :columns="columns"
+    :rows="rows"
+    row-key="name"
+    :options="{
+      selectable: options.selectable,
+      showTooltip: false,
+      resizeColumn: true,
+      getRowRoute: (row) => ({
+        name: options.rowRoute?.name,
+        params: { [options.rowRoute?.prop]: row.name },
+        query: { view: route.query?.view },
+      }),
+      emptyState,
+    }"
+  >
+    <ListHeader class="sm:mx-5 mx-3">
+      <ListHeaderItem
+        v-for="column in columns"
+        :key="column.key"
+        :item="column"
+        @columnWidthUpdated="handleColumnResize"
+      />
+    </ListHeader>
+    <ListRows
+      :rows="rows"
+      v-slot="{ idx, column, item, row }"
+      :group-by-actions="options.groupByActions"
+      @scrollend="handleListScroll"
+      class="list-rows"
+    >
+      <ListRowItem :item="item" :column="column" :row="row">
+        <component
+          :is="listCell(column, row, item, idx)"
+          :key="column.key"
+          @click="(e) => handleFieldClick(e, column, row, item)"
+        />
+      </ListRowItem>
+    </ListRows>
+    <ListSelectBanner v-if="options.showSelectBanner">
+      <template #actions="{ selections, unselectAll }">
+        <div class="flex items-center gap-1">
+          <Button
+            v-for="action in selectBannerOptions(selections, unselectAll, true)"
+            :key="action.label"
+            :label="action.label"
+            :icon-left="action.icon"
+            variant="ghost"
+            @click="action.onClick"
+          />
+          <Dropdown :options="selectBannerOptions(selections, unselectAll)">
+            <Button icon="lucide-more-horizontal" variant="ghost" />
+          </Dropdown>
+        </div>
+      </template>
+    </ListSelectBanner>
+  </ListView>
+
+  <!-- List Footer -->
+  <div
+    class="p-20 border-t sm:px-5 px-3 py-2"
+    v-if="list.data?.data.length > 0"
+  >
+    <ListFooter
+      :options="{
+        rowCount: list?.data?.row_count,
+        totalCount: list?.data?.total_count,
+      }"
+      :pageLengthCount="defaultParams.page_length_count"
+      @loadMore="handlePageLength(defaultParams.page_length_count, true)"
+      v-model="defaultParams.page_length_count"
+      @update:modelValue="
+        (count) => {
+          handlePageLength(count);
+        }
+      "
+    >
+      <!-- frappe-ui's ListFooter still feeds TabButtons the removed `buttons`
+           prop, so its own page-length picker renders nothing. -->
+      <template #left>
+        <TabButtons
+          :model-value="defaultParams.page_length_count"
+          :options="[20, 50, 100].map((o) => ({ label: String(o), value: o }))"
+          @update:model-value="(count) => handlePageLength(count)"
+        />
+      </template>
+    </ListFooter>
+  </div>
+  <!-- Empty State -->
+  <EmptyState
+    v-else-if="!list.loading"
+    :title="emptyState.title"
+    :icon="emptyState.icon"
+    :description="emptyState.description"
+  />
+</template>
+
+<script setup lang="ts">
+import { MultipleAvatar, StarRating } from "@/components";
+import {
+  ColumnSettings,
+  QuickFilters,
+  Reload,
+  SortBy,
+} from "@/components/view-controls";
+import { Filter, normalizeFilters } from "@/components/view-controls/filter";
+import { useScreenSize } from "@/composables/screen";
+import {
+  currentView as headerView,
+  useView,
+  views,
+} from "@/composables/useView";
+import { useAuthStore } from "@/stores/auth";
+import { globalStore } from "@/stores/globalStore";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
+import { capture } from "@/telemetry";
+import { __ } from "@/translation";
+import { View, ViewType } from "@/types";
+import { getIcon } from "@/utils";
+import { useStorage } from "@vueuse/core";
+import {
+  createResource,
+  dayjsLocal,
+  Dropdown,
+  frappeRequest,
+  LoadingIndicator,
+  TabButtons,
+  toast,
+} from "frappe-ui";
+import {
+  Icon as SpriteIcon,
+  ListFooter,
+  ListHeader,
+  ListHeaderItem,
+  ListRowItem,
+  ListSelectBanner,
+  ListView,
+} from "frappe-ui/experimental";
+import {
+  computed,
+  h,
+  onMounted,
+  onUnmounted,
+  provide,
+  reactive,
+  ref,
+  VNode,
+  watch,
+} from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+import EmptyState from "./EmptyState.vue";
+import { listFilters } from "./listViewFilters";
+import ListRows from "./ListRows.vue";
+
+interface P {
+  options: {
+    doctype: string;
+    defaultFilters?: Record<string, any>;
+    columnConfig?: Record<string, any>;
+    emptyState?: {
+      // type of a h componnt
+      icon?: string | VNode;
+      title: string;
+      description?: string;
+    };
+    hideViewControls?: boolean;
+    hideColumnSetting?: boolean;
+    selectable?: boolean;
+    view?: ViewType;
+    groupByActions?: Array<any>;
+    showSelectBanner?: boolean;
+    selectBannerActions?: Record<string, any>;
+    default_page_length?: number;
+    isCustomerPortal?: boolean;
+    rowRoute?: Record<string, string>;
+  };
+}
+
+interface E {
+  (event: "rowClick", row: any): void;
+}
+const props = defineProps<P>();
+const emit = defineEmits<E>();
+const route = useRoute();
+const router = useRouter();
+const { isManager } = useAuthStore();
+const { $dialog, $socket } = globalStore();
+const { getStatus } = useTicketStatusStore();
+
+const listSelections = ref(new Set());
+const defaultOptions = reactive({
+  doctype: "",
+  hideViewControls: false,
+  selectable: false,
+  view: {
+    view_type: "list",
+    group_by_field: "owner",
+    name: route.query.view,
+  },
+  groupByActions: [],
+  default_page_length: 20,
+  isCustomerPortal: false,
+  hideColumnSetting: true,
+  rowRoute: {
+    name: "",
+    prop: "",
+  },
+  selectBannerActions: [
+    {
+      label: __("Delete"),
+      icon: "lucide-trash-2",
+      onClick: (selections: Set<string>) => {
+        $dialog({
+          title: __("Delete"),
+          message: __("Are you sure you want to delete {0} item(s)?", [
+            selections.size,
+          ]),
+          actions: [
+            {
+              label: __("Delete"),
+              variant: "solid",
+              theme: "red",
+              iconLeft: "lucide-trash-2",
+              onClick({ close }) {
+                handleBulkDelete(close, selections);
+              },
+            },
+          ],
+        });
+      },
+      condition: () => !options.value.isCustomerPortal && isManager,
+    },
+  ],
+});
+
+function handleBulkDelete(hide: Function, selections: Set<string>) {
+  capture("bulk_delete" + props.options.doctype);
+  const requested = Array.from(selections);
+  const requestedCount = requested.length;
+
+  const failureMessages: string[] = [];
+  let successMessage = "";
+  let failedCount = 0;
+
+  const onBulkResult = (data: { message: string; title: string }) => {
+    const isFailure =
+      data.title === __("Bulk Operation Failed") ||
+      data.title === "Bulk Operation Failed";
+    const isSuccess =
+      data.title === __("Bulk Operation Successful") ||
+      data.title === "Bulk Operation Successful";
+    if (!isFailure && !isSuccess) return;
+
+    if (isFailure) {
+      // Parse how many items failed from the message (Frappe includes the count)
+      const match = data.message.match(/Failed to delete (\d+) documents?/);
+      if (match) {
+        failedCount = parseInt(match[1], 10);
+      }
+      failureMessages.push(data.message);
+    } else {
+      successMessage = data.message;
+    }
+  };
+
+  $socket.on("msgprint", onBulkResult);
+
+  // Use frappeRequest (not `call`) so per-item delete errors surfaced in
+  // `_server_messages` get routed through the app's serverMessagesHandler.
+  // `call` silently drops them on 200 responses.
+  frappeRequest({
+    url: "frappe.desk.reportview.delete_items",
+    params: {
+      items: JSON.stringify(requested),
+      doctype: props.options.doctype,
+    },
+  }).finally(() => {
+    $socket.off("msgprint", onBulkResult);
+
+    const deletedCount = requestedCount - failedCount;
+
+    if (failureMessages.length > 0 && deletedCount > 0) {
+      // Partial success: some deleted, some failed — show both toasts
+      toast.success(__("{0} item(s) deleted successfully", [deletedCount]));
+      for (const msg of failureMessages) {
+        toast.error(msg);
+      }
+    } else if (failureMessages.length > 0) {
+      // All failed
+      for (const msg of failureMessages) {
+        toast.error(msg);
+      }
+    } else if (successMessage) {
+      // All succeeded
+      toast.success(successMessage);
+    } else {
+      // Fallback: no socket messages received (e.g. enqueued for >10 items)
+      toast.success(__("{0} item(s) queued for deletion", [requestedCount]));
+    }
+
+    hide();
+    reset();
+  });
+}
+
+function reset() {
+  exposeFunctions.reload();
+  exposeFunctions.unselectAll();
+}
+
+const options = computed(() => {
+  return {
+    ...defaultOptions,
+    ...props.options,
+  };
+});
+
+const { isMobileView } = useScreenSize();
+
+const defaultEmptyState = {
+  icon: "",
+  title: __("No Data Found"),
+};
+
+const pageLengthCount = useStorage(
+  `list_page_length_count+${props.options.doctype}`,
+  options.value.default_page_length
+);
+
+const defaultParams = reactive({
+  doctype: options.value.doctype,
+  filters: {},
+  default_filters: options.value.defaultFilters,
+  order_by: "modified desc",
+  page_length: pageLengthCount.value,
+  page_length_count: pageLengthCount.value,
+  view: options.value.view,
+  columns: [],
+  rows: [],
+  show_customer_portal_fields: options.value.isCustomerPortal,
+  is_default: false,
+});
+
+const emptyState = computed(() => {
+  return options.value?.emptyState || defaultEmptyState;
+});
+
+const isViewUpdated = ref(false);
+
+const list = createResource({
+  url: "helpdesk.api.doc.get_list_data",
+  params: defaultParams,
+  transform: (data) => {
+    data.columns.forEach((column) => {
+      handleFetchFromField(column);
+      handleColumnConfig(column);
+    });
+    return data;
+  },
+  onSuccess: (data) => {
+    list.params = defaultParams;
+    columns.value = data.columns;
+  },
+});
+
+const exposeFunctions = {
+  list,
+  reload,
+  unselectAll: () => {},
+};
+
+/** Banner actions. `inline` picks the ones shown as buttons; the rest fill the "..." menu. */
+function selectBannerOptions(
+  selections: Set<string>,
+  unselectAll = () => {},
+  inline = false
+) {
+  exposeFunctions["unselectAll"] = unselectAll;
+
+  // Get the user-provided actions
+  const userActions = options.value.selectBannerActions.map((action) => ({
+    ...action,
+    onClick: () => action.onClick?.(selections),
+  }));
+
+  // Get the default actions
+  // overwrite the default actions if user provided actions with same label
+  const defaultActions = defaultOptions.selectBannerActions
+    .filter(
+      (action) =>
+        !userActions.some(
+          (defaultAction) => defaultAction.label === action.label
+        )
+    )
+    .map((action) => ({
+      ...action,
+      onClick: () => action.onClick?.(selections),
+    }));
+
+  return [...userActions, ...defaultActions].filter(
+    (action) =>
+      Boolean(action.inline) === inline && (action.condition?.() ?? true)
+  );
+}
+
+const rows = computed(() => {
+  if (!list.data?.data) return [];
+  if (list.data.view_type === "group_by") {
+    if (!list.data?.group_by_field?.name) return [];
+    return getGroupedByRows(list.data.data, list.data.group_by_field);
+  }
+  return list.data?.data;
+});
+const columns = ref([]);
+
+function getGroupedByRows(listRows, groupByField) {
+  let groupedRows = [];
+  groupByField.options?.forEach((option) => {
+    let filteredRows = [];
+
+    if (!option.value) {
+      filteredRows = listRows.filter((row) => !row[groupByField.name]);
+    } else {
+      filteredRows = listRows.filter(
+        (row) => row[groupByField.name] == option.value
+      );
+    }
+
+    let groupDetail = {
+      group: option || " ",
+      collapsed: false,
+      rows: filteredRows,
+      icon: h(SpriteIcon, {
+        name: "folder",
+        class: "h-4 w-4 flex-shrink-0 text-ink-gray-6",
+      }),
+    };
+    groupedRows.push(groupDetail);
+  });
+  return groupedRows || listRows;
+}
+
+function handleFetchFromField(column) {
+  if (!column.hasOwnProperty("key")) return column;
+  const regex = /([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)/;
+  const isFetchFromField = column.key.match(regex);
+  column.key = isFetchFromField ? isFetchFromField[2] : column.key;
+}
+
+function handleColumnConfig(column) {
+  if (!options.value?.columnConfig) return column;
+  const columnConfig = options.value.columnConfig;
+  if (!columnConfig.hasOwnProperty(column.key)) return column;
+  column.prefix = columnConfig[column.key]?.prefix;
+
+  return column;
+}
+
+const filterableFields = createResource({
+  url: "helpdesk.api.doc.get_filterable_fields",
+  cache: ["DocField", options.value.doctype],
+  auto: !options.value.hideViewControls,
+  params: {
+    doctype: options.value.doctype,
+    append_assign: true,
+    show_customer_portal_fields: defaultParams.show_customer_portal_fields,
+  },
+  transform: (data) => {
+    data = data.map((field) => {
+      return {
+        label: field.label,
+        value: field.fieldname,
+        ...field,
+      };
+    });
+    return data;
+  },
+});
+
+const sortableFields = createResource({
+  url: "helpdesk.api.doc.sort_options",
+  auto: !options.value.hideViewControls,
+  params: {
+    doctype: options.value.doctype,
+    show_customer_portal_fields: defaultParams.show_customer_portal_fields,
+  },
+});
+
+const quickFilters = createResource({
+  url: "helpdesk.api.doc.get_quick_filters",
+  auto: !options.value.hideViewControls,
+  params: {
+    doctype: options.value.doctype,
+    show_customer_portal_fields: defaultParams.show_customer_portal_fields,
+  },
+  transform: (data) => {
+    if (Boolean(data.length)) return;
+    data = [{ name: "name", label: "Name", fieldtype: "Data" }];
+    return data;
+  },
+});
+
+function listCell(column: any, row: any, item: any, idx: number) {
+  const columnConfig = options.value.columnConfig;
+  if (columnConfig && columnConfig[column.key]?.custom) {
+    return columnConfig[column.key]?.custom({ column, row, item, idx });
+  }
+  if (idx === 0) {
+    return h("span", {
+      class: "truncate text-base text-ink-gray-6",
+      textContent: item,
+    });
+  }
+  if (column.type === "Datetime") {
+    return h("span", {
+      class: "text-base",
+      textContent: dayjsLocal(item).fromNow(),
+    });
+  }
+  if (column.type === "MultipleAvatar") {
+    return h(MultipleAvatar, {
+      avatars: item,
+      hideName: false,
+      class: "flex items-center flex-1 min-w-0",
+    });
+  }
+  if (column.type === "Rating") {
+    return h(StarRating, {
+      rating: item || 0,
+      class: "truncate",
+    });
+  }
+  return h("span", {
+    class: "truncate flex-1",
+    textContent: item,
+  });
+}
+
+function handleFieldClick(e: MouseEvent, column, row, item) {
+  const noFilterFields = ["Data", "Datetime", "Rating", "Int", "Float"];
+  if (noFilterFields.includes(column.type)) {
+    if (options.value.rowRoute?.name !== "") {
+      return;
+    }
+    emit("rowClick", row.name);
+    return;
+  }
+  e.stopPropagation();
+  e.preventDefault();
+
+  if (column.label == "Status" && options.value.doctype === "HD Ticket") {
+    item = getStatus(item)?.label_agent;
+  }
+
+  if (column.type === "MultipleAvatar") {
+    const avatar = (e.target as HTMLElement).closest(".user-avatar");
+    // the gap between the faces, and the "+n" chip, name nobody to filter by
+    const name = avatar?.getAttribute("data-name");
+    if (!name) return;
+    applyColumnFilter(column.key, "LIKE", `%${name}%`);
+    return;
+  }
+  applyColumnFilter(column.key, "=", item);
+}
+
+function applyColumnFilter(key: string, operator: string, value: any) {
+  const conditions = normalizeFilters(defaultParams.filters).filter(
+    (condition) => condition[0] !== key
+  );
+  conditions.push([key, operator, value]);
+  applyFilters(conditions);
+}
+
+const showViewControls = computed(() => {
+  return (
+    !options.value.hideViewControls &&
+    filterableFields.data &&
+    sortableFields.data &&
+    quickFilters.data
+  );
+});
+
+const listViewData = reactive({
+  list,
+  filterableFields,
+  quickFilters,
+  sortableFields,
+});
+
+provide("listViewData", listViewData);
+
+provide("listViewActions", {
+  applyFilters,
+  applySort,
+  updateColumns,
+  reload,
+});
+
+// Also published module-scope, for the command palette: it renders in the
+// sidebar, outside this provide chain.
+listFilters.value = {
+  current: () => normalizeFilters(list?.params?.filters),
+  apply: applyFilters,
+};
+onUnmounted(() => (listFilters.value = null));
+
+function applyFilters(filters) {
+  isViewUpdated.value = true;
+  defaultParams.filters = normalizeFilters(filters);
+  list.submit({ ...defaultParams });
+
+  // automatically update filters for default view
+  if (!defaultParams.is_default) return;
+  handleViewUpdate();
+  isViewUpdated.value = false;
+}
+
+function applySort(order_by: string) {
+  isViewUpdated.value = true;
+  defaultParams.order_by = order_by;
+  list.submit({ ...defaultParams, order_by });
+  if (!defaultParams.is_default) return;
+  handleViewUpdate();
+  isViewUpdated.value = false;
+}
+
+function updateColumns(obj) {
+  isViewUpdated.value = true;
+  const { columns: _columns, isDefault, rows } = obj;
+  _columns?.forEach((column) => {
+    handleFetchFromField(column);
+    handleColumnConfig(column);
+  });
+  columns.value = defaultParams.columns = isDefault ? "" : _columns;
+  defaultParams.rows = isDefault ? "" : rows;
+  list.reload({ ...defaultParams });
+}
+
+function reload(reset: boolean = false) {
+  if (reset) {
+    defaultParams.filters = normalizeFilters(options.value.defaultFilters);
+    defaultParams.order_by = "modified desc";
+    defaultParams.page_length = options.value.default_page_length;
+    pageLengthCount.value = options.value.default_page_length;
+    defaultParams.page_length_count = pageLengthCount.value;
+    defaultParams.columns = [];
+    defaultParams.rows = [];
+    defaultParams.is_default = true;
+  }
+  list.reload({ ...defaultParams });
+}
+
+function handlePageLength(count: number, loadMore: boolean = false) {
+  pageLengthCount.value = count;
+  defaultParams.page_length_count = pageLengthCount.value;
+  if (loadMore) {
+    defaultParams.page_length += count;
+  } else {
+    if (
+      count === defaultParams.page_length &&
+      count === defaultParams.page_length_count
+    ) {
+      return;
+    }
+    defaultParams.page_length = count;
+    defaultParams.page_length_count = count;
+  }
+  list.reload();
+}
+
+function handleViewUpdate() {
+  const view = {
+    filters: JSON.stringify(defaultParams.filters),
+    columns: JSON.stringify(defaultParams.columns),
+    rows: JSON.stringify(defaultParams.rows),
+    order_by: defaultParams.order_by,
+    name: (route.query.view as string) || "default",
+    dt: options.value.doctype,
+    route_name: route.name,
+    is_customer_portal: options.value.isCustomerPortal,
+  };
+  const currentView = findView(route.query.view as string).value;
+  if (currentView && currentView.public) {
+    $dialog({
+      title: __("Confirm Changes"),
+      message: __(
+        "This view is public. Changes made will be visible to everyone."
+      ),
+      actions: [
+        {
+          label: __("Save"),
+          variant: "solid",
+          onClick({ close }) {
+            updateView(view, () => {
+              isViewUpdated.value = false;
+            });
+            close();
+          },
+        },
+        {
+          label: __("Cancel"),
+          variant: "outline",
+          onClick({ close }) {
+            close();
+          },
+        },
+      ],
+    });
+  } else {
+    updateView(view, () => {
+      isViewUpdated.value = false;
+    });
+  }
+}
+
+const { findView, updateView, defaultView } = useView(options.value.doctype);
+
+const canSaveView = computed(() => {
+  let currentView: View = findView(route.query.view as string).value;
+  if (currentView?.is_standard) return false;
+  if (!currentView || !currentView.public) return true;
+  if (currentView.public && isManager) {
+    return true;
+  }
+  return false;
+});
+
+function handleReload() {
+  handleViewChanges();
+  isViewUpdated.value = false;
+}
+
+function handleViewChanges() {
+  if (!switchToView(route.query.view as string)) return;
+  applyUrlFilters();
+  list.submit({ ...defaultParams });
+}
+
+/** Base for URL filters, so repeated pushes layer on the view, not each other. */
+let viewFilters = [];
+
+/** Owns sort, columns and rows. False means a redirect is in flight. */
+function switchToView(view: string): boolean {
+  defaultParams.view.name = view;
+  const currentView: View = findCurrentView();
+  if (currentView) {
+    // normalize so legacy dict-format saved views become list conditions
+    viewFilters = normalizeFilters(currentView.filters);
+    defaultParams.order_by = currentView.order_by || "modified desc";
+    defaultParams.columns = currentView.columns;
+    defaultParams.rows = currentView.rows;
+    return true;
+  }
+  if (view) {
+    // Stale ?view: drop it but keep the filters, unlike a push to the bare route.
+    router.replace({
+      name: route.name,
+      query: { ...route.query, view: undefined },
+    });
+    return false;
+  }
+  viewFilters = normalizeFilters(options.value.defaultFilters);
+  defaultParams.order_by = "modified desc";
+  defaultParams.columns = [];
+  defaultParams.rows = [];
+  defaultParams.is_default = true;
+  headerView.value.label = __("List");
+  headerView.value.icon = LucideAlignJustify;
+  return true;
+}
+
+/** Touches `filters` only, so filtering never resets the user's sort. */
+function applyUrlFilters() {
+  const urlFilters = parseUrlFilters();
+  if (!urlFilters) {
+    defaultParams.filters = viewFilters;
+    return;
+  }
+  const overriddenFields = new Set(urlFilters.map((c) => c[0]));
+  defaultParams.filters = urlFilters.length
+    ? [...viewFilters.filter((c) => !overriddenFields.has(c[0])), ...urlFilters]
+    : [];
+}
+
+/** null when the URL carries no filters; [] means "clear them". */
+function parseUrlFilters() {
+  if (!route.query.filters) return null;
+  try {
+    return normalizeFilters(JSON.parse(route.query.filters as string));
+  } catch (e) {
+    console.error("Failed to parse filters from URL", e);
+    return null;
+  }
+}
+
+function findCurrentView() {
+  let currentView: View;
+  if (route.query.view) {
+    currentView = findView(route.query.view as string).value;
+    defaultParams.is_default = false;
+  } else if (defaultView.value) {
+    currentView = defaultView.value;
+    defaultParams.is_default = true;
+  }
+  return currentView;
+}
+
+// The view is re-read only when it changes; re-reading it on every filter
+// change is what let a filter silently reset the sort.
+watch(
+  [() => route.query.view as string, () => route.query.filters as string],
+  ([view], [previousView]) => {
+    if (view !== previousView && !switchToView(view)) return;
+    applyUrlFilters();
+    list.submit({ ...defaultParams });
+  }
+);
+
+const listScrollPosition = useStorage(
+  `list_position+${props.options.doctype}`,
+  0
+);
+function handleListScroll(e) {
+  listScrollPosition.value = e.target.scrollTop;
+}
+function handleScrollPosition() {
+  setTimeout(() => {
+    const listContainer = document.querySelector(".list-rows");
+    if (!listContainer) return;
+    listContainer.scrollTop = listScrollPosition.value;
+  }, 200);
+}
+
+function handleColumnResize({ key, width, save } = {}) {
+  const column = columns.value.find((c) => c.key === key);
+  if (column) column.width = width;
+  if (!save) return;
+  isViewUpdated.value = true;
+  defaultParams.columns = columns.value;
+  if (!defaultParams.is_default) return;
+  handleViewUpdate();
+  isViewUpdated.value = false;
+}
+
+onMounted(async () => {
+  handleScrollPosition();
+
+  if (views.data?.length > 0 && views.filters?.dt === options.value.doctype) {
+    handleViewChanges();
+  } else {
+    await views.list.promise;
+    handleViewChanges();
+  }
+  if (route.query.view || defaultView.value) {
+    if (route.query.view) {
+      const currentView = findCurrentView();
+      if (!currentView) return;
+      headerView.value.label = currentView.label || __("List");
+      headerView.value.icon = getIcon(currentView.icon);
+    }
+    return;
+  }
+});
+
+defineExpose(exposeFunctions);
+</script>

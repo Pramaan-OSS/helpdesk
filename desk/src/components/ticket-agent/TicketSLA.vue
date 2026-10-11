@@ -1,0 +1,143 @@
+<template>
+  <div v-if="cards.length" class="space-y-0.5">
+    <div
+      v-for="card in cards"
+      :key="card.title"
+      class="flex min-h-7 items-center gap-2 leading-5"
+    >
+      <FieldLabel :label="card.title" />
+      <!-- 9px = field controls' 8px padding + 1px transparent border, so the
+           value lines up with the other sidebar field values -->
+      <div class="flex min-w-0 flex-1 items-center gap-1.5 ps-[9px]">
+        <span
+          class="min-w-0 truncate text-base"
+          :class="slaTextColor(card.metric)"
+        >
+          {{ cardValue(card) }}
+        </span>
+        <!-- HoverCard, not Popover: this opens on hover, and reka's popover
+             trigger would also toggle it on click -->
+        <HoverCard side="bottom" align="center">
+          <template #trigger>
+            <LucideInfo
+              class="size-3.5 shrink-0 cursor-pointer text-ink-gray-5"
+            />
+          </template>
+          <template #default>
+            <div class="flex min-w-[170px] flex-col gap-2.5 p-4 text-sm">
+              <div
+                v-for="row in cardDetails(card)"
+                :key="row.label"
+                class="flex items-baseline justify-between gap-8"
+              >
+                <span class="text-ink-gray-5">{{ __(row.label) }}</span>
+                <span
+                  class="tabular-nums"
+                  :class="row.danger ? 'text-ink-red-6' : 'text-ink-gray-8'"
+                >
+                  {{ row.value }}
+                </span>
+              </div>
+            </div>
+          </template>
+        </HoverCard>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import FieldLabel from "@/components/FieldLabel.vue";
+import { slaTextColor, useSLA, type SLAMetric } from "@/composables/useSLA";
+import { __ } from "@/translation";
+import { TicketSymbol } from "@/types";
+import { dateFormat } from "@/utils";
+import { HoverCard } from "frappe-ui";
+import { computed, inject } from "vue";
+import LucideInfo from "~icons/lucide/info";
+
+interface SLACard {
+  title: string;
+  metric: SLAMetric;
+  fulfilledLabel: string;
+  actualLabel: string;
+}
+
+const ticket = inject(TicketSymbol)!;
+const { firstResponse, resolution } = useSLA(ticket);
+
+const cards = computed<SLACard[]>(() =>
+  [
+    {
+      title: "First Response",
+      metric: firstResponse.value,
+      fulfilledLabel: "Fulfilled",
+      actualLabel: "Responded on",
+    },
+    {
+      title: "Resolution",
+      metric: resolution.value,
+      fulfilledLabel: "Fulfilled",
+      actualLabel: "Resolved on",
+    },
+  ].filter((card): card is SLACard => Boolean(card.metric))
+);
+
+function cardValue(card: SLACard): string {
+  if (card.metric.state !== "fulfilled") return __(card.metric.value);
+  if (!card.metric.fulfilledIn) return __(card.fulfilledLabel);
+  return `${__(card.fulfilledLabel)} ${__("in")} ${card.metric.fulfilledIn}`;
+}
+
+function cardDetails(card: SLACard) {
+  const metric = card.metric;
+  const rows = [];
+  if (metric.dueBy) {
+    rows.push({ label: "Due by", value: fmt(metric.dueBy), danger: false });
+  }
+  if (metric.state === "hold") {
+    rows.push({
+      label: "On hold since",
+      value: fmt(ticket.value.doc.on_hold_since as string),
+      danger: false,
+    });
+  }
+  if (metric.actual) {
+    // The timestamp is neutral fact; only the Delay rows carry the failure
+    // signal, so the responded/resolved date stays in the default ink.
+    rows.push({
+      label: card.actualLabel,
+      value: fmt(metric.actual),
+      danger: false,
+    });
+  }
+  if (metric.delay) {
+    rows.push({
+      label: metric.delayInWorkingHours ? "Delay (working hours)" : "Delay",
+      value: metric.delay,
+      danger: true,
+    });
+    if (metric.calendarDelay) {
+      rows.push({
+        label: "Delay (total)",
+        value: `+${metric.calendarDelay}`,
+        danger: true,
+      });
+    }
+  }
+  if (metric.fulfilledIn) {
+    rows.push({
+      label: "Fulfilled in",
+      value: metric.fulfilledIn,
+      danger: false,
+    });
+  }
+  return rows;
+}
+
+function fmt(date: string): string {
+  // Year included: SLA breaches span months/years, so a bare "MMM D" makes the
+  // due/actual dates read as contradictory (e.g. resolved "before" the due date).
+  return dateFormat(date, "MMM D, YYYY, h:mm A");
+}
+</script>

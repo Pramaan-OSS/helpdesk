@@ -1,0 +1,65 @@
+{
+  "doctype": "DocType",
+  "name": "Pramaan Call",
+  "module": "Helpdesk",
+  "autoname": "hash",
+  "field_order": [
+    "ticket",
+    "request_id",
+    "state",
+    "job_id",
+    "result_ref",
+    "recording_enabled"
+  ],
+  "fields": [
+    {
+      "fieldname": "ticket",
+      "fieldtype": "Link",
+      "label": "Ticket",
+      "options": "HD Ticket"
+    },
+    {
+      "fieldname": "request_id",
+      "fieldtype": "Data",
+      "label": "Request Id",
+      "unique": 1
+    },
+    {
+      "fieldname": "state",
+      "fieldtype": "Select",
+      "label": "State",
+      "options": "Starting\nRunning\nEnded\nFailed\nUncertain"
+    },
+    {
+      "fieldname": "job_id",
+      "fieldtype": "Data",
+      "label": "Job Id"
+    },
+    {
+      "fieldname": "result_ref",
+      "fieldtype": "Data",
+      "label": "Result Ref"
+    },
+    {
+      "fieldname": "recording_enabled",
+      "fieldtype": "Check",
+      "label": "Recording requested"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    },
+    {
+      "role": "Agent",
+      "read": 1,
+      "if_owner": 1
+    },
+    {
+      "role": "Agent Manager",
+      "read": 1,
+      "if_owner": 1
+    }
+  ]
+}

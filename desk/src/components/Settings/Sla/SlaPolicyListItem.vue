@@ -1,0 +1,183 @@
+<template>
+  <div
+    class="grid grid-cols-6 items-center gap-4 cursor-pointer hover:bg-surface-sidebar rounded-4"
+  >
+    <div
+      @click="slaActiveScreen = { screen: 'view', data: data, fetchData: true }"
+      class="w-full ps-2 col-span-5 flex flex-col justify-center h-14"
+    >
+      <div class="text-base-medium text-ink-gray-7 flex items-center gap-2">
+        {{ data.name }}
+        <Badge v-if="data.default_sla" color="gray" size="sm">Default</Badge>
+      </div>
+      <div
+        v-if="data.description && data.description.length > 0"
+        class="text-sm w-full text-ink-gray-5 mt-1 truncate"
+      >
+        {{ data.description }}
+      </div>
+    </div>
+    <div class="flex justify-between items-center w-full pe-2">
+      <div>
+        <Switch
+          size="sm"
+          :modelValue="Boolean(data.enabled)"
+          @update:modelValue="onToggle"
+        />
+      </div>
+      <div>
+        <Dropdown
+          align="end"
+          :options="dropdownOptions"
+          @update:open="(open) => open && (isConfirmingDelete = false)"
+        >
+          <Button icon="lucide-more-horizontal" variant="ghost" />
+        </Dropdown>
+      </div>
+    </div>
+  </div>
+  <Dialog
+    :title="__('Duplicate SLA Policy')"
+    v-model:open="duplicateDialog.show"
+  >
+    <template #default>
+      <div class="flex flex-col gap-4">
+        <FormControl
+          :label="__('New SLA Policy Name')"
+          type="text"
+          v-model="duplicateDialog.newName"
+        />
+      </div>
+    </template>
+    <template #actions>
+      <div class="flex gap-2 justify-end">
+        <Button
+          variant="subtle"
+          :label="__('Close')"
+          @click="duplicateDialog.show = false"
+        />
+        <Button variant="solid" :label="__('Duplicate')" @click="duplicate()" />
+      </div>
+    </template>
+  </Dialog>
+</template>
+<script setup lang="ts">
+import {
+  Switch,
+  Button,
+  createResource,
+  toast,
+  Dialog,
+  Badge,
+  Dropdown,
+} from "frappe-ui";
+import { ref, inject } from "vue";
+import { slaActiveScreen } from "@/stores/sla";
+import { ConfirmDelete } from "@/utils";
+import { __ } from "@/translation";
+import { SlaPolicyListResourceSymbol } from "@/types";
+import { HDServiceLevelAgreement } from "@/types/doctypes";
+
+const slaPolicyList = inject(SlaPolicyListResourceSymbol);
+
+const duplicateDialog = ref({
+  show: false,
+  newName: "",
+  name: "",
+});
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const isConfirmingDelete = ref(false);
+
+const dropdownOptions = [
+  {
+    label: __("Duplicate"),
+    onClick: () => {
+      duplicateDialog.value = {
+        show: true,
+        newName: props.data.name + " (Copy)",
+        name: props.data.name,
+      };
+    },
+    icon: "lucide-copy",
+  },
+  ...ConfirmDelete({
+    onConfirmDelete: () => deleteSla(),
+    isConfirmingDelete,
+  }),
+];
+
+const duplicate = () => {
+  createResource({
+    url: "frappe.client.get",
+    params: {
+      doctype: "HD Service Level Agreement",
+      name: duplicateDialog.value.name,
+    },
+    onSuccess: (data: HDServiceLevelAgreement) => {
+      createResource({
+        url: "frappe.client.insert",
+        params: {
+          doc: {
+            ...data,
+            default_sla: false,
+            service_level: duplicateDialog.value.newName,
+            name: duplicateDialog.value.newName,
+          },
+        },
+        auto: true,
+        onSuccess(newSlaPolicyData: HDServiceLevelAgreement) {
+          slaPolicyList?.reload();
+          toast.success(__("SLA policy duplicated successfully."));
+          duplicateDialog.value = {
+            show: false,
+            newName: "",
+            name: "",
+          };
+          setTimeout(() => {
+            slaActiveScreen.value = {
+              screen: "view",
+              data: newSlaPolicyData,
+              fetchData: true,
+            };
+          }, 250);
+        },
+      });
+    },
+    auto: true,
+  });
+};
+
+const deleteSla = () => {
+  if (!isConfirmingDelete.value) {
+    isConfirmingDelete.value = true;
+    return;
+  }
+
+  slaPolicyList?.delete.submit(props.data.name, {
+    onSuccess: () => {
+      toast.success(__("SLA policy deleted successfully."));
+    },
+  });
+};
+
+const onToggle = () => {
+  slaPolicyList?.setValue.submit(
+    {
+      name: props.data.name,
+      enabled: !props.data.enabled,
+    },
+    {
+      onSuccess: () => {
+        toast.success(__("SLA policy status updated successfully."));
+      },
+    }
+  );
+};
+</script>

@@ -1,0 +1,570 @@
+<template>
+  <SettingsLayoutBase
+    :back-label="slaData.service_level || __('New SLA Policy')"
+    :on-back="goBack"
+    :dirty="isDirty"
+  >
+    <template #header-actions>
+      <div class="flex gap-4 items-center">
+        <div class="flex items-center justify-between gap-2">
+          <Switch
+            size="sm"
+            :model-value="Boolean(slaData.enabled)"
+            @update:model-value="(value) => (slaData.enabled = value)"
+          />
+          <!-- on the label only: on the wrapper it would undo the switch's
+               own toggle -->
+          <span
+            class="cursor-pointer text-sm-medium text-ink-gray-7"
+            @click="toggleEnabled"
+          >
+            {{ __("Enabled") }}
+          </span>
+        </div>
+        <Button
+          :label="__('Save')"
+          theme="gray"
+          variant="solid"
+          @click="saveSla()"
+          :disabled="Boolean(!isDirty && slaActiveScreen.data)"
+          :loading="slaData.loading || slaPolicyList.setValue.loading"
+        />
+      </div>
+    </template>
+    <template #content>
+      <div
+        v-if="slaData.loading"
+        class="flex items-center justify-center absolute inset-x-0 top-5.5 bottom-0"
+      >
+        <LoadingIndicator class="w-4" />
+      </div>
+      <div v-if="!slaData.loading">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-y-5">
+            <div>
+              <FormControl
+                :type="'text'"
+                size="sm"
+                variant="subtle"
+                :placeholder="__('Name')"
+                :label="__('Name')"
+                v-model="slaData.service_level"
+                required
+                @change="validateSlaData('service_level')"
+                :disabled="Boolean(slaActiveScreen.data)"
+                maxlength="50"
+              />
+              <ErrorMessage
+                :message="slaDataErrors.service_level"
+                class="mt-2"
+              />
+            </div>
+            <div class="space-y-1.5" v-if="!slaData.default_sla">
+              <FormLabel :label="__('Rank')" for="rank" />
+              <FormControl
+                id="rank"
+                type="number"
+                min="0"
+                variant="subtle"
+                v-model="slaData.rank"
+                :description="
+                  __(
+                    'When more than one policy matches, the lower rank is applied first. 0 means unranked, and is applied last.'
+                  )
+                "
+              />
+            </div>
+          </div>
+          <FormControl
+            :type="'textarea'"
+            size="sm"
+            variant="subtle"
+            :rows="8"
+            :placeholder="__('Description')"
+            :label="__('Description')"
+            v-model="slaData.description"
+            maxlength="140"
+          />
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">{{
+              __("Assignment Conditions")
+            }}</span>
+            <span class="text-p-sm text-ink-gray-6">
+              {{ __("Choose which tickets are affected by this policy.") }}
+            </span>
+          </div>
+          <div class="mt-3">
+            <div class="flex items-center justify-between">
+              <Checkbox
+                :label="__('Set as default SLA')"
+                :model-value="slaData.default_sla"
+                @update:model-value="toggleDefaultSla"
+                class="text-ink-gray-6 text-base-medium"
+              />
+              <div
+                v-if="isOldSla && slaActiveScreen.data && !slaData.default_sla"
+              >
+                <HoverCard :hoverDelay="250" side="top" align="end">
+                  <template #trigger>
+                    <div
+                      class="text-sm text-ink-gray-6 flex gap-1 cursor-default"
+                    >
+                      {{ __("Old Conditions") }}
+                      <LucideInfo class="size-4" />
+                    </div>
+                  </template>
+                  <template #default>
+                    <div
+                      class="text-sm text-ink-gray-6 p-2 bg-surface-base rounded-5 max-w-96 text-wrap whitespace-pre-wrap leading-5"
+                    >
+                      <code>{{ slaData.condition }}</code>
+                    </div>
+                  </template>
+                </HoverCard>
+              </div>
+            </div>
+            <div class="mt-5" v-if="!slaData.default_sla">
+              <div
+                class="flex flex-col gap-3 items-center text-center text-ink-gray-7 text-sm mb-2 border border-outline-gray-2 rounded-5 p-3 py-4"
+                v-if="!useNewUI"
+              >
+                <span class="text-p-sm">
+                  Conditions for this SLA were created from
+                  <a :href="deskUrl" target="_blank" class="underline">desk</a>
+                  which are not compatible with this UI, you will need to
+                  recreate the conditions here if you want to manage and add new
+                  conditions from this UI.
+                </span>
+                <Button
+                  :label="__('I understand, add conditions')"
+                  variant="subtle"
+                  theme="gray"
+                  @click="useNewUI = true"
+                />
+              </div>
+              <SlaAssignmentConditions
+                :conditions="slaData.condition_json"
+                v-if="useNewUI"
+              />
+            </div>
+          </div>
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">
+              {{ __("Valid From") }}
+            </span>
+            <span class="text-p-sm text-ink-gray-6">
+              {{ __("Choose how long this SLA policy will be active.") }}
+            </span>
+          </div>
+          <div class="mt-3.5 flex gap-5 flex-col md:flex-row">
+            <div class="w-full space-y-1.5">
+              <FormLabel :label="__('From date')" for="from_date" />
+              <DatePicker
+                v-model="slaData.start_date"
+                variant="subtle"
+                placeholder="11/01/2025"
+                class="w-full"
+                id="from_date"
+                @update:model-value="validateSlaData('start_date')"
+                :format="getDateFormat()"
+              >
+                <template #prefix>
+                  <LucideCalendar class="size-4" />
+                </template>
+              </DatePicker>
+              <ErrorMessage :message="slaDataErrors.start_date" />
+            </div>
+            <div class="w-full space-y-1.5">
+              <FormLabel :label="__('To date')" for="to_date" />
+              <DatePicker
+                v-model="slaData.end_date"
+                variant="subtle"
+                placeholder="25/12/2025"
+                class="w-full"
+                id="to_date"
+                @update:model-value="validateSlaData('end_date')"
+                :format="getDateFormat()"
+              >
+                <template #prefix>
+                  <LucideCalendar class="size-4" />
+                </template>
+              </DatePicker>
+              <ErrorMessage :message="slaDataErrors.end_date" />
+            </div>
+          </div>
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">
+              {{ __("Response and Resolution") }}
+            </span>
+            <span class="text-p-sm text-ink-gray-6">
+              {{
+                __(
+                  "Add time targets around support milestones like first reply and resolution times."
+                )
+              }}
+            </span>
+          </div>
+          <div class="mt-5">
+            <!-- <div class="flex gap-6">
+          <div
+            class="flex items-center gap-2"
+            @click="onApplySlaForChange(false)"
+          >
+            <input
+              name="apply_sla_for"
+              :checked="!slaData.apply_sla_for_resolution"
+              type="radio"
+            />
+            <div class="select-none text-ink-gray-6 text-sm-medium">
+              Apply SLA for response time
+            </div>
+          </div>
+          <div
+            class="flex items-center gap-2"
+            @click="onApplySlaForChange(true)"
+          >
+            <input
+              name="apply_sla_for"
+              :checked="slaData.apply_sla_for_resolution"
+              type="radio"
+            />
+            <div class="select-none text-ink-gray-6 text-sm-medium">
+              Apply SLA for response time and resolution time
+            </div>
+          </div>
+        </div> -->
+            <div class="mt-5">
+              <SlaPriorityList />
+            </div>
+          </div>
+        </div>
+        <hr class="my-8" />
+        <div>
+          <div class="flex flex-col gap-1">
+            <span class="text-md-semibold text-ink-gray-8">
+              {{ __("Status Details") }}
+            </span>
+            <span class="text-p-sm text-ink-gray-6">
+              {{
+                __(
+                  "Set the default status assigned when a ticket is created, and the status to apply when a ticket is reopened. If not specified, the default status from HD Settings will be used."
+                )
+              }}
+            </span>
+          </div>
+          <div class="mt-5">
+            <SlaStatusList />
+          </div>
+        </div>
+        <hr class="my-8" />
+        <SlaHolidays />
+      </div>
+    </template>
+  </SettingsLayoutBase>
+  <ConfirmDialog
+    v-model="showConfirmDialog.show"
+    :title="showConfirmDialog.title"
+    :message="showConfirmDialog.message"
+    :onConfirm="showConfirmDialog.onConfirm"
+    :onCancel="() => (showConfirmDialog.show = false)"
+  />
+</template>
+
+<script setup lang="ts">
+import LucideInfo from "~icons/lucide/info";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import {
+  resetSlaDataErrors,
+  slaActiveScreen,
+  slaData,
+  slaDataErrors,
+  validateSlaData,
+} from "@/stores/sla";
+import { convertToConditions, getDateFormat } from "@/utils";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  createResource,
+  DatePicker,
+  ErrorMessage,
+  FormLabel,
+  HoverCard,
+  LoadingIndicator,
+  Switch,
+  toast,
+} from "frappe-ui";
+import { inject, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import SlaAssignmentConditions from "./SlaAssignmentConditions.vue";
+import SlaHolidays from "./SlaHolidays.vue";
+import SlaPriorityList from "./SlaPriorityList.vue";
+import SlaStatusList from "./SlaStatusList.vue";
+import { disableSettingModalOutsideClick } from "../settingsModal";
+import { useOnboarding } from "@framework/ui";
+import { __ } from "@/translation";
+import SettingsLayoutBase from "@/components/layouts/SettingsLayoutBase.vue";
+import { SlaPolicyListResourceSymbol } from "@/types";
+import { HDServiceLevelAgreement } from "@/types/doctypes";
+
+const { updateOnboardingStep } = useOnboarding("helpdesk") ?? {};
+
+const showConfirmDialog = ref({
+  show: false,
+  title: "",
+  message: "",
+  onConfirm: () => {},
+});
+const isDirty = ref(false);
+const initialData = ref(null);
+
+const useNewUI = ref(true);
+const isOldSla = ref(false);
+
+const slaPolicyList = inject(SlaPolicyListResourceSymbol);
+const deskUrl = `${window.location.origin}/app/hd-service-level-agreement/${slaActiveScreen.value.data?.name}`;
+
+const getSlaData = createResource({
+  url: "frappe.client.get",
+  params: {
+    doctype: "HD Service Level Agreement",
+    name: slaActiveScreen.value.data?.name,
+  },
+  onSuccess(data: HDServiceLevelAgreement) {
+    let condition_json;
+    try {
+      condition_json = JSON.parse(data.condition_json || "[]");
+    } catch (error) {
+      toast.error(
+        "Assignment conditions are invalid or corrupt, recreate the conditions."
+      );
+      condition_json = [];
+    }
+
+    const newData = {
+      ...data,
+      loading: false,
+      condition_json: condition_json,
+    };
+    slaData.value = newData;
+    slaData.value.apply_sla_for_resolution = true;
+    initialData.value = JSON.stringify(newData);
+    const conditionsAvailable = slaData.value.condition?.length > 0;
+    const conditionsJsonAvailable = slaData.value.condition_json?.length > 0;
+    if (conditionsAvailable && !conditionsJsonAvailable) {
+      useNewUI.value = false;
+      isOldSla.value = true;
+    } else {
+      useNewUI.value = true;
+      isOldSla.value = false;
+    }
+  },
+});
+
+if (slaActiveScreen.value.data && slaActiveScreen.value.fetchData) {
+  slaData.value.loading = true;
+  getSlaData.submit();
+} else {
+  disableSettingModalOutsideClick.value = true;
+}
+
+const goBack = () => {
+  const confirmDialogInfo = {
+    show: true,
+    title: __("Unsaved changes"),
+    message: __(
+      "Are you sure you want to go back? Unsaved changes will be lost."
+    ),
+    onConfirm: goBack,
+  };
+  if (isDirty.value && !showConfirmDialog.value.show) {
+    showConfirmDialog.value = confirmDialogInfo;
+    return;
+  }
+  if (!slaActiveScreen.value.data && !showConfirmDialog.value.show) {
+    showConfirmDialog.value = confirmDialogInfo;
+    return;
+  }
+  // Workaround fix for settings modal not closing after going back
+  setTimeout(() => {
+    slaActiveScreen.value = {
+      screen: "list",
+      data: null,
+      fetchData: true,
+    };
+  }, 250);
+  showConfirmDialog.value.show = false;
+};
+
+const saveSla = () => {
+  const validationErrors = validateSlaData(undefined, !useNewUI.value);
+
+  if (Object.values(validationErrors).some((error) => error)) {
+    toast.error(
+      __("Invalid fields, check if all are filled in and values are correct.")
+    );
+    return;
+  }
+
+  if (slaActiveScreen.value.data) {
+    if (isOldSla.value && useNewUI.value) {
+      showConfirmDialog.value = {
+        show: true,
+        title: __("Confirm overwrite"),
+        message: __(
+          "Your old conditions will be overwritten. Are you sure you want to save?"
+        ),
+        onConfirm: () => {
+          updateSla();
+          showConfirmDialog.value.show = false;
+        },
+      };
+      return;
+    }
+    updateSla();
+  } else {
+    createSla();
+  }
+};
+
+const createSla = () => {
+  const defaultTicketStatus = slaData.value.default_ticket_status || null;
+  const ticketReopenStatus = slaData.value.reopen_ticket_status || null;
+  slaPolicyList?.insert.submit(
+    {
+      ...slaData.value,
+      default_ticket_status: defaultTicketStatus,
+      ticket_reopen_status: ticketReopenStatus,
+      condition: convertToConditions({
+        conditions: slaData.value.condition_json,
+        fieldPrefix: "doc",
+      }),
+      condition_json: JSON.stringify(slaData.value.condition_json),
+    },
+    {
+      onSuccess(data) {
+        toast.success(__("SLA policy created successfully."));
+        slaActiveScreen.value.data = data;
+        slaActiveScreen.value.screen = "view";
+        getSlaData.submit({
+          doctype: "HD Service Level Agreement",
+          name: data.name,
+        });
+        updateOnboardingStep?.("setup_sla", true);
+      },
+    }
+  );
+};
+
+const updateSla = () => {
+  const defaultTicketStatus = slaData.value.default_ticket_status || null;
+  const ticketReopenStatus = slaData.value.reopen_ticket_status || null;
+  slaPolicyList?.setValue.submit(
+    {
+      ...slaData.value,
+      name: slaActiveScreen.value.data?.name,
+      default_ticket_status: defaultTicketStatus,
+      ticket_reopen_status: ticketReopenStatus,
+      condition: useNewUI.value
+        ? convertToConditions({
+            conditions: slaData.value.condition_json,
+            fieldPrefix: "doc",
+          })
+        : slaData.value.condition,
+      condition_json: useNewUI.value
+        ? JSON.stringify(slaData.value.condition_json)
+        : null,
+    },
+    {
+      onSuccess() {
+        getSlaData.submit();
+        toast.success(__("SLA policy updated successfully."));
+        slaPolicyList.reload();
+      },
+    }
+  );
+};
+
+const toggleEnabled = () => {
+  slaData.value.enabled = !slaData.value.enabled;
+};
+
+const toggleDefaultSla = (value: boolean) => {
+  slaData.value.default_sla = value;
+  if (value) {
+    slaData.value.enabled = true;
+  }
+};
+
+const onApplySlaForChange = (applyForResolution: boolean) => {
+  slaData.value.apply_sla_for_resolution = applyForResolution;
+  nextTick(() => {
+    validateSlaData("priorities");
+  });
+};
+
+watch(
+  slaData,
+  (newVal) => {
+    if (!initialData.value) return;
+    isDirty.value = JSON.stringify(newVal) != initialData.value;
+    if (isDirty.value) {
+      disableSettingModalOutsideClick.value = true;
+    } else {
+      disableSettingModalOutsideClick.value = false;
+    }
+  },
+  { deep: true }
+);
+
+const beforeUnloadHandler = (event) => {
+  if (!isDirty.value) return;
+  event.preventDefault();
+  event.returnValue = true;
+};
+onMounted(() => {
+  addEventListener("beforeunload", beforeUnloadHandler);
+});
+
+onUnmounted(() => {
+  removeEventListener("beforeunload", beforeUnloadHandler);
+  resetSlaDataErrors();
+  disableSettingModalOutsideClick.value = false;
+});
+</script>
+<style scoped>
+input[type="radio"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: 2px solid #c5c2c2;
+  border-radius: 50%;
+  outline: none;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+input[type="radio"]:checked {
+  background-color: black;
+  border: 2px solid #000;
+}
+
+input[type="radio"]:checked::after {
+  content: "";
+  background-color: #fff;
+}
+
+input[type="radio"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+</style>

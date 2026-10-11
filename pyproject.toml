@@ -1,0 +1,24 @@
+[project]
+name = "helpdesk"
+authors = [
+    { name = "Pramaan" }
+]
+description = "Open Source Customer Service Software"
+requires-python = ">=3.14"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    # Core dependencies
+
+]
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0-dev,<18.0.0"
+
+[tool.bench.assets]
+build_dir = "./desk"
+out_dir = "./helpdesk/public/desk"
+index_html_path = "./helpdesk/www/helpdesk/index.html"

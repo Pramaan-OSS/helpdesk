@@ -1,0 +1,72 @@
+<template>
+  <div
+    class="flex flex-1 flex-col gap-1 overflow-hidden overflow-y-auto border-b px-6 py-3 sm:px-0 sm:py-3"
+  >
+    <TicketField
+      v-for="field in fields"
+      :key="field.fieldname"
+      :field="field"
+      :value="ticket[field.fieldname]"
+      @change="(data) => update(data.fieldname, data.value)"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { Field, FieldValue } from "@/types";
+import { toast } from "frappe-ui";
+import { computed } from "vue";
+import TicketField from "../TicketField.vue";
+const emit = defineEmits(["update"]);
+
+const props = defineProps({
+  ticket: {
+    type: Object,
+    required: true,
+  },
+});
+
+const fields = computed(() => {
+  return props.ticket.fields;
+});
+
+function update(field: Field["fieldname"], value: FieldValue, event = null) {
+  if (field === "subject" && value === "") {
+    toast.error("Subject is required");
+    event.target.value = props.ticket.subject;
+    return;
+  }
+  emit("update", { field, value });
+}
+</script>
+<style scoped>
+:deep(.form-control input:not([type="checkbox"])),
+:deep(.form-control select),
+:deep(.form-control textarea),
+:deep(.form-control button) {
+  border-color: var(--outline-gray-2);
+  background: var(--surface-base);
+}
+:deep(.form-control textarea) {
+  field-sizing: content;
+}
+
+:deep(.form-control button) {
+  gap: 0;
+}
+:deep(.form-control [type="checkbox"]) {
+  margin-left: 9px;
+  cursor: pointer;
+}
+
+:deep(.form-control button > div) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:deep(.form-control button svg) {
+  color: var(--ink-base);
+  width: 0;
+}
+</style>

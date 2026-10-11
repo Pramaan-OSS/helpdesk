@@ -1,0 +1,86 @@
+<template>
+  <div class="rounded-5 border px-2 border-outline-gray-2 text-sm">
+    <div
+      class="grid p-2 px-4 items-center"
+      style="grid-template-columns: 3fr 1fr"
+    >
+      <div
+        v-for="column in columns"
+        :key="column.key"
+        class="text-ink-gray-5 overflow-hidden whitespace-nowrap text-ellipsis"
+      >
+        {{ column.label }}
+      </div>
+    </div>
+    <hr />
+    <AssignmentScheduleItem
+      v-for="(day, index) in days"
+      :key="day.day"
+      :data="day"
+      :isLast="index === days.length - 1"
+    />
+  </div>
+  <ErrorMessage :message="assignmentRulesErrors.assignmentDays" class="mt-2" />
+</template>
+
+<script setup lang="ts">
+import { ErrorMessage } from "frappe-ui";
+import { onMounted, ref } from "vue";
+import {
+  assignmentRuleData,
+  assignmentRulesErrors,
+} from "@/stores/assignmentRules";
+import AssignmentScheduleItem from "./AssignmentScheduleItem.vue";
+import { __ } from "@/translation";
+
+const columns = [
+  {
+    label: __("Days"),
+    key: "day",
+  },
+  {
+    label: __("Active"),
+    key: "active",
+  },
+];
+
+const days = ref([
+  {
+    day: "Monday",
+    active: false,
+  },
+  {
+    day: "Tuesday",
+    active: false,
+  },
+  {
+    day: "Wednesday",
+    active: false,
+  },
+  {
+    day: "Thursday",
+    active: false,
+  },
+  {
+    day: "Friday",
+    active: false,
+  },
+  {
+    day: "Saturday",
+    active: false,
+  },
+  {
+    day: "Sunday",
+    active: false,
+  },
+]);
+
+onMounted(() => {
+  assignmentRuleData.value.assignmentDays.forEach((day) => {
+    const workDay = days.value.find((d) => d.day === day);
+    if (workDay) {
+      workDay.active = true;
+    }
+  });
+});
+</script>

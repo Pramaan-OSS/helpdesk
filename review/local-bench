@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+export FRAPPE_PRELOAD_DATABASE_DRIVERS=none
+export PATH="$root/.tools/bin:$PATH"
+cd "$root/.runtime/bench/sites"
+exec "$root/.venv/bin/python" -m frappe.utils.bench_helper frappe --site pramaan.localhost "$@"

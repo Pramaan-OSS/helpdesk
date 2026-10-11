@@ -1,0 +1,16 @@
+# Local infrastructure only; app startup is still being verified.
+services:
+  database:
+    image: mariadb:11.8
+    environment:
+      MARIADB_ROOT_PASSWORD: ${LOCAL_DB_PASSWORD:?Set a local database password}
+    ports:
+      - "127.0.0.1:13316:3306"
+    volumes:
+      - database:/var/lib/mysql
+  cache:
+    image: redis:7.4.11-alpine
+    ports:
+      - "127.0.0.1:16319:6379"
+volumes:
+  database:

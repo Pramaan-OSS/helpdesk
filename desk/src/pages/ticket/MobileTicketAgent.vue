@@ -1,0 +1,581 @@
+<template>
+  <div class="flex flex-col">
+    <LayoutHeader v-if="ticket.doc?.name">
+      <template #left-header>
+        <div class="max-w-[60vw]">
+          <Breadcrumbs :items="breadcrumbs" />
+        </div>
+      </template>
+      <template #right-header>
+        <div class="absolute end-0 pe-2">
+          <Dropdown :options="dropdownOptions">
+            <template #default="{ open }">
+              <Button :label="ticket.doc.status">
+                <template #prefix>
+                  <IndicatorIcon
+                    :class="
+                      ticketStatusStore.getStatus(ticket.doc.status)
+                        ?.parsed_color
+                    "
+                  />
+                </template>
+                <template #suffix>
+                  <component
+                    :is="open ? LucideChevronUp : LucideChevronDown"
+                    class="h-4"
+                  />
+                </template>
+              </Button>
+            </template>
+          </Dropdown>
+        </div>
+      </template>
+    </LayoutHeader>
+    <header
+      class="flex h-12 items-center justify-between gap-2 py-[7px] px-3 border-b"
+      v-if="ticket.doc?.name"
+    >
+      <!-- left side -->
+      <div class="flex min-w-0 flex-1 items-center gap-2">
+        <!-- the width lives on the wrapper: a Combobox with its own #trigger
+             slot drops the class it is handed -->
+        <div v-if="showTeamPicker" class="min-w-0 flex-1">
+          <Link
+            doctype="HD Team"
+            :hide-clear-button="true"
+            :model-value="ticket.doc.agent_group"
+            @update:model-value="(val) => updateField('agent_group', val)"
+          >
+            <!-- Same trigger styling as AssignTo so the header controls match -->
+            <template #trigger>
+              <Button
+                variant="outline"
+                class="!flex !justify-start w-full active:!bg-inherit hover:shadow-sm [&>span]:w-full"
+              >
+                <div class="flex items-center min-h-5 gap-2 w-full">
+                  <span
+                    class="truncate"
+                    :class="
+                      ticket.doc.agent_group
+                        ? 'text-ink-gray-7'
+                        : 'text-ink-gray-5'
+                    "
+                  >
+                    {{ ticket.doc.agent_group || __("Team") }}
+                  </span>
+                </div>
+                <template #suffix>
+                  <LucideChevronDown class="h-4 w-4 ms-auto text-ink-gray-5" />
+                </template>
+              </Button>
+            </template>
+          </Link>
+        </div>
+        <div class="min-w-0 flex-1">
+          <AssignTo :hide-label="true" />
+        </div>
+      </div>
+      <!-- right side -->
+      <div class="flex items-center gap-2">
+        <CustomActions
+          v-if="mobileCustomActions.length"
+          :actions="mobileCustomActions"
+        />
+      </div>
+    </header>
+    <div
+      v-if="ticket.doc?.name"
+      :key="ticketId"
+      class="flex min-h-0 flex-1 overflow-x-hidden"
+    >
+      <div class="flex min-h-0 flex-1 flex-col overflow-x-hidden">
+        <div class="flex min-h-0 flex-1 flex-col">
+          <Tabs
+            :modelValue="activeTab"
+            @update:modelValue="changeTabTo"
+            class="flex flex-col flex-1 overflow-hidden"
+          >
+            <div class="flex shrink-0">
+              <!-- Scroll here so the active underline isn't clipped. -->
+              <div class="min-w-0 flex-1 overflow-x-auto hide-scrollbar">
+                <TabList size="md" class="w-max min-w-full px-3 py-1.5">
+                  <TabTrigger
+                    v-for="tab in visibleTabs"
+                    :key="tab.value"
+                    :value="tab.value"
+                    :label="tab.label"
+                    :icon-left="tab.iconLeft"
+                  />
+                </TabList>
+              </div>
+              <!-- own border, so the tab underline runs on beneath it -->
+              <div
+                v-if="activeTab === 'call'"
+                class="flex items-center border-b border-outline-gray-1 pe-3"
+              >
+                <TicketCallActions />
+              </div>
+            </div>
+            <TabPanel
+              v-for="tab in visibleTabs"
+              :key="tab.value"
+              :value="tab.value"
+              class="min-h-0 flex-1 flex-col overflow-auto data-[state=active]:flex"
+            >
+              <div v-if="tab.value === 'details'">
+                <!-- ticket contact info -->
+                <TicketAgentContact
+                  v-if="contact.data"
+                  :contact="contact.data"
+                  :ticketId="ticket.doc?.name"
+                  @email:open="communicationAreaRef.toggleEmailBox()"
+                />
+                <!-- feedback component -->
+                <TicketFeedback
+                  v-if="ticket.doc?.feedback_rating"
+                  class="border-b px-6 py-3 text-base text-ink-gray-5"
+                  :ticket="ticket.doc"
+                />
+                <!-- SLA Section, hidden when no policy is attached -->
+                <template v-if="ticket.doc?.sla">
+                  <h3 class="px-6 pt-3 text-base-semibold">
+                    {{ __("SLA") }}
+                  </h3>
+                  <div class="px-6 py-3">
+                    <TicketSLA />
+                  </div>
+                </template>
+                <div
+                  class="flex items-center border-b px-6 py-3 text-base leading-5"
+                >
+                  <div class="w-[126px] text-sm text-ink-gray-5">
+                    {{ __("Source") }}
+                  </div>
+                  <div>
+                    {{
+                      ticket.doc?.via_customer_portal
+                        ? __("Portal")
+                        : __("Mail")
+                    }}
+                  </div>
+                </div>
+                <!-- Ticket Fields -->
+                <h3 class="px-6 pt-3 text-base-semibold">
+                  {{ __("Details") }}
+                </h3>
+                <TicketAgentFields
+                  :ticket="ticketWithFields"
+                  @update="
+                    ({ field, value }) =>
+                      ticket.setValue.submit({ [field]: value })
+                  "
+                  class="!border-0"
+                />
+              </div>
+
+              <!-- Rest Activities -->
+              <TicketTimeline
+                v-else
+                ref="timelineRef"
+                :ticket-id="String(ticket.doc?.name)"
+                :tab="tab.value"
+                :tab-label="tab.label"
+                @email:reply="(e) => communicationAreaRef?.replyToEmail(e)"
+              />
+            </TabPanel>
+          </Tabs>
+          <CommunicationArea
+            class="bg-surface-base"
+            ref="communicationAreaRef"
+            v-model="ticket.doc"
+            :ticketId="ticket.doc?.name"
+            :to-emails="[ticket.doc.raised_by]"
+            :cc-emails="[]"
+            :bcc-emails="[]"
+            :key="ticket.doc?.name"
+            @update="
+              () => {
+                reloadTicket(props.ticketId);
+                timelineRef[0]?.reload();
+              }
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <Dialog v-model:open="showSubjectDialog">
+      <template #title>
+        <h3>{{ __("Rename") }}</h3>
+      </template>
+      <template #default>
+        <FormControl
+          v-model="subjectInput"
+          :type="'text'"
+          size="sm"
+          variant="subtle"
+          :disabled="false"
+          :label="__('New Subject')"
+        />
+      </template>
+      <template #actions>
+        <Button
+          variant="solid"
+          :disabled="!subjectInput"
+          :loading="ticket.setValue.loading"
+          @click="
+            () => {
+              ticket.setValue.submit({ subject: subjectInput });
+              showSubjectDialog = false;
+            }
+          "
+        >
+          {{ __("Confirm") }}
+        </Button>
+        <Button class="ms-2" @click="showSubjectDialog = false">
+          {{ __("Close") }}
+        </Button>
+      </template>
+    </Dialog>
+    <SetContactPhoneModal
+      v-model="showPhoneModal"
+      :name="contact.data?.name"
+      @onUpdate="() => reloadTicket(props.ticketId)"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import LucideChevronUp from "~icons/lucide/chevron-up";
+import LucideChevronDown from "~icons/lucide/chevron-down";
+import { __ } from "@/translation";
+import {
+  Breadcrumbs,
+  call,
+  createResource,
+  Dialog,
+  Dropdown,
+  FormControl,
+  TabList,
+  TabPanel,
+  Tabs,
+  TabTrigger,
+  toast,
+} from "frappe-ui";
+import {
+  computed,
+  ComputedRef,
+  h,
+  onMounted,
+  onUnmounted,
+  PropType,
+  provide,
+  ref,
+  watchEffect,
+} from "vue";
+
+import { CommunicationArea, LayoutHeader, Link } from "@/components";
+import {
+  ActivityIcon,
+  CommentIcon,
+  DetailsIcon,
+  EmailIcon,
+  IndicatorIcon,
+  PhoneIcon,
+} from "@/components/icons";
+import TicketCallActions from "@/components/ticket/TicketCallActions.vue";
+import TicketTimeline from "@/components/ticket-agent/timeline/TicketTimeline.vue";
+
+import CustomActions from "@/components/CustomActions.vue";
+import AssignTo from "@/components/ticket-agent/AssignTo.vue";
+import SetContactPhoneModal from "@/components/ticket/SetContactPhoneModal.vue";
+import TicketSLA from "@/components/ticket-agent/TicketSLA.vue";
+import TicketAgentFields from "@/components/ticket/TicketAgentFields.vue";
+import {
+  createToast,
+  parseField,
+  setupCustomizations,
+} from "@/composables/formCustomisation";
+import { useScreenSize } from "@/composables/screen";
+import { useActiveTabManager } from "@/composables/useActiveTabManager";
+import {
+  reloadTicket,
+  revalidateTicket,
+  useTicket,
+} from "@/composables/useTicket";
+import { globalStore } from "@/stores/globalStore";
+import { getMeta } from "@/stores/meta";
+import { useTelephonyStore } from "@/stores/telephony";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
+import {
+  AssigneeSymbol,
+  Customizations,
+  CustomizationSymbol,
+  RecentSimilarTicketsSymbol,
+  Resource,
+  TabObject,
+  TicketContactSymbol,
+  TicketSymbol,
+} from "@/types";
+import { HDTicketStatus } from "@/types/doctypes";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+
+const telephonyStore = useTelephonyStore();
+const { isCallingEnabled } = storeToRefs(telephonyStore);
+
+const ticketStatusStore = useTicketStatusStore();
+const router = useRouter();
+const { $dialog } = globalStore();
+
+const timelineRef = ref<InstanceType<typeof TicketTimeline>[]>([]);
+const communicationAreaRef = ref<InstanceType<typeof CommunicationArea> | null>(
+  null
+);
+
+const subjectInput = ref(null);
+const showPhoneModal = ref(false);
+const customActions = ref([]);
+
+type ticketId = string;
+
+const props = defineProps({
+  ticketId: {
+    type: [String, Number] as PropType<ticketId>,
+    required: true,
+  },
+});
+
+const ticketComposable = computed(() => useTicket(props.ticketId));
+const ticket = computed(() => ticketComposable.value.ticket);
+const assignees = computed(() => ticketComposable.value.assignees);
+const contact = computed(() => ticketComposable.value.contact);
+
+const customizations: Resource<Customizations> = createResource({
+  url: "helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_customizations",
+  cache: ["HD Ticket", "customizations"],
+  auto: true,
+});
+
+// Build fields from getMeta + customizations (same as TicketDetailsTab)
+const { getField, getFields } = getMeta("HD Ticket");
+
+function updateField(name: string, value: string) {
+  ticket.value.setValue.submit({ [name]: value });
+}
+
+const customizationCtx = computed(() => ({
+  doc: ticket.value?.doc,
+  call,
+  router,
+  toast,
+  $dialog,
+  updateField,
+  createToast,
+}));
+
+watchEffect(async () => {
+  if (customizations.data) {
+    await setupCustomizations(customizations.data, customizationCtx.value);
+    customActions.value = [...(customizations.data?._customActions || [])];
+  }
+});
+
+// On mobile, collapse all custom actions into a single three-dot group
+const mobileCustomActions = computed(() => {
+  if (!customActions.value.length) return [];
+
+  const items: { label: string; onClick: () => void }[] = [];
+
+  for (const action of customActions.value) {
+    if (action.group) {
+      // Grouped action (with or without buttonLabel) — flatten its options
+      for (const item of action.options || []) {
+        items.push({ label: item.label, onClick: item.onClick });
+      }
+    } else {
+      // Normal standalone button
+      items.push({ label: action.label, onClick: action.onClick });
+    }
+  }
+
+  if (!items.length) return [];
+
+  return [{ group: "Actions", hideLabel: true, options: items }];
+});
+
+const showTeamPicker = computed(() =>
+  (customizations.data?.fields || []).some((f) => f.fieldname === "agent_group")
+);
+
+const ticketFields = computed(() => {
+  if (!customizations.data || !ticket.value.doc) return [];
+  const fieldsMeta = getFields();
+  if (!fieldsMeta || fieldsMeta.length === 0) return [];
+
+  const coreFieldNames = [
+    "ticket_type",
+    "agent_group",
+    "priority",
+    "customer",
+    "subject",
+    "status",
+  ];
+  let custom_fields = customizations.data?.fields || [];
+  custom_fields = custom_fields.filter(
+    (f) => !coreFieldNames.includes(f.fieldname)
+  );
+
+  return custom_fields
+    .map((f) => {
+      let fieldMeta = getField(f.fieldname);
+      if (!fieldMeta) return null;
+      fieldMeta = parseField(fieldMeta, ticket.value.doc);
+      return {
+        label: fieldMeta?.label || f.fieldname,
+        fieldname: f.fieldname,
+        fieldtype: fieldMeta?.fieldtype,
+        options: fieldMeta?.options || "",
+        placeholder:
+          f.placeholder || `Enter ${fieldMeta?.label || f.fieldname}`,
+        readonly: Boolean(fieldMeta.read_only),
+        disabled: Boolean(fieldMeta.read_only),
+        url_method: f.url_method || "",
+        required: f.required || fieldMeta?.reqd || false,
+        visible:
+          fieldMeta.display_via_depends_on &&
+          !fieldMeta.hidden &&
+          (!!ticket.value.doc[f.fieldname] || !fieldMeta.read_only),
+      };
+    })
+    .filter(Boolean);
+});
+
+// Merged ticket doc with computed fields for TicketAgentFields
+const ticketWithFields = computed(() => ({
+  ...ticket.value.doc,
+  fields: ticketFields.value,
+}));
+
+provide(TicketSymbol, ticket);
+provide(
+  AssigneeSymbol,
+  computed(() => ticketComposable.value.assignees)
+);
+provide(
+  TicketContactSymbol,
+  computed(() => ticketComposable.value.contact)
+);
+provide(
+  CustomizationSymbol,
+  computed(() => customizations)
+);
+provide(
+  RecentSimilarTicketsSymbol,
+  computed(() => ticketComposable.value.recentSimilarTickets)
+);
+provide("communicationArea", communicationAreaRef);
+provide("makeCall", () => {
+  if (!contact.value.data?.mobile_no && !contact.value.data?.phone) {
+    showPhoneModal.value = true;
+    return;
+  }
+  telephonyStore.makeCall({
+    number: contact.value.data?.phone || contact.value.data?.mobile_no,
+    doctype: "HD Ticket",
+    docname: props.ticketId,
+  });
+});
+provide("ticketId", props.ticketId);
+provide("refreshTicket", () => reloadTicket(props.ticketId));
+provide("onCallEnded", () => reloadTicket(props.ticketId));
+
+const { isMobileView } = useScreenSize();
+
+const showSubjectDialog = ref(false);
+
+const breadcrumbs = computed(() => {
+  let items = [{ label: __("Tickets"), route: { name: "TicketsAgent" } }];
+  items.push({
+    label: ticket.value.doc?.subject,
+    route: { name: "TicketAgent" },
+  });
+  return items;
+});
+
+const dropdownOptions = computed(() =>
+  ticketStatusStore.statuses.data
+    ?.filter((o: HDTicketStatus) => o.enabled)
+    .map((o: HDTicketStatus) => ({
+      label: o.label_agent,
+      value: o.label_agent,
+      onClick: () => ticket.value.setValue.submit({ status: o.label_agent }),
+      icon: () =>
+        h(IndicatorIcon, {
+          class: o.parsed_color,
+        }),
+    }))
+);
+
+const tabs: ComputedRef<TabObject[]> = computed(() => {
+  const _tabs = [
+    {
+      value: "details",
+      label: __("Details"),
+      iconLeft: DetailsIcon,
+      condition: () => isMobileView.value,
+    },
+    {
+      value: "activity",
+      label: __("Activity"),
+      iconLeft: ActivityIcon,
+    },
+    {
+      value: "email",
+      label: __("Emails"),
+      iconLeft: EmailIcon,
+    },
+    {
+      value: "comment",
+      label: __("Comments"),
+      iconLeft: CommentIcon,
+    },
+  ];
+
+  if (isCallingEnabled.value) {
+    _tabs.push({
+      value: "call",
+      label: __("Calls"),
+      iconLeft: PhoneIcon,
+    });
+  }
+  return _tabs;
+});
+
+const visibleTabs = computed(() =>
+  tabs.value.filter((tab) => !tab.condition || tab.condition())
+);
+
+const { activeTab, changeTabTo } = useActiveTabManager(tabs);
+
+onMounted(() => {
+  document.title = props.ticketId;
+  // Revisiting a ticket: show the cached conversation immediately and refresh it
+  // in place (mobile has no live socket refresh to keep the cache current).
+  revalidateTicket(props.ticketId);
+});
+
+onUnmounted(() => {
+  document.title = "Helpdesk";
+});
+</script>
+<style scoped>
+:deep(.breadcrumb-item span),
+:deep(a span) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+}
+</style>

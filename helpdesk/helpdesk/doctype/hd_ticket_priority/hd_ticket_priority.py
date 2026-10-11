@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+# For license information, please see license.txt
+from __future__ import unicode_literals
+
+import frappe
+from frappe import _
+from frappe.model.document import Document
+
+from helpdesk.utils import capture_event
+
+
+class HDTicketPriority(Document):
+    def before_save(self):
+        if self.disabled:
+            return
+        priority_in_sla = frappe.db.get_value(
+            "HD Service Level Priority", {"priority": self.name}
+        )
+        if priority_in_sla:
+            return
+        frappe.msgprint(
+            msg=_(
+                "Please add this priority in the <a href='/app/hd-service-level-agreement'>required SLA documents</a>"
+            ),
+            title=_("Action Required"),
+            indicator="orange",
+        )
+
+    def after_insert(self):
+        if self.level != "Medium":
+            capture_event("priority_created")

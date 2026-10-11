@@ -1,0 +1,149 @@
+<template>
+  <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-1">
+      <div class="text-md-semibold text-ink-gray-8">
+        {{ __("Work Schedule and Holidays") }}
+      </div>
+      <div class="text-p-sm text-ink-gray-6 max-w-lg">
+        {{
+          __(
+            "Set working days, hours, and holidays by selecting a predefined schedule or creating a new one."
+          )
+        }}
+      </div>
+    </div>
+    <Popover bare align="end" :offset="8">
+      <template #trigger="{ open }">
+        <Button
+          class="text-sm"
+          :icon-right="open ? 'lucide-chevron-up' : 'lucide-chevron-down'"
+          :label="slaData.holiday_list"
+        />
+      </template>
+      <template #default>
+        <div
+          class="min-w-40 rounded-6 bg-surface-elevation-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+        >
+          <div class="max-h-52 overflow-y-auto p-1">
+            <div
+              v-for="holiday in holidayListData.data"
+              :key="holiday.name"
+              class="flex items-center justify-between gap-4 rounded-4 px-2 py-1.5 text-base text-ink-gray-8 cursor-pointer hover:bg-surface-gray-3"
+              @click="slaData.holiday_list = holiday.name"
+            >
+              <div class="flex items-center gap-2 w-full">
+                <input
+                  name="holiday_list"
+                  :checked="holiday.name === slaData.holiday_list"
+                  type="radio"
+                />
+                <div class="select-none">{{ holiday.holiday_list_name }}</div>
+              </div>
+              <div class="flex cursor-pointer items-center gap-1">
+                <Button
+                  variant="ghost"
+                  @click.stop="editHolidayList(holiday)"
+                  icon="lucide-edit"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mt-1.5 flex flex-col gap-1 border-t border-outline-elevation-2 pt-1.5 p-1"
+          >
+            <Button
+              class="w-full !justify-start !text-ink-gray-5"
+              variant="ghost"
+              :label="__('Create new business holiday')"
+              @click="createNewHolidayList()"
+              icon-left="lucide-plus"
+            />
+          </div>
+        </div>
+      </template>
+    </Popover>
+  </div>
+  <div class="mt-5">
+    <SlaWorkDaysList />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { Button, createListResource, Popover } from "frappe-ui";
+import SlaWorkDaysList from "./SlaWorkDaysList.vue";
+import { setActiveSettingsTab } from "../settingsModal";
+import {
+  holidayListActiveScreen,
+  resetHolidayData,
+} from "@/stores/holidayList";
+import { watchDebounced } from "@vueuse/core";
+import { slaData, validateSlaData } from "@/stores/sla";
+
+const createNewHolidayList = () => {
+  setActiveSettingsTab("Business Holidays");
+  holidayListActiveScreen.value = {
+    screen: "view",
+    data: null,
+    previousScreen: {
+      screen: "view",
+      data: slaData.value.name,
+    },
+  };
+  resetHolidayData();
+};
+
+const editHolidayList = (data: any) => {
+  setActiveSettingsTab("Business Holidays");
+  holidayListActiveScreen.value = {
+    screen: "view",
+    data: data,
+    previousScreen: {
+      screen: "view",
+      data: slaData.value.name,
+    },
+  };
+};
+
+const holidayListData = createListResource({
+  doctype: "HD Service Holiday List",
+  fields: ["name", "holiday_list_name"],
+  auto: true,
+});
+
+watchDebounced(
+  slaData.value.support_and_resolution,
+  () => {
+    validateSlaData("support_and_resolution");
+  },
+  { debounce: 300 }
+);
+</script>
+
+<style scoped>
+input[type="radio"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: 2px solid #c5c2c2;
+  border-radius: 50%;
+  outline: none;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+input[type="radio"]:checked {
+  background-color: black;
+  border: 2px solid #000;
+}
+
+input[type="radio"]:checked::after {
+  content: "";
+  background-color: #fff;
+}
+
+input[type="radio"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+</style>

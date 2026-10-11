@@ -1,0 +1,197 @@
+<template>
+  <div class="flex flex-col flex-1">
+    <LayoutHeader>
+      <template #left-header>
+        <Breadcrumbs :items="breadcrumbs" />
+      </template>
+      <template #right-header> </template>
+    </LayoutHeader>
+    <div class="pt-6 mx-auto w-full max-w-4xl px-5">
+      <ArticleDraft @draft="content = $event" />
+
+      <div class="flex flex-col gap-3 rounded-6 border w-full p-4">
+        <div class="flex justify-between items-center mb-3">
+          <!-- Author Info -->
+          <div class="flex gap-1 items-center flex-1 me-7 max-w-fit">
+            <UserAvatar :name="user.name" :expand="true" />
+            <span>{{ __("in") }}</span>
+            <Link
+              class="form-control"
+              doctype="HD Article Category"
+              :placeholder="__('Select Category')"
+              v-model="categoryId"
+              :pageLength="100"
+              :hide-clear-button="true"
+            />
+          </div>
+          <!-- Action Buttons -->
+          <div class="flex gap-2">
+            <Button :label="__('Discard')" @click="handleArticleDiscard" />
+            <Button
+              :label="__('Create')"
+              variant="solid"
+              @click="handleCreateArticle"
+            />
+          </div>
+        </div>
+        <!-- Title -->
+        <textarea
+          class="w-full resize-none border-0 bg-transparent text-3xl-bold placeholder-ink-gray-3 p-0 pb-3 border-b border-outline-elevation-2 focus:ring-0 focus:border-outline-elevation-2"
+          v-model="title"
+          :placeholder="__('Title')"
+          rows="1"
+          wrap="soft"
+          maxlength="140"
+          autofocus
+          @input="
+          (e: Event) => {
+            const target = e.target as HTMLTextAreaElement;
+            target.style.height = `${target.scrollHeight}px`;
+          }
+          "
+        />
+        <!-- Article Content -->
+        <Editor
+          v-model="content"
+          :extensions="extensions"
+          :upload-function="
+            (file: any, options: any) =>
+              uploadFunction(file, 'HD Article', null, false, options)
+          "
+          :placeholder="__('Write your article here...')"
+        >
+          <template #default>
+            <EditorContent
+              class="rounded-b-6 max-w-[unset] prose-sm h-[calc(100vh-340px)] sm:h-[calc(100vh-250px)] overflow-auto"
+            />
+            <EditorFixedMenu
+              class="-ms-1 overflow-x-auto w-full"
+              :items="fullToolbar"
+            />
+            <EditorTableMenu />
+          </template>
+        </Editor>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import ArticleDraft from "@/components/ArticleDraft.vue";
+import { Breadcrumbs, toast, usePageMeta } from "frappe-ui";
+import {
+  Editor,
+  EditorContent,
+  EditorFixedMenu,
+  EditorTableMenu,
+} from "frappe-ui/editor";
+import { buildEditorExtensions, fullToolbar } from "@/components/editor/config";
+const extensions = buildEditorExtensions();
+import { useOnboarding } from "@framework/ui";
+import Link from "@/components/frappe-ui/Link.vue";
+import { computed, ref, watch } from "vue";
+import { __ } from "@/translation";
+
+import { LayoutHeader, UserAvatar } from "@/components";
+import { useAuthStore } from "@/stores/auth";
+import { globalStore } from "@/stores/globalStore";
+import { newArticle } from "@/stores/knowledgeBase";
+import { useUserStore } from "@/stores/user";
+import { Article } from "@/types";
+import { uploadFunction } from "@/utils";
+import { useRoute, useRouter } from "vue-router";
+
+const userStore = useUserStore();
+const user = userStore.getUser();
+const { $dialog } = globalStore();
+const router = useRouter();
+const route = useRoute();
+const { updateOnboardingStep } = useOnboarding("helpdesk") ?? {};
+const { isManager } = useAuthStore();
+
+const title = ref("");
+const content = ref("");
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+});
+
+const categoryId = ref(props.id || null);
+const categoryName = computed(() => (route.query.title as string) || "");
+
+function handleCreateArticle() {
+  newArticle.submit(
+    { title: title.value, content: content.value, category: categoryId.value },
+    {
+      onSuccess: (article: Article) => {
+        toast.success(__("Article created successfully."));
+        if (isManager) {
+          updateOnboardingStep?.("first_article");
+        }
+        resetState();
+        router.push({
+          name: "Article",
+          params: {
+            articleId: article.name,
+          },
+        });
+      },
+      onError: (error: string) => {
+        toast.error(error);
+      },
+    }
+  );
+}
+function handleArticleDiscard() {
+  if (!title.value && !content.value) {
+    router.push({
+      name: "AgentKnowledgeBase",
+    });
+    return;
+  }
+  $dialog({
+    title: __("Discard Article"),
+    message: __("Are you sure you want to discard this article?"),
+    actions: [
+      {
+        label: __("Confirm"),
+        variant: "solid",
+        onClick({ close }: { close: () => void }) {
+          router.push({
+            name: "AgentKnowledgeBase",
+          });
+          resetState();
+          close();
+        },
+      },
+    ],
+  });
+}
+
+function resetState() {
+  title.value = "";
+  content.value = "";
+}
+
+const breadcrumbs = computed(() => {
+  const options: Array<{ label: string; route?: { name: string } }> = [
+    {
+      label: __("Knowledge Base"),
+      route: { name: "AgentKnowledgeBase" },
+    },
+  ];
+  options.push({
+    label: __("New Article"),
+  });
+  return options;
+});
+
+usePageMeta(() => {
+  return {
+    title: __("New Article"),
+  };
+});
+</script>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ boot.lang or 'en' }}" dir="{{ boot.dir or 'ltr' }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pramaan Helpdesk</title>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Pramaan Helpdesk" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+
+    <link rel="icon" type="image/svg+xml" href="/assets/helpdesk/desk/favicon.svg" />
+    <link rel="mask-icon" href="/assets/helpdesk/desk/favicon.svg" color="#174f46" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="modals"></div>
+    <div id="popovers"></div>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+      window.site_name = "{{ site_name }}";
+    </script>
+  </body>
+</html>

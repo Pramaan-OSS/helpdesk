@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-02 15:55:27.177137",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fieldname",
+  "url_method",
+  "required",
+  "visible_to",
+  "editable_after_creation",
+  "placeholder"
+ ],
+ "fields": [
+  {
+   "fieldname": "fieldname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Field (fieldname)"
+  },
+  {
+   "default": "0",
+   "fieldname": "required",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Required"
+  },
+  {
+   "default": "Everyone",
+   "description": "Everyone lets both agents and customers see this field. Agents shows it only in the agent view. This controls the ticket form only. Raise the field's permission level in Customize Form to hide it from the API layer as well.",
+   "fieldname": "visible_to",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Visible to",
+   "options": "Everyone\nAgents"
+  },
+  {
+   "columns": 3,
+   "default": "1",
+   "depends_on": "eval:doc.visible_to != 'Agents'",
+   "fieldname": "editable_after_creation",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Editable after creation"
+  },
+  {
+   "fieldname": "url_method",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "URL/Method"
+  },
+  {
+   "fieldname": "placeholder",
+   "fieldtype": "Data",
+   "label": "Placeholder"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-29 22:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Helpdesk",
+ "name": "HD Ticket Template Field",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

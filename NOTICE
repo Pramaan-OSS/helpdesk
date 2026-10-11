@@ -1,0 +1,225 @@
+Original project copyright and module notices
+
+helpdesk/search_sqlite.py
+# Copyright (c) 2025, Frappe Technologies Pvt. Ltd. and Contributors
+# MIT License. See license.txt
+
+helpdesk/search.py
+# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and Contributors
+# MIT License. See license.txt
+
+helpdesk/setup/setup_wizard.py
+# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/api/search.py
+# Copyright (c) 2025, Frappe Technologies Pvt. Ltd. and Contributors
+# MIT License. See license.txt
+
+helpdesk/helpdesk/doctype/hd_article/test_hd_article.py
+# Copyright (c) 2021, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_article/hd_article.py
+# Copyright (c) 2021, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_saved_reply/test_hd_saved_reply.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_saved_reply/test_hd_saved_reply_actions.py
+# Copyright (c) 2026, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_saved_reply/hd_saved_reply.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_team_member/hd_team_member.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_synonyms/test_hd_synonyms.py
+# Copyright (c) 2024, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_synonyms/hd_synonyms.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_service_day/hd_service_day.py
+# Copyright (c) 2019, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_activity/hd_ticket_activity.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_activity/test_hd_ticket_activity.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_notification/test_hd_notification.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_article_feedback/hd_article_feedback.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_article_feedback/test_hd_article_feedback.py
+# Copyright (c) 2024, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_agent_status/test_hd_agent_status.py
+# Copyright (c) 2026, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_agent_status/hd_agent_status.py
+# Copyright (c) 2026, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_type/test_hd_ticket_type.py
+# Copyright (c) 2017, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_template/test_hd_ticket_template.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_template/hd_ticket_template.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_customer_member/hd_customer_member.py
+# Copyright (c) 2026, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_settings/hd_settings.py
+# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/doctype/hd_settings/test_hd_settings.py
+# Copyright (c) 2018, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_article_category/hd_article_category.py
+# Copyright (c) 2021, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_article_category/test_hd_article_category.py
+# Copyright (c) 2021, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_comment_reaction/hd_comment_reaction.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_comment_reaction/__init__.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_stopword/hd_stopword.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_stopword/test_hd_stopword.py
+# Copyright (c) 2024, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_email_feedback/hd_email_feedback.py
+# Copyright (c) 2025, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_email_feedback/test_hd_email_feedback.py
+# Copyright (c) 2025, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_service_holiday_list/test_hd_service_holiday_list.py
+# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_service_holiday_list/hd_service_holiday_list.py
+# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_customer/test_hd_customer.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_customer/hd_customer.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_comment/hd_ticket_comment.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_field_layout/hd_field_layout.py
+# Copyright (c) 2025, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_field_layout/test_hd_field_layout.py
+# Copyright (c) 2025, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/erpnext_hd_settings/test_erpnext_hd_settings.py
+# Copyright (c) 2026, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/erpnext_hd_settings/erpnext_hd_settings.py
+# Copyright (c) 2026, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_service_level_agreement/test_hd_service_level_agreement.py
+# Copyright (c) 2018, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_template_field/hd_ticket_template_field.py
+# Copyright (c) 2023, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_template_field/test_hd_ticket_template_field.py
+# Copyright (c) 2023, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_priority/hd_ticket_priority.py
+# Copyright (c) 2019, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_priority/test_hd_ticket_priority.py
+# Copyright (c) 2019, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_saved_reply_team/hd_saved_reply_team.py
+# Copyright (c) 2025, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket/test_hd_ticket.py
+# Copyright (c) 2023, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_holiday/hd_holiday.py
+# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
+
+helpdesk/helpdesk/doctype/hd_synonym/hd_synonym.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_view/hd_view.py
+# Copyright (c) 2025, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_view/test_hd_view.py
+# Copyright (c) 2025, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_feedback_option/hd_ticket_feedback_option.py
+# Copyright (c) 2023, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_feedback_option/test_hd_ticket_feedback_option.py
+# Copyright (c) 2023, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_service_level_priority/hd_service_level_priority.py
+# Copyright (c) 2019, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/doctype/hd_form_script/test_hd_form_script.py
+# Copyright (c) 2024, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_form_script/hd_form_script.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_agent/test_hd_agent.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_agent/hd_agent.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_team/test_hd_team.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/doctype/hd_team/hd_team.py
+# Copyright (c) 2022, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_status/hd_ticket_status.py
+# Copyright (c) 2025, Frappe Technologies and contributors
+
+helpdesk/helpdesk/doctype/hd_ticket_status/test_hd_ticket_status.py
+# Copyright (c) 2025, Frappe Technologies and Contributors
+
+helpdesk/helpdesk/report/ticket_analytics/ticket_analytics.py
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/report/first_response_time_for_tickets/first_response_time_for_tickets.py
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/report/ticket_search_analysis/ticket_search_analysis.py
+# Copyright (c) 2024, Frappe Technologies and contributors
+
+helpdesk/helpdesk/report/ticket_summary/ticket_summary.py
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/helpdesk/report/support_hour_distribution/support_hour_distribution.py
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
+
+helpdesk/integrations/erpnext/test_erpnext_integration.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/tests/api/test_contact.py
+# Copyright (c) 2022, Frappe Technologies and Contributors
+
+helpdesk/tests/api/agent_home/test_agent_home.py
+# Copyright (c) 2024, Frappe Technologies and Contributors
+
+The retained framework and shared UI are separately licensed dependencies. Their notices are included in the pinned source distribution.

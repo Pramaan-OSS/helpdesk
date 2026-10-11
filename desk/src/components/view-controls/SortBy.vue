@@ -1,0 +1,279 @@
+<template>
+  <Combobox
+    v-if="!sortValues?.size"
+    :options="options"
+    :model-value="null"
+    @update:model-value="(value) => value && setSort(value)"
+  >
+    <template #trigger>
+      <Button :label="__('Sort')">
+        <template v-if="hideLabel" #icon>
+          <SortIcon class="h-4" />
+        </template>
+        <template v-else-if="!sortValues?.size" #prefix>
+          <SortIcon class="h-4" />
+        </template>
+      </Button>
+    </template>
+  </Combobox>
+  <Popover v-else bare :offset="8">
+    <template #trigger="{ open }">
+      <Button v-if="sortValues.size > 1" :label="__('Sort')">
+        <template v-if="hideLabel" #icon>
+          <SortIcon class="h-4" />
+        </template>
+        <template v-else #prefix><SortIcon class="h-4" /></template>
+        <template v-if="sortValues?.size" #suffix>
+          <div
+            class="flex h-5 w-5 items-center justify-center rounded-[5px] bg-surface-base pt-px text-xs-medium text-ink-gray-8 shadow-sm"
+          >
+            {{ sortValues.size }}
+          </div>
+        </template>
+      </Button>
+      <div v-else class="flex items-center justify-center">
+        <Button
+          v-if="sortValues.size"
+          class="rounded-e-none border-e"
+          @click.stop="
+            () => {
+              Array.from(sortValues)[0].direction =
+                Array.from(sortValues)[0].direction == 'asc' ? 'desc' : 'asc';
+              apply();
+            }
+          "
+        >
+          <AscendingIcon
+            v-if="Array.from(sortValues)[0].direction == 'asc'"
+            class="h-4"
+          />
+          <DescendingIcon v-else class="h-4" />
+        </Button>
+        <Button
+          :label="getSortLabel()"
+          :class="sortValues.size ? 'rounded-s-none' : ''"
+        >
+          <template v-if="!hideLabel && !sortValues?.size" #prefix>
+            <SortIcon class="h-4" />
+          </template>
+          <template v-if="sortValues?.size" #suffix>
+            <component
+              :is="open ? LucideChevronUp : LucideChevronDown"
+              class="h-4 text-ink-gray-5"
+            />
+          </template>
+        </Button>
+      </div>
+    </template>
+    <template #default="{ close }">
+      <div
+        class="rounded-6 border border-outline-gray-1 bg-surface-base shadow-xl"
+      >
+        <div class="min-w-60 p-2">
+          <div
+            v-if="sortValues?.size"
+            ref="sortList"
+            class="mb-3 flex flex-col gap-2"
+          >
+            <div
+              v-for="(sort, i) in sortValues"
+              :key="sort.fieldname"
+              class="flex items-center gap-1"
+            >
+              <div class="handle flex h-7 w-7 items-center justify-center">
+                <DragIcon class="h-4 w-4 cursor-grab text-ink-gray-5" />
+              </div>
+              <div class="flex">
+                <Button
+                  size="md"
+                  class="rounded-e-none border-e"
+                  @click="
+                    () => {
+                      sort.direction = sort.direction == 'asc' ? 'desc' : 'asc';
+                      apply();
+                    }
+                  "
+                >
+                  <AscendingIcon v-if="sort.direction == 'asc'" class="h-4" />
+                  <DescendingIcon v-else class="h-4" />
+                </Button>
+                <!-- width on the wrapper: a Combobox with its own #trigger
+                     slot drops the class it is handed -->
+                <div class="w-32">
+                  <Combobox
+                    :model-value="sort.fieldname"
+                    :options="sortOptions.data || []"
+                    @update:model-value="
+                      (value) => value && updateSort(value, i)
+                    "
+                  >
+                    <template #trigger="{ displayValue }">
+                      <Button
+                        class="flex w-full items-center justify-between rounded-s-none !text-ink-gray-5 text-xs"
+                        size="md"
+                      >
+                        {{ __(displayValue) }}
+                        <template #suffix>
+                          <LucideChevronDown class="size-4 text-ink-gray-5" />
+                        </template>
+                      </Button>
+                    </template>
+                  </Combobox>
+                </div>
+              </div>
+              <Button variant="ghost" icon="lucide-x" @click="removeSort(i)" />
+            </div>
+          </div>
+          <div
+            v-else
+            class="mb-3 flex h-7 items-center px-3 text-sm text-ink-gray-5"
+          >
+            {{ __("Empty - Choose a field to sort by") }}
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <Combobox
+              :options="options"
+              :model-value="null"
+              @update:model-value="(value) => value && setSort(value)"
+            >
+              <template #trigger>
+                <Button
+                  class="!text-ink-gray-5"
+                  variant="ghost"
+                  :label="__('Add Sort')"
+                >
+                  <template #prefix>
+                    <LucidePlus class="size-4" />
+                  </template>
+                </Button>
+              </template>
+            </Combobox>
+            <Button
+              v-if="sortValues?.size"
+              class="!text-ink-gray-5"
+              variant="ghost"
+              :label="__('Clear Sort')"
+              @click="clearSort(close)"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
+  </Popover>
+</template>
+
+<script setup>
+import LucideChevronUp from "~icons/lucide/chevron-up";
+import LucideChevronDown from "~icons/lucide/chevron-down";
+import LucidePlus from "~icons/lucide/plus";
+import { computed, inject, ref } from "vue";
+import { useSortable } from "@vueuse/integrations/useSortable";
+import { Combobox, Popover } from "frappe-ui";
+import {
+  AscendingIcon,
+  DescendingIcon,
+  SortIcon,
+  DragIcon,
+} from "@/components/icons";
+
+const props = defineProps({
+  hideLabel: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["update"]);
+
+const listViewData = inject("listViewData");
+const listViewActions = inject("listViewActions");
+const { list, sortableFields: sortOptions } = listViewData;
+
+const sortValues = computed({
+  get: () => {
+    if (!list) return new Set();
+    let allSortValues = list.params?.order_by;
+    if (!allSortValues || !sortOptions.data) return new Set();
+    // if (allSortValues.trim() === "modified desc") return new Set();
+
+    allSortValues = allSortValues.split(", ").map((sortValue) => {
+      const [fieldname, direction] = sortValue.split(" ");
+      return { fieldname, direction };
+    });
+    // allSortValues = removeDuplicateSorts();
+    return new Set(allSortValues);
+  },
+  set: (value) => {
+    list.params.order_by = convertToString(value);
+  },
+});
+
+const options = computed(() => {
+  if (!sortOptions.data) return [];
+  if (!sortValues.value.size) return sortOptions.data;
+  const selectedOptions = [...sortValues.value].map((sort) => sort.fieldname);
+  return sortOptions.data.filter((option) => {
+    return !selectedOptions.includes(option.value);
+  });
+});
+
+const sortList = ref(null);
+
+// watchElement, and a ref rather than a selector: the popover panel unmounts on
+// close, so a one-shot document.querySelector at mount binds nothing.
+useSortable(sortList, sortValues, {
+  handle: ".handle",
+  animation: 200,
+  watchElement: true,
+  onEnd: () => apply(),
+});
+
+function getSortLabel() {
+  if (!sortValues.value.size) return __("Sort");
+  let values = Array.from(sortValues.value);
+  let label = sortOptions.data?.find(
+    (option) => option.value === values[0].fieldname
+  )?.label;
+
+  return __(label) || __(values[0].fieldname);
+}
+
+function setSort(fieldname) {
+  sortValues.value.add({ fieldname, direction: "asc" });
+  apply();
+}
+
+function updateSort(fieldname, index) {
+  let oldSort = Array.from(sortValues.value)[index];
+  sortValues.value.delete(oldSort);
+  sortValues.value.add({
+    fieldname,
+    direction: oldSort.direction,
+  });
+  apply();
+}
+
+function removeSort(index) {
+  sortValues.value.delete(Array.from(sortValues.value)[index]);
+  apply();
+}
+
+function clearSort(close) {
+  sortValues.value.clear();
+  apply();
+  close();
+}
+
+function apply() {
+  listViewActions.applySort(convertToString(sortValues.value));
+}
+
+function convertToString(values) {
+  let _sortValues = "";
+  values.forEach((f) => {
+    _sortValues += `${f.fieldname} ${f.direction}, `;
+  });
+  _sortValues = _sortValues.slice(0, -2);
+  return _sortValues;
+}
+</script>

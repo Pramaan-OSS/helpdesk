@@ -1,0 +1,93 @@
+<template>
+  <SettingsLayoutBase>
+    <template #title>
+      <h1 class="text-md-semibold text-ink-gray-8">
+        {{ __("Service Level Agreements (SLAs)") }}
+      </h1>
+    </template>
+    <template #description>
+      <p class="text-p-sm max-w-md text-ink-gray-6">
+        {{
+          __(
+            "SLAs align your team and customers with defined timelines for a reliable experience. Learn more about SLA "
+          )
+        }}
+        <a
+          href="/helpdesk/knowledge-base"
+          target="_blank"
+          class="underline"
+          >{{ __("here.") }}
+        </a>
+      </p>
+    </template>
+    <template #header-actions>
+      <Button
+        :label="__('New')"
+        theme="gray"
+        variant="solid"
+        @click="goToNew()"
+        icon-left="lucide-plus"
+        class="rtl:flex-row-reverse"
+      />
+    </template>
+    <template
+      v-if="slaPolicyList.data?.length > 9 || slaSearchQuery.length"
+      #header-bottom
+    >
+      <div class="relative">
+        <TextInput
+          :model-value="slaSearchQuery"
+          @update:model-value="slaSearchQuery = $event"
+          :placeholder="__('Search')"
+          type="text"
+          class="focus:ring-0 border-outline-gray-2"
+          :debounce="300"
+        >
+          <template #prefix>
+            <LucideSearch class="size-4" />
+          </template>
+        </TextInput>
+        <Button
+          v-if="slaSearchQuery"
+          icon="lucide-x"
+          variant="ghost"
+          @click="slaSearchQuery = ''"
+          class="absolute end-1 top-1/2 -translate-y-1/2"
+        />
+      </div>
+    </template>
+    <template #content>
+      <SlaPolicyList />
+    </template>
+  </SettingsLayoutBase>
+</template>
+
+<script setup lang="ts">
+import { resetSlaData, slaActiveScreen } from "@/stores/sla";
+import { Button } from "frappe-ui";
+import SlaPolicyList from "./SlaPolicyList.vue";
+import { inject, Ref, watch } from "vue";
+import SettingsLayoutBase from "@/components/layouts/SettingsLayoutBase.vue";
+import { SlaPolicyListResourceSymbol } from "@/types";
+
+const slaPolicyList = inject(SlaPolicyListResourceSymbol);
+const slaSearchQuery = inject<Ref>("slaSearchQuery");
+
+const goToNew = () => {
+  resetSlaData();
+  slaActiveScreen.value = {
+    screen: "view",
+    data: null,
+    fetchData: true,
+  };
+};
+
+watch(slaSearchQuery, (newValue) => {
+  slaPolicyList.filters = {
+    name: ["like", `%${newValue}%`],
+  };
+  // no pager on this list, so a shrunken pageLength would hide the rest for good
+  if (!newValue) slaPolicyList.start = 0;
+  slaPolicyList.reload();
+});
+</script>

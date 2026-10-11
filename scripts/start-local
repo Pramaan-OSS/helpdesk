@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+export FRAPPE_BENCH_ROOT="$root/.runtime/bench"
+export NODE_PATH="$root/.runtime/socket/node_modules"
+export FRAPPE_PRELOAD_DATABASE_DRIVERS=none
+export PATH="$root/.tools/nodebin/bin:$root/.tools/bin:$PATH"
+node "$root/vendor/framework/socketio.js" > "$root/.runtime/socket.log" 2>&1 &
+socket_pid=$!
+worker_pid=""
+scheduler_pid=""
+cleanup() { kill "$socket_pid" "$worker_pid" "$scheduler_pid" 2>/dev/null || true; }
+trap cleanup EXIT INT TERM
+cd "$root/.runtime/bench/sites"
+"$root/.venv/bin/python" -m frappe.utils.bench_helper frappe worker > "$root/.runtime/worker.log" 2>&1 &
+worker_pid=$!
+if [ -n "${PRAMAAN_API_KEY:-}" ]; then
+  "$root/.venv/bin/python" -m frappe.utils.bench_helper frappe schedule > "$root/.runtime/scheduler.log" 2>&1 &
+  scheduler_pid=$!
+fi
+"$root/.venv/bin/python" -m frappe.utils.bench_helper frappe --site pramaan.localhost serve --port 18008 --noreload

@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "scripts": {
+    "postinstall": "npm --prefix desk ci --no-audit --no-fund",
+    "dev": "npm --prefix desk run dev",
+    "build": "npm --prefix desk run build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "resolutions": {
+    "cheerio": "1.0.0-rc.12",
+    "prosemirror-model": "1.25.9",
+    "prosemirror-state": "1.4.4",
+    "prosemirror-view": "1.41.9",
+    "prosemirror-transform": "1.12.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.3"
+  }
+}

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Prepare local dependencies only. Never downloads upstream applications at runtime.
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$root"
+export PATH="$root/.tools/nodebin/bin:$PATH"
+command -v uv >/dev/null
+command -v node >/dev/null
+node -e 'if (Number(process.versions.node.split(".")[0]) < 24) throw new Error("Node 24 or newer is required.")'
+mkdir -p vendor
+if [ ! -d vendor/framework/.git ]; then
+  git clone --no-checkout https://github.com/frappe/frappe.git vendor/framework
+fi
+git -C vendor/framework checkout --detach e7ddbac9b5d9601e891dd57f01f4643a14f7f41c
+uv venv --python 3.14 .venv
+uv pip install --python .venv/bin/python -r review/runtime-lock.txt
+uv pip install --python .venv/bin/python --no-deps -e vendor/framework -e .
+mkdir -p .runtime/socket
+cp scripts/socket/package.json scripts/socket/package-lock.json .runtime/socket/
+npm --prefix .runtime/socket ci --no-audit --no-fund
+npm --prefix desk ci --no-audit --no-fund
+npm --prefix desk run build

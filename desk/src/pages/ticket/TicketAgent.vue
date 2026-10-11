@@ -1,0 +1,260 @@
+<template>
+  <div v-if="ticket.doc?.name && feedReady" :key="ticketId" class="flex min-h-0 flex-1 flex-col">
+    <TicketHeader :viewers="viewers" />
+    <CapabilityTools :ticket="ticketId" />
+    <div class="flex min-h-0 flex-1 overflow-hidden">
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Tabs & Communication Area -->
+        <TicketActivityPanel />
+      </div>
+
+      <!-- Sidepanel with Resizer -->
+      <TicketSidebar />
+    </div>
+    <SetContactPhoneModal
+      v-if="ticket.doc.contact"
+      v-model="showPhoneModal"
+      :name="ticket.doc?.contact"
+      @onUpdate="ticket.reload"
+    />
+  </div>
+  <div
+    v-else-if="ticket.doc?.name || (!ticket.doc && !ticket.get?.error)"
+    class="grid h-full place-items-center"
+  >
+    <LoadingIndicator class="size-6 text-ink-gray-4" />
+  </div>
+
+  <div v-else class="grid h-full place-items-center px-4 py-20 text-center">
+    <div class="space-y-2">
+      <div class="flex justify-center items-center mx-auto">
+        <TicketIcon class="size-10 text-ink-gray-4" />
+      </div>
+      <div class="text-md-medium text-ink-gray-8">
+        {{ __("Ticket not found") }}
+      </div>
+      <div class="text-center text-p-base text-ink-gray-6 mt-1">
+        {{
+          __("You don't have access to this ticket, or it no longer exists.")
+        }}
+      </div>
+      <Button :route="{ name: 'TicketsAgent' }" variant="subtle">
+        <template #prefix><LucideArrowLeft class="size-4" /></template>
+        {{ __("Back to Tickets") }}
+      </Button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import CapabilityTools from "@/components/CapabilityTools.vue";
+import LucideArrowLeft from "~icons/lucide/arrow-left";
+import { recordTicketVisit } from "@/components/command-palette/recentTickets";
+import TicketIcon from "@/components/icons/TicketIcon.vue";
+import TicketActivityPanel from "@/components/ticket-agent/TicketActivityPanel.vue";
+import { SHARED_VISIBLE_TYPES } from "@/components/ticket-agent/timeline/TicketTimeline.vue";
+import { useActivityTimeline } from "@framework/ui/ActivityTimeline";
+import TicketHeader from "@/components/ticket-agent/TicketHeader.vue";
+import TicketSidebar from "@/components/ticket-agent/TicketSidebar.vue";
+import SetContactPhoneModal from "@/components/ticket/SetContactPhoneModal.vue";
+import { useActiveViewers } from "@/composables/realtime";
+import {
+  reloadTicket,
+  revalidateTicket,
+  useTicket,
+} from "@/composables/useTicket";
+import {
+  ticketsToNavigate,
+  useTicketNavigation,
+} from "@/composables/useTicketNavigation";
+import { globalStore } from "@/stores/globalStore";
+import { useTelephonyStore } from "@/stores/telephony";
+import {
+  AssigneeSymbol,
+  Customizations,
+  CustomizationSymbol,
+  RecentSimilarTicketsSymbol,
+  Resource,
+  TicketContactSymbol,
+  TicketSymbol,
+} from "@/types";
+import {
+  createResource,
+  LoadingIndicator,
+  toast,
+  usePageMeta,
+} from "frappe-ui";
+import { computed, onBeforeUnmount, onMounted, provide, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { showCommentBox, showEmailBox } from "./modalStates";
+
+const telephonyStore = useTelephonyStore();
+const { $socket } = globalStore();
+
+const props = defineProps({
+  ticketId: {
+    type: String,
+    required: true,
+  },
+});
+const route = useRoute();
+const showPhoneModal = ref(false);
+
+// Started here, not in the timeline, so it runs alongside the doc fetch and both
+// sit behind one spinner. Every tab shares this one store.
+const { loading: feedLoading } = useActivityTimeline(
+  "HD Ticket",
+  props.ticketId,
+  SHARED_VISIBLE_TYPES
+);
+// latched: a doc_update reloads the feed, and that must not blank the page
+const feedReady = ref(false);
+
+useTicketNavigation();
+
+const ticketComposable = computed(() => useTicket(props.ticketId));
+const ticket = computed(() => ticketComposable.value.ticket);
+const customizations: Resource<Customizations> = createResource({
+  url: "helpdesk.helpdesk.doctype.hd_ticket.api.get_ticket_customizations",
+  cache: ["HD Ticket", "customizations"],
+  auto: true,
+});
+
+provide(TicketSymbol, ticket);
+
+provide(
+  AssigneeSymbol,
+  computed(() => ticketComposable.value.assignees)
+);
+provide(
+  TicketContactSymbol,
+  computed(() => ticketComposable.value.contact)
+);
+provide(
+  CustomizationSymbol,
+  computed(() => customizations)
+);
+provide(
+  RecentSimilarTicketsSymbol,
+  computed(() => ticketComposable.value.recentSimilarTickets)
+);
+provide("makeCall", () => {
+  if (
+    !ticketComposable.value.contact.data?.mobile_no &&
+    !ticketComposable.value.contact.data?.phone
+  ) {
+    showPhoneModal.value = true;
+    return;
+  }
+  telephonyStore.makeCall({
+    number:
+      ticketComposable.value.contact.data?.phone ||
+      ticketComposable.value.contact.data?.mobile_no,
+    doctype: "HD Ticket",
+    docname: props.ticketId,
+  });
+});
+provide("refreshTicket", () => reloadTicket(props.ticketId));
+provide("onCallEnded", () => reloadTicket(props.ticketId));
+
+const viewerComposable = computed(() => useActiveViewers(ticket.value.name));
+const viewers = computed(
+  () => viewerComposable.value.currentViewers[props.ticketId] || []
+);
+const { startViewing, stopViewing } = viewerComposable.value;
+
+// handling for faster navigation between tickets
+watch(
+  () => route.params.ticketId,
+  (newTicketId, oldTicketId) => {
+    if (newTicketId === oldTicketId) return;
+
+    if (oldTicketId) stopViewing(oldTicketId as string);
+    startViewing(newTicketId as string);
+
+    // Switching to an already-visited ticket: show its cached conversation and
+    // refresh it in the background in case it changed while we were elsewhere.
+    if (oldTicketId) revalidateTicket(newTicketId as string);
+  },
+  { immediate: true }
+);
+
+// immediate so a store fetched earlier in the session opens the gate right away
+watch(
+  feedLoading,
+  (loading) => {
+    if (!loading) feedReady.value = true;
+  },
+  { immediate: true }
+);
+
+// Feeds the command palette's "Recent" list, which is what an empty Cmd+K shows.
+watch(
+  () => ticket.value?.doc?.subject,
+  (subject) => subject && recordTicketVisit(props.ticketId, subject),
+  { immediate: true }
+);
+
+type TicketUpdateData = {
+  ticket_id: string;
+  user: string;
+  field: string;
+  value: string;
+};
+
+onMounted(() => {
+  // Revisiting a ticket: show the cached conversation immediately and refresh it
+  // in place, since a reply may have arrived while the socket listener was off.
+  revalidateTicket(props.ticketId);
+
+  ticketsToNavigate.update({
+    params: {
+      ticket: props.ticketId,
+      current_view: route.query.view as string,
+    },
+  });
+  ticketsToNavigate.reload();
+  ticket.value.markSeen.reload();
+
+  $socket.on("ticket_update", (data: TicketUpdateData) => {
+    if (data.ticket_id === ticket.value?.name) {
+      // Notify the user about the update
+      toast.info(`User ${data.user} updated ${data.field} to ${data.value}`);
+    }
+  });
+
+  $socket.on("helpdesk:ticket-update", (data: { ticket_id: string }) => {
+    if (data.ticket_id == props.ticketId) {
+      reloadTicket(props.ticketId);
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  stopViewing(props.ticketId);
+  showEmailBox.value = false;
+  showCommentBox.value = false;
+
+  $socket.off("ticket_update");
+  $socket.off("helpdesk:ticket-update");
+});
+usePageMeta(() => {
+  if (!ticket.value?.doc?.name) {
+    return { title: props.ticketId };
+  }
+
+  return {
+    title: props.ticketId + " - " + (ticket.value?.doc?.subject ?? ""),
+  };
+});
+</script>
+
+<style>
+.breadcrumbs button {
+  background-color: inherit !important;
+  &:hover,
+  &:focus {
+    background-color: inherit !important;
+  }
+}
+</style>
