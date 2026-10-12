@@ -4,6 +4,16 @@ from unittest.mock import patch
 from test_pramaan_stubs import boundary
 
 class ClientTests(unittest.TestCase):
+    def test_missing_key_is_clear_and_never_calls_transport(self):
+        calls = []
+        client = boundary.PramaanClient(api_key="", transport=lambda *args: calls.append(args))
+        with self.assertRaises(boundary.MissingPramaanKey) as raised:
+            client.call("llm.complete", {})
+        self.assertEqual(raised.exception.http_status_code, 422)
+        self.assertIn("Ask your administrator", str(raised.exception))
+        self.assertFalse(client.configured)
+        self.assertEqual(calls, [])
+
     def test_async_completion_uses_same_job_and_only_one_action(self):
         requests = []
         replies = iter([(202, {"job_id": "job/one", "status": "running"}), (200, {"status": "done", "result": {"messageId": "accepted"}})])

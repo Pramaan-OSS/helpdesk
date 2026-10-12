@@ -35,12 +35,10 @@ import { usePageMeta } from "frappe-ui";
 import { LayoutHeader } from "@/components";
 import CategoryFolderContainer from "@/components/knowledge-base/CategoryFolderContainer.vue";
 import SearchPopover from "@/components/SearchPopover.vue";
-import { capture } from "@/telemetry";
 
 const query = ref("");
 
 onMounted(() => {
-  capture("kb_customer_page_viewed");
 });
 usePageMeta(() => {
   return {

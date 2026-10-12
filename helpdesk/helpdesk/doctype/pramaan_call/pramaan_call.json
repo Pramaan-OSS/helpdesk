@@ -7,9 +7,12 @@
     "ticket",
     "request_id",
     "state",
+    "source",
+    "direction",
     "job_id",
     "result_ref",
-    "recording_enabled"
+    "recording_enabled",
+    "last_event"
   ],
   "fields": [
     {
@@ -31,6 +34,19 @@
       "options": "Starting\nRunning\nEnded\nFailed\nUncertain"
     },
     {
+      "fieldname": "source",
+      "fieldtype": "Select",
+      "label": "Source",
+      "options": "callback\nbrowser",
+      "default": "callback"
+    },
+    {
+      "fieldname": "direction",
+      "fieldtype": "Select",
+      "label": "Direction",
+      "options": "\ninbound\noutbound"
+    },
+    {
       "fieldname": "job_id",
       "fieldtype": "Data",
       "label": "Job Id"
@@ -44,6 +60,12 @@
       "fieldname": "recording_enabled",
       "fieldtype": "Check",
       "label": "Recording requested"
+    },
+    {
+      "fieldname": "last_event",
+      "fieldtype": "Data",
+      "label": "Last event",
+      "hidden": 1
     }
   ],
   "permissions": [

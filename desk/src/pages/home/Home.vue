@@ -143,7 +143,6 @@ import LucideLayout from "~icons/lucide/layout";
 import LucideTrash2 from "~icons/lucide/trash-2";
 import { LayoutHeader } from "@/components";
 import { useAuthStore } from "@/stores/auth";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import {
   Button,
@@ -423,7 +422,6 @@ const onSave = () => {
       editing.value = false;
     });
   }
-  capture("home_page_updated");
 };
 
 const onCancel = () => {

@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from helpdesk.utils import capture_event, get_agents_team
+from helpdesk.utils import get_agents_team
 
 # The single registry of action types, driving validation and apply.
 # kind "field" writes ticket_field on the ticket; "assignment" actions are
@@ -85,17 +85,6 @@ class HDSavedReply(Document):
                 for a in actions
             ]
         )
-
-    def after_insert(self):
-        capture_event("saved_reply_created")
-
-    def on_update(self) -> None:
-        # Counted once, when a reply first gets actions, so edits don't inflate it
-        previous = self.get_doc_before_save()
-        had_actions = bool(parse_actions(previous.actions)) if previous else False
-        if not had_actions and parse_actions(self.actions):
-            capture_event("saved_reply_actions_added")
-
 
 def parse_actions(raw: list | str | None) -> list[dict]:
     """Actions arrive as a JSON string (DB, HTTP) or a list (Python callers)."""

@@ -1,4 +1,3 @@
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import type {
   DocumentResource,
@@ -289,7 +288,6 @@ export function useNewContact() {
       }
     },
     onSuccess: (name: string) => {
-      if (state.invite) capture("contact_created_with_invite");
       router.push({ name: "Contact", params: { id: name } });
       toast.success(
         state.invite ? __("Contact created and invited") : __("Contact created")

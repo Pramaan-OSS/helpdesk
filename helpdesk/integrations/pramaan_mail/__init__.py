@@ -7,11 +7,23 @@ from email.utils import getaddresses
 
 import frappe
 from frappe import _
-from helpdesk.pramaan import CapabilityUnavailable, PramaanClient, PramaanError
+from helpdesk.pramaan import PramaanClient, PramaanError
 
 
 def client():
     return PramaanClient()
+
+
+def requires_pramaan(function):
+    """Reject missing configuration before validation or any durable action intent."""
+    from functools import wraps
+
+    @wraps(function)
+    def checked(*args, **kwargs):
+        # Use the endpoint's boundary so isolated tests can supply their fake.
+        function.__globals__["client"]().require_configured()
+        return function(*args, **kwargs)
+    return checked
 
 
 def addresses(value):
@@ -32,13 +44,34 @@ def sender_account(sender=None):
     return account.email_id
 
 
+AUTO_SUBMITTED = ("auto-generated", "auto-replied")
+
+
+def marker_from(value):
+    """A typed Auto-Submitted value from a caller header, else None.
+
+    The platform only accepts "auto-generated" or "auto-replied"; an unknown
+    app marker still marks the mail so recipients can suppress reply loops.
+    """
+    if value is True:
+        return "auto-generated"
+    raw = (value or "").split(";")[0].strip().lower()
+    if not raw or raw == "no":
+        return None
+    return raw if raw in AUTO_SUBMITTED else "auto-generated"
+
+
 def sendmail(recipients=None, sender=None, subject=None, message=None, **kwargs):
     """Queue a supported send atomically; the worker runs only after commit."""
-    if kwargs.get("email_headers") or kwargs.get("auto_submitted"):
-        raise CapabilityUnavailable("automated_threaded_email")
+    auto_submitted = marker_from(kwargs.get("auto_submitted"))
+    if not auto_submitted:
+        auto_submitted = marker_from((kwargs.get("email_headers") or {}).get(
+            "X-Auto-Generated") or (kwargs.get("email_headers") or {}).get("Auto-Submitted"))
     inbox = sender_account(sender)
     payload = {"from": inbox, "to": addresses(recipients), "cc": addresses(kwargs.get("cc")),
                "bcc": addresses(kwargs.get("bcc")), "subject": subject or "Message"}
+    if auto_submitted:
+        payload["autoSubmitted"] = auto_submitted
     if kwargs.get("template"):
         message = frappe.render_template("templates/emails/" + kwargs["template"] + ".html", kwargs.get("args") or {})
     payload["html"] = message or kwargs.get("content") or ""
@@ -67,16 +100,22 @@ def sendmail(recipients=None, sender=None, subject=None, message=None, **kwargs)
     if parent:
         comm = frappe.get_doc("Communication", parent)
         comm.check_permission("read")
-        # Edited recipients/subject cannot be represented by the current reply contract.
-        normalized = lambda value: (value or "").removeprefix("Re: ").strip()
-        expected = addresses(comm.sender if comm.sent_or_received == "Received" else comm.recipients)
-        if set(expected) != set(payload["to"]) or normalized(comm.subject) != normalized(payload["subject"]):
-            raise CapabilityUnavailable("automated_threaded_email")
         if not comm.message_id:
             frappe.throw(_("The previous email has not been accepted yet. Wait before replying."))
         capability = "email.message.reply"
+        # Edited recipients and subject ride the reply contract's overrides, so
+        # no field of the request is dropped to keep the thread parent. An
+        # omitted override lets the platform answer the parent thread as usual.
         payload = {"inbox": inbox, "messageId": comm.message_id, "html": payload["html"],
                    "cc": payload["cc"], "bcc": payload["bcc"], "attachments": attachments}
+        if addresses(recipients):
+            payload["to"] = addresses(recipients)
+        if subject:
+            payload["subject"] = subject
+        if auto_submitted:
+            payload["autoSubmitted"] = auto_submitted
+        if kwargs.get("reply_to"):
+            payload["replyTo"] = addresses(kwargs["reply_to"])[0]
     if not (addresses(recipients) or payload.get("cc") or payload.get("bcc")):
         frappe.throw(_("Choose at least one recipient."))
     outbox = frappe.get_doc({"doctype": "Pramaan Outbox", "capability": capability,

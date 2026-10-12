@@ -1,0 +1,139 @@
+{
+  "doctype": "DocType",
+  "name": "Pramaan Outcome Review",
+  "module": "Helpdesk",
+  "autoname": "hash",
+  "field_order": [
+    "review_kind",
+    "ticket",
+    "file_name",
+    "call_record",
+    "outcome_id",
+    "source_label",
+    "source_size",
+    "source_hash",
+    "body",
+    "plan",
+    "steps",
+    "price_max_micro",
+    "state",
+    "message",
+    "job_id",
+    "recording_expires",
+    "result",
+    "note"
+  ],
+  "fields": [
+    {
+      "fieldname": "review_kind",
+      "fieldtype": "Select",
+      "label": "Review Kind",
+      "read_only": 1,
+      "options": "Summary\nCall"
+    },
+    {
+      "fieldname": "ticket",
+      "fieldtype": "Data",
+      "label": "Ticket",
+      "read_only": 1
+    },
+    {
+      "fieldname": "file_name",
+      "fieldtype": "Data",
+      "label": "File Name",
+      "read_only": 1
+    },
+    {
+      "fieldname": "call_record",
+      "fieldtype": "Data",
+      "label": "Call Record",
+      "read_only": 1
+    },
+    {
+      "fieldname": "outcome_id",
+      "fieldtype": "Data",
+      "label": "Outcome Id",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_hash",
+      "fieldtype": "Data",
+      "label": "Source Hash",
+      "read_only": 1
+    },
+    {
+      "fieldname": "body",
+      "fieldtype": "Long Text",
+      "label": "Body",
+      "read_only": 1
+    },
+    {
+      "fieldname": "plan",
+      "fieldtype": "Data",
+      "label": "Plan",
+      "read_only": 1
+    },
+    {
+      "fieldname": "steps",
+      "fieldtype": "Long Text",
+      "label": "Steps",
+      "read_only": 1
+    },
+    {
+      "fieldname": "price_max_micro",
+      "fieldtype": "Int",
+      "label": "Price Max Micro",
+      "read_only": 1
+    },
+    {
+      "fieldname": "state",
+      "fieldtype": "Select",
+      "label": "State",
+      "read_only": 1,
+      "options": "Ready\nRunning\nPending\nCompleted\nFailed\nUncertain\nUnavailable\nExpired"
+    },
+    {
+      "fieldname": "message",
+      "fieldtype": "Small Text",
+      "label": "Message",
+      "read_only": 1
+    },
+    {
+      "fieldname": "job_id",
+      "fieldtype": "Data",
+      "label": "Job Id",
+      "read_only": 1
+    },
+    {
+      "fieldname": "recording_expires",
+      "fieldtype": "Data",
+      "label": "Recording Expires",
+      "read_only": 1
+    },
+    {
+      "fieldname": "result",
+      "fieldtype": "Long Text",
+      "label": "Result",
+      "read_only": 1
+    },
+    {
+      "fieldname": "note",
+      "fieldtype": "Data",
+      "label": "Note",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_label",
+      "fieldtype": "Data",
+      "label": "Source label",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_size",
+      "fieldtype": "Int",
+      "label": "Source size",
+      "read_only": 1
+    }
+  ],
+  "permissions": []
+}

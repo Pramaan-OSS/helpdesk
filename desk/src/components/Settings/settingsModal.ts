@@ -23,6 +23,7 @@ import {
 } from "@/components/icons";
 import ERPNextIntegrationSettings from "@/components/erpnext-integration/ERPNextIntegrationSettings.vue";
 import TelephonyPage from "./Telephony/TelephonyPage.vue";
+import SignInPage from "./SignIn/SignInPage.vue";
 import { EmailNotifications } from "./EmailNotifications";
 import { __ } from "@/translation";
 import SavedReplies from "./SavedReplies/SavedReplies.vue";
@@ -142,6 +143,12 @@ export const tabs = computed(() => {
           label: __("Calling"),
           icon: markRaw(PhoneIcon),
           component: markRaw(TelephonyPage),
+        },
+        {
+          label: __("Sign-in"),
+          icon: markRaw(ShieldCheck),
+          component: markRaw(SignInPage),
+          condition: () => auth.isAdmin,
         },
         {
           label: __("Customer sync"),

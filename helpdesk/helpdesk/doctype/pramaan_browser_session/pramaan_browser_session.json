@@ -1,0 +1,74 @@
+{
+  "doctype": "DocType",
+  "name": "Pramaan Browser Session",
+  "module": "Helpdesk",
+  "autoname": "hash",
+  "field_order": [
+    "agent",
+    "origin",
+    "session_ref",
+    "expires_at",
+    "request_id",
+    "cursor",
+    "enabled"
+  ],
+  "fields": [
+    {
+      "fieldname": "agent",
+      "fieldtype": "Link",
+      "label": "Agent",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "origin",
+      "fieldtype": "Data",
+      "label": "Origin"
+    },
+    {
+      "fieldname": "session_ref",
+      "fieldtype": "Data",
+      "label": "Session ref"
+    },
+    {
+      "fieldname": "expires_at",
+      "fieldtype": "Datetime",
+      "label": "Expires at"
+    },
+    {
+      "fieldname": "request_id",
+      "fieldtype": "Data",
+      "label": "Request Id"
+    },
+    {
+      "fieldname": "cursor",
+      "fieldtype": "Data",
+      "label": "Event cursor",
+      "hidden": 1
+    },
+    {
+      "fieldname": "enabled",
+      "fieldtype": "Check",
+      "label": "Enabled",
+      "default": "1"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    },
+    {
+      "role": "Agent",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "if_owner": 1
+    },
+    {
+      "role": "Agent Manager",
+      "read": 1,
+      "if_owner": 1
+    }
+  ]
+}

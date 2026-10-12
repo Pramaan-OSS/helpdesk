@@ -194,8 +194,9 @@ class CustomEmailAccount(EmailAccount):
         return DisabledMailTransport()
 
     def get_frappe_mail_client(self):
-        from helpdesk.pramaan import CapabilityUnavailable
-        raise CapabilityUnavailable("automated_threaded_email")
+        # Vendor-hosted mailbox import stays refused; inboxes connect through Pramaan.
+        from helpdesk.pramaan import PramaanError
+        raise PramaanError("unsupported_transport")
 
     def get_incoming_server(self, **kwargs):
         from helpdesk.pramaan import PramaanError

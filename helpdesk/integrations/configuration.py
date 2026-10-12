@@ -16,6 +16,7 @@ def configure_site():
 
 
 def restrict_browser_connections(response):
+    sanitise_error_response(response)
     import re
     from urllib.parse import urlparse
     host = urlparse(frappe.request.host_url).hostname or "localhost"
@@ -63,3 +64,43 @@ def install_local_boundaries():
         module = import_module(name)
         for function in functions:
             setattr(module, function, ignore_outside_sync)
+
+
+def sanitise_error_response(response):
+    """Keep diagnostics in server logs; all error responses use neutral public text."""
+    import json
+    import re
+    from helpdesk.pramaan import MISSING_KEY_MESSAGE
+    if response.status_code < 400:
+        return
+    fallback = {
+        401: "Your session has expired. Sign in again.",
+        403: "You do not have permission to open this resource.",
+        404: "This page or resource could not be found.",
+        422: MISSING_KEY_MESSAGE,
+    }.get(response.status_code, "Could not confirm this request. Check its status before trying again.")
+    if response.is_json:
+        body = response.get_json(silent=True)
+        if not isinstance(body, dict):
+            body = {}
+        message = fallback
+        if body.get("exc_type") == "MissingPramaanKey":
+            message = MISSING_KEY_MESSAGE
+        elif response.status_code < 500:
+            # Only application validation messages, never exception strings/traces.
+            try:
+                entries = json.loads(body.get("_server_messages") or "[]")
+                messages = [json.loads(row).get("message", "") if isinstance(row, str) else row.get("message", "") for row in entries]
+                safe = [text for text in messages if isinstance(text, str) and not any(token in text for token in ("Traceback", "File \"", "/Users/", "/home/", "frappe", "<"))]
+                if safe and not re.search(r"(?:[A-Za-z]:\\|/(?:[^ /\n]+/)+[^\s]+|\bFile [\"\'])", " ".join(safe)):
+                    message = " ".join(safe)
+            except (TypeError, ValueError, AttributeError):
+                pass
+        public = {"message": message, "_server_messages": json.dumps([json.dumps({"message": message})])}
+        # Retain only stable local types used for permission/session UI behavior.
+        if body.get("exc_type") in {"PermissionError", "AuthenticationError", "ValidationError", "RateLimitExceededError", "DoesNotExistError", "TimestampMismatchError", "LinkValidationError", "DuplicateEntryError", "MissingPramaanKey"}:
+            public["exc_type"] = body["exc_type"]
+        response.set_data(json.dumps(public))
+    else:
+        response.set_data(f'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pramaan Helpdesk</title><body style="font-family:system-ui;margin:4rem auto;max-width:40rem;padding:1rem"><h1>Unable to open this page</h1><p>{fallback}</p><a href="/helpdesk">Return to Helpdesk</a></body></html>')
+        response.headers["Content-Type"] = "text/html; charset=utf-8"

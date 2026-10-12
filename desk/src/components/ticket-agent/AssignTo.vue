@@ -170,7 +170,6 @@ import { useShortcut } from "@/composables/shortcuts";
 import { useAgentStatusStore } from "@/stores/agentStatus.ts";
 import { useConfigStore } from "@/stores/config";
 import { useUserStore } from "@/stores/user";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import {
   AgentOption,
@@ -554,9 +553,6 @@ const addAssigneesResource = createResource({
     assign_to: addedAssignees,
   }),
   onSuccess: () => {
-    capture("ticket_assigned", {
-      data: { doctype: "HD Ticket", source: "popover" },
-    });
   },
 });
 

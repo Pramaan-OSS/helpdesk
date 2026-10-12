@@ -7,7 +7,7 @@ from frappe.model.document import Document
 from helpdesk.helpdesk.doctype.hd_agent_status.hd_agent_status import (
     get_default_agent_status,
 )
-from helpdesk.utils import capture_event, is_agent_manager, publish_event
+from helpdesk.utils import is_agent_manager, publish_event
 
 
 class HDAgent(Document):
@@ -48,7 +48,6 @@ class HDAgent(Document):
 
     def on_update(self):
         self.publish_availability_update()
-        self.capture_availability_telemetry()
 
     def validate_availability(self):
         """Only an enabled HD Agent Status may be set as availability.
@@ -91,12 +90,6 @@ class HDAgent(Document):
                 "changed_by": frappe.session.user,
             },
         )
-
-    def capture_availability_telemetry(self):
-        if not self.availability_changed():
-            return
-
-        capture_event("agent_availability_updated")
 
     def set_user_roles(self):
         user = frappe.get_doc("User", self.user)

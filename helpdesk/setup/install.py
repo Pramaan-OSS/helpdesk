@@ -284,7 +284,20 @@ def get_custom_fields():
         "Email Account": [{"fieldname": "pramaan_inbound_cursor", "fieldtype": "Data", "label": "Inbound cursor", "hidden": 1}],
         "Email Queue": [{"fieldname": "pramaan_outbox", "fieldtype": "Link", "options": "Pramaan Outbox", "label": "Delivery record", "hidden": 1}],
         "User": [{"fieldname": "pramaan_callback_number", "fieldtype": "Data", "label": "Callback number"}],
-        "HD Settings": [{"fieldname": "pramaan_calling_number", "fieldtype": "Data", "label": "Calling number"}],
+        "HD Settings": [
+            {"fieldname": "pramaan_calling_number", "fieldtype": "Data", "label": "Calling number"},
+            {"fieldname": "social_sign_in_enabled", "fieldtype": "Check", "label": "Enable social sign-in", "default": "0"},
+            {"fieldname": "social_provider_key", "fieldtype": "Data", "label": "Sign-in provider key",
+             "depends_on": "eval:doc.social_sign_in_enabled", "description": "The connected sign-in account's key from the capability catalogue."},
+            {"fieldname": "social_client_id", "fieldtype": "Data", "label": "Sign-in client id",
+             "depends_on": "eval:doc.social_sign_in_enabled"},
+            {"fieldname": "social_authorize_url", "fieldtype": "Data", "label": "Authorization endpoint",
+             "depends_on": "eval:doc.social_sign_in_enabled"},
+            {"fieldname": "social_scope", "fieldtype": "Data", "label": "Scope", "default": "openid email profile",
+             "depends_on": "eval:doc.social_sign_in_enabled"},
+            {"fieldname": "social_use_pkce", "fieldtype": "Check", "label": "Use PKCE", "default": "1",
+             "depends_on": "eval:doc.social_sign_in_enabled"},
+        ],
         "Tag": [
             {
                 "fieldname": "app",

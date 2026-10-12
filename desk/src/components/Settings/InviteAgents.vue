@@ -105,7 +105,6 @@
 <script setup lang="ts">
 import SettingsLayoutBase from "@/components/layouts/SettingsLayoutBase.vue";
 import { useAuthStore } from "@/stores/auth";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { handleInviteUserSuccess } from "@/utils";
 import {
@@ -216,11 +215,6 @@ const inviteByEmailResource = createResource({
     handleInviteUserSuccess(data);
     pendingInvitesResource.reload();
     updateOnboardingStep?.("invite_agents");
-    capture("agents_invited", {
-      data: {
-        role: role.value,
-      },
-    });
   },
 });
 

@@ -1,4 +1,5 @@
 import imaplib
+import json
 from typing import Any
 from unittest.mock import MagicMock, patch
 
@@ -139,12 +140,46 @@ class TestPramaanDelivery(IntegrationTestCase):
         self.assertEqual(frappe.db.get_value("Pramaan Outbox", queued.name, "state"), "Uncertain")
         self.transport.call.assert_called_once()
 
-    def test_automatic_headers_are_rejected_without_queue_or_network(self):
+    def test_automated_mail_queues_the_loop_marker(self):
         from helpdesk.integrations.pramaan_mail import sendmail
-        from helpdesk.pramaan import CapabilityUnavailable
+        queued = sendmail(sender=self.address, recipients=unique_email("recipient"),
+                          subject="We got it", message="Hello", auto_submitted="auto-generated")
+        payload = json.loads(frappe.db.get_value("Pramaan Outbox", queued.name, "payload"))
+        self.assertEqual(payload["autoSubmitted"], "auto-generated")
+        self.transport.call.assert_not_called()
+
+    def test_header_marker_maps_to_the_typed_value(self):
+        from helpdesk.integrations.pramaan_mail import sendmail
+        queued = sendmail(sender=self.address, recipients=unique_email("recipient"), message="Hello",
+                          email_headers={"X-Auto-Generated": "hd-acknowledgement"})
+        payload = json.loads(frappe.db.get_value("Pramaan Outbox", queued.name, "payload"))
+        self.assertEqual(payload["autoSubmitted"], "auto-generated")
+
+    def test_edited_reply_keeps_thread_parent_and_overrides(self):
+        from helpdesk.integrations.pramaan_mail import sendmail
+        parent = frappe.get_doc({"doctype": "Communication", "communication_type": "Communication",
+                                 "communication_medium": "Email", "sent_or_received": "Received",
+                                 "subject": "Printer on fire", "content": "help", "message_id": "<in@example.com>"}).insert()
+        recipient = unique_email("edited")
+        queued = sendmail(sender=self.address, recipients=recipient, subject="Printer, actually",
+                          message="Now fixed", in_reply_to=parent.name)
+        row = frappe.db.get_value("Pramaan Outbox", queued.name, ["capability", "payload"], as_dict=True)
+        self.assertEqual(row.capability, "email.message.reply")
+        payload = json.loads(row.payload)
+        self.assertEqual(payload["messageId"], "<in@example.com>")
+        self.assertEqual(payload["to"], [recipient])
+        self.assertEqual(payload["subject"], "Printer, actually")
+        self.assertNotIn("autoSubmitted", payload)
+
+    def test_reply_without_accepted_parent_is_refused_before_queue(self):
+        from helpdesk.integrations.pramaan_mail import sendmail
+        parent = frappe.get_doc({"doctype": "Communication", "communication_type": "Communication",
+                                 "communication_medium": "Email", "sent_or_received": "Received",
+                                 "subject": "No id yet", "content": "portal reply"}).insert()
         before = frappe.db.count("Pramaan Outbox")
-        with self.assertRaises(CapabilityUnavailable):
-            sendmail(sender=self.address, recipients=unique_email("recipient"), message="Hello", auto_submitted=True)
+        with self.assertRaises(frappe.ValidationError):
+            sendmail(sender=self.address, recipients=unique_email("recipient"),
+                     message="Hello", in_reply_to=parent.name)
         self.assertEqual(frappe.db.count("Pramaan Outbox"), before)
         self.transport.call.assert_not_called()
 

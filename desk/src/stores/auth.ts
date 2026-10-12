@@ -101,6 +101,7 @@ export const useAuthStore = defineStore("auth", () => {
     timezone,
     userTeams,
     language,
+    pramaanConfigured: computed(() => !!user__.value.pramaan_configured),
     personaCaptured,
     user,
     logout,

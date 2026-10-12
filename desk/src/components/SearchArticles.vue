@@ -75,7 +75,6 @@
 </template>
 
 <script setup lang="ts">
-import { capture } from "@/telemetry";
 import { createResource } from "frappe-ui";
 import { watch } from "vue";
 interface P {
@@ -105,10 +104,5 @@ watch(
 );
 
 function handleSearchArticleClick(article) {
-  capture("kb_customer_search_article_clicked", {
-    data: {
-      article: article.subject,
-    },
-  });
 }
 </script>

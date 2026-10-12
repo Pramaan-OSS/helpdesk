@@ -160,7 +160,6 @@ import {
 import { useAuthStore } from "@/stores/auth";
 import { globalStore } from "@/stores/globalStore";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { View, ViewType } from "@/types";
 import { getIcon } from "@/utils";
@@ -282,7 +281,6 @@ const defaultOptions = reactive({
 });
 
 function handleBulkDelete(hide: Function, selections: Set<string>) {
-  capture("bulk_delete" + props.options.doctype);
   const requested = Array.from(selections);
   const requestedCount = requested.length;
 

@@ -140,7 +140,6 @@ import { recordSavedReplyUse } from "@/components/command-palette/savedReplyComm
 import { buildEditorExtensions } from "@/components/editor/config";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { useConfigStore } from "@/stores/config";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { RenderedSavedReply, SavedReply } from "@/types";
 import { useStorage } from "@vueuse/core";
@@ -320,7 +319,6 @@ const onTemplateSelect = (template: SavedReply) => {
       show.value = false;
       // Shared with the palette: modal picks count toward its most-used rows.
       recordSavedReplyUse(template.name, template.title);
-      capture("saved_reply_applied", { data: { source: "composer" } });
     },
   });
   renderResponse.submit().catch(() => {

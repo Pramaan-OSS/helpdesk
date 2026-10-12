@@ -22,12 +22,6 @@ function isPersonaCaptured(auth: PersonaAuth): boolean {
   return !!auth.personaCaptured;
 }
 
-// window.telemetry is a boot value injected by www/helpdesk, so this is
-// synchronous and guard-safe.
-export function telemetryEnabled(): boolean {
-  return !!window.telemetry?.enabled;
-}
-
 // Gate for the route's beforeEnter: only an uncaptured desk admin may view
 // the wizard, even via URL.
 export function canViewPersona(auth: PersonaAuth): boolean {
@@ -39,8 +33,8 @@ export function canViewPersona(auth: PersonaAuth): boolean {
   );
 }
 
-// Interrupt the first eligible admin navigation, once per session, only if
-// telemetry is on. Returns where to redirect, or undefined to continue.
+// Interrupt the first eligible admin navigation, once per session. Returns
+// where to redirect, or undefined to continue.
 export function personaInterrupt(
   to: RouteLocationNormalized,
   auth: PersonaAuth
@@ -48,11 +42,11 @@ export function personaInterrupt(
   if (to.name === "Persona" || personaChecked) return;
   if (!(auth.isLoggedIn && auth.hasDeskAccess && auth.isAdmin)) return;
   personaChecked = true;
-  if (telemetryEnabled() && canViewPersona(auth)) return { name: "Persona" };
+  if (canViewPersona(auth)) return { name: "Persona", query: { returnTo: to.fullPath } };
 }
 
 export async function markPersonaCaptured(brandName?: string): Promise<void> {
-  localStorage.setItem(PERSONA_DONE_KEY, "1");
+  try { localStorage.setItem(PERSONA_DONE_KEY, "1"); } catch { /* Server flag still persists the choice. */ }
   await call("helpdesk.api.onboarding.mark_persona_captured", {
     brand_name: brandName,
   });

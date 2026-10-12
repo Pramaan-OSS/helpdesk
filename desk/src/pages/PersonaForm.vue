@@ -21,13 +21,13 @@ import {
   showSettingsModal,
 } from "@/components/Settings/settingsModal";
 import { markPersonaCaptured } from "@/persona";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { call, usePageMeta } from "frappe-ui";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 const leaving = ref(false);
 const FADE_MS = 300;
 
@@ -68,6 +68,11 @@ async function routeToGoal(goal?: string | string[]) {
     await router.push({ name: "TicketAgentNew" });
     return;
   }
+  const returnTo = route.query.returnTo;
+  if (!goal && typeof returnTo === "string" && returnTo.startsWith("/") && !returnTo.startsWith("//") && !returnTo.startsWith("/onboarding")) {
+    await router.push(returnTo);
+    return;
+  }
   if (!goal || goal === "explore") {
     const ticket = await call(
       "helpdesk.api.onboarding.get_welcome_ticket"
@@ -92,7 +97,6 @@ async function submitPersona(answers: Record<string, string | string[]>) {
     ...answers,
     company_size: answers.company_size || TEAM_SIZE_UNSPECIFIED,
   };
-  capture("onboarding_persona_hd", { data });
   await finishOnboarding(data);
 }
 

@@ -58,7 +58,6 @@ import {
   newCategory,
   updateCategoryTitle,
 } from "@/stores/knowledgeBase";
-import { capture } from "@/telemetry";
 import { Error } from "@/types";
 import { copyToClipboard } from "@/utils";
 import {
@@ -264,11 +263,6 @@ function handleCategoryCreate() {
           },
         });
         toast.success(__("Category created successfully."));
-        capture("category_created", {
-          data: {
-            category: category.title,
-          },
-        });
         resetState();
       },
       onError: (error: any) => {
@@ -454,7 +448,6 @@ const statusMap = {
 };
 
 onMounted(() => {
-  capture("kb_agent_page_viewed");
 });
 
 usePageMeta(() => {

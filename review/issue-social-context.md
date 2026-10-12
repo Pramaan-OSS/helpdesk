@@ -1,0 +1,7 @@
+Additional consumer: Pramaan Helpdesk (`references/frappe-helpdesk`, source commit `075edde1c072037f50fa73fed4141de0b05097cb`). Its `helpdesk/auth.py:20-36,68` permits framework sign-in through Google, GitHub, Facebook, Frappe, Office365, Salesforce, Fairlogin, Keycloak and custom OAuth providers. These are exposed framework routes, not proof all providers are configured.
+
+This is the same missing social sign-in exchange tracked here, so no duplicate issue is needed. `auth.token.verify` checks an existing session; it does not replace an authorization-code exchange. `apps.connection.start` connects an external app and likewise is not application sign-in.
+
+For this consumer, please document the complete authorization-start + callback flow, state/nonce validation, PKCE, exact redirect allowlists, supported identity providers, verified subject/email claims, replay rejection and secret handling. Return an opaque identity handle with the claims needed to link to the local user; do not put upstream tokens or provider ids into end-user screens/logs. Avatars must not create an uncontrolled browser request to a provider image domain.
+
+Acceptance: fake tests for valid exchange, wrong state/nonce, reused code, redirect mismatch, unverified email and tenant isolation. The local app creates its own session only after a verified exchange. Unsupported providers stay disabled. Self-hosted password sign-in remains available while this capability is missing; no live OAuth test was run.

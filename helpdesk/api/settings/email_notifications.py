@@ -96,9 +96,6 @@ def get_reply_via_agent_data():
 @frappe.whitelist(methods=["GET"])
 def get_data(notification: str):
     only_for_managers()
-    if notification in {"share_feedback", "acknowledgement", "reply_to_agents"}:
-        return {"enabled": False, "available": False, "reason": "Automated email is not available yet.", "content": "", "default_content": ""}
-
     if notification == "share_feedback":
         return get_share_feedback_data()
 
@@ -117,9 +114,6 @@ def get_data(notification: str):
 def set_common_settings(
     enabled_field_name: str, enabled: bool, content_field_name: str, content: str
 ):
-    if enabled and enabled_field_name in {"enable_email_ticket_feedback", "send_acknowledgement_email", "enable_reply_email_to_agent"}:
-        from helpdesk.pramaan import CapabilityUnavailable
-        raise CapabilityUnavailable("automated_threaded_email")
     validate_template(content)
     frappe.db.set_single_value(
         "HD Settings",

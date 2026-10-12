@@ -98,10 +98,6 @@ def get_doc_room(doctype: str, name: str) -> str:
     return f"open_doc:{doctype}/{name}"
 
 
-def capture_event(event: str):
-    return None
-
-
 def get_customers(user: str = "", contact: str = "", get_roles=False):
     """
     Get `Customer` from `Contact`

@@ -29,11 +29,6 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.playwright-mcp
-.claude-flow
-.claude
-.claude-worktrees
-CLAUDE.md
 
 
 helpdesk/docs/current

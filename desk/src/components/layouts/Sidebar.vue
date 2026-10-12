@@ -47,10 +47,6 @@
     title="Pramaan Helpdesk"
     :logo="logo"
     docsLink="/helpdesk/knowledge-base"
-    :afterSkip="(step: string) => capture('onboarding_step_skipped_' + step)"
-    :afterSkipAll="() => capture('onboarding_steps_skipped')"
-    :afterReset="(step: string) => capture('onboarding_step_reset_' + step)"
-    :afterResetAll="() => capture('onboarding_steps_reset')"
   />
   <IntermediateStepModal
     v-model="showIntermediateModal"
@@ -75,7 +71,6 @@ import {
   showEmailBox,
 } from "@/pages/ticket/modalStates";
 import { useAuthStore } from "@/stores/auth";
-import { capture } from "@/telemetry";
 import { isCustomerPortal } from "@/utils";
 import { call, SidebarItem, toast, useColorScheme } from "frappe-ui";
 import {

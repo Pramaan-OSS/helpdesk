@@ -31,7 +31,6 @@ from helpdesk.notifications import clear as clear_notifications
 from helpdesk.notifications import notify_ticket_reopened
 from helpdesk.utils import (
     agent_only,
-    capture_event,
     get_agents_team,
     get_customers,
     get_doc_room,
@@ -126,11 +125,57 @@ class HDTicket(Document, CustomerEditController):
         )
 
     def handle_email_feedback(self):
-        return  # Disabled until Pramaan supports loop-safe automated mail.
+        if (
+            self.is_new()
+            or self.via_customer_portal
+            or self.feedback_rating
+            or not self.has_value_changed("status")
+            or not self.key
+        ):
+            return
+
+        [is_email_feedback_enabled, email_feedback_status] = frappe.get_cached_value(
+            "HD Settings",
+            "HD Settings",
+            ["enable_email_ticket_feedback", "send_email_feedback_on_status"],
+        )
+
+        send_feedback_email = int(is_email_feedback_enabled) and (
+            email_feedback_status == self.status
+            or email_feedback_status == ""
+            and self.status == "Closed"
+        )
+
+        if not send_feedback_email:
+            return
+
+        url = f"{frappe.utils.get_url()}/ticket-feedback/new?key={self.key}"
+        feedback_email_content = frappe.db.get_single_value(
+            "HD Settings", "feedback_email_content"
+        )
+        default_feedback_email_content = get_default_email_content("share_feedback")
+        try:
+            frappe.sendmail(
+                recipients=[self.raised_by],
+                subject=f"Re: {self.subject}",
+                message=self._get_rendered_template(
+                    feedback_email_content,
+                    default_feedback_email_content,
+                    {"url": url},
+                ),
+                reference_doctype="HD Ticket",
+                reference_name=self.name,
+                now=True,
+                in_reply_to=self._last_threadable_communication(),
+                auto_submitted="auto-generated",
+            )
+            frappe.msgprint(_("Feedback email has been sent to the customer"))
+        except Exception as e:
+            frappe.throw(_("Could not send feedback email,due to: {0}").format(e))
 
     def after_insert(self):
         # Telemetry Event
-        self.capture_ticket_created_telemetry_events()
+        self.note_ticket_split()
         publish_event("helpdesk:new-ticket")
         self.tag_first_ticket()
 
@@ -148,21 +193,11 @@ class HDTicket(Document, CustomerEditController):
         ):
             self.send_acknowledgement_email()
 
-    def capture_ticket_created_telemetry_events(self):
-        if self.subject == "Welcome to Helpdesk":
-            return
-
-        capture_event("ticket_created")
-        if not self.via_customer_portal:
-            capture_event("ticket_created_via_email")
-        if self.via_customer_portal and not is_agent():
-            capture_event("ticket_created_via_customer")
-
+    def note_ticket_split(self):
         if self.ticket_split_from:
             self.add_comment(
                 "Info", "split the ticket from #{0}".format(self.ticket_split_from)
             )
-            capture_event("ticket_split")
 
     def tag_first_ticket(self):
         """Tag the first ticket a requester ever raises.
@@ -198,18 +233,7 @@ class HDTicket(Document, CustomerEditController):
 
         self.remove_assignment_if_not_in_team()
         self.publish_update()
-        self.capture_update_telemetry_events()
 
-    def capture_update_telemetry_events(self):
-        capture_event("ticket_updated")
-
-        if self.has_value_changed("status"):
-            capture_event("ticket_status_updated")
-        if (
-            self.has_value_changed("status_category")
-            and self.status_category == "Resolved"
-        ):
-            capture_event("ticket_resolved")
 
     def set_ticket_type(self):
         if self.ticket_type:
@@ -681,7 +705,6 @@ class HDTicket(Document, CustomerEditController):
                 )
 
         communication.insert(ignore_permissions=True)
-        capture_event("agent_replied")
 
         _attachments = []
 
@@ -820,12 +843,66 @@ class HDTicket(Document, CustomerEditController):
                 doc.attached_to_name = self.name
                 doc.save()
 
-    def send_reply_email_to_agent(self, message: str = ""):
-        # Local notifications remain; automated outbound messages await G2.
-        return
+    def send_reply_email_to_agent(
+        self, message: str = "Please check the latest update on the portal."
+    ):
+        assigned_agents = self.get_assigned_agents()
+        if not assigned_agents:
+            return
+
+        recipients = [a.get("name") for a in self.get_assigned_agents()]
+
+        email_content = frappe.db.get_single_value(
+            "HD Settings", "reply_email_to_agent_content"
+        )
+        default_email_content = get_default_email_content("reply_to_agents")
+        try:
+            frappe.sendmail(
+                recipients=recipients,
+                subject=f"Re: {self.subject} - #{self.name}",
+                message=self._get_rendered_template(
+                    email_content,
+                    default_email_content,
+                    {
+                        "ticket_url": frappe.utils.get_url(
+                            "/helpdesk/tickets/" + str(self.name)
+                        ),
+                        "message": message,
+                    },
+                ),
+                reference_doctype="HD Ticket",
+                reference_name=self.name,
+                now=True,
+            )
+        except Exception as e:
+            frappe.throw(_(e))
 
     def send_acknowledgement_email(self):
-        return  # Disabled until Pramaan supports loop-safe automated mail.
+        acknowledgement_email_content = frappe.db.get_single_value(
+            "HD Settings", "acknowledgement_email_content"
+        )
+        default_acknowledgement_email_content = get_default_email_content(
+            "acknowledgement"
+        )
+
+        try:
+            frappe.sendmail(
+                recipients=[self.raised_by],
+                subject=_("Ticket #{0}: We've received your request").format(self.name),
+                message=self._get_rendered_template(
+                    acknowledgement_email_content,
+                    default_acknowledgement_email_content,
+                ),
+                reference_doctype="HD Ticket",
+                reference_name=self.name,
+                now=True,
+                expose_recipients="header",
+                auto_submitted="auto-generated",
+            )
+        except Exception as e:
+            frappe.throw(
+                _("Could not send an acknowledgement email due to: {0}").format(e)
+            )
 
     @frappe.whitelist()
     def mark_seen(self):

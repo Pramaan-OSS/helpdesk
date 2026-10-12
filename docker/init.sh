@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' 'The upstream bootstrap was removed: it installed external phone software and fetched mutable source.' 'Use the verified startup instructions in DONE.md once local conversion checks are complete.' >&2
+printf '%s\n' 'The upstream bootstrap was removed: it installed external phone software and fetched mutable source.' 'Use the local startup instructions in README.md.' >&2
 exit 1

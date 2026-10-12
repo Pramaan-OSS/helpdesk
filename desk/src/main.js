@@ -60,9 +60,7 @@ function showServerMessages(msgs) {
   });
 }
 setConfig("fallbackErrorHandler", (error) => {
-  const msg = error.exc_type
-    ? (error.messages || error.message || []).join(", ")
-    : error.message;
+  const msg = error.messages?.length ? [...new Set(error.messages)].join(" ") : "Could not complete this request. Try again later.";
   toast.error(msg);
 });
 

@@ -122,7 +122,6 @@ import { useAgentStore } from "@/stores/agent";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
 import { __ } from "@/translation";
-import { capture } from "@/telemetry";
 import {
   getFontFamily,
   isContentEmpty,
@@ -227,7 +226,6 @@ async function submitComment() {
       // the real row replaces the pending one the moment it arrives; unkeyed,
       // it would outlive it
       name ? pendingRow.resolve(`comment:${name}`) : pendingRow.drop();
-      capture("comment_added");
       if (isManager) {
         updateOnboardingStep?.("comment_on_ticket");
       }

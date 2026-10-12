@@ -15,7 +15,7 @@ from frappe.utils import (
     to_timedelta,
 )
 
-from helpdesk.utils import capture_event, get_context, is_json_valid, publish_event
+from helpdesk.utils import get_context, is_json_valid
 
 from .utils import convert_to_seconds
 
@@ -518,10 +518,6 @@ class HDServiceLevelAgreement(Document):
         for row in self.support_and_resolution:
             res[row.workday] = row
         return res
-
-    def after_insert(self):
-        capture_event("sla_created")
-
 
 def get_repeated(values):
     unique_list = []

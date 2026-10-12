@@ -14,7 +14,6 @@ import {
 } from "@/pages/ticket/modalStates";
 import { useAgentStore } from "@/stores/agent";
 import { getMeta } from "@/stores/meta";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { copyToClipboard } from "@/utils";
 import { createListResource, createResource, toast } from "frappe-ui";
@@ -367,9 +366,6 @@ async function assignTicket(ticketId: string, agent: string): Promise<void> {
       doctype: "HD Ticket",
       name: ticketId,
       assign_to: [agent],
-    });
-    capture("ticket_assigned", {
-      data: { doctype: "HD Ticket", source: "command_palette" },
     });
     toast.success(__("Assignees updated successfully."));
     assignees.reload();

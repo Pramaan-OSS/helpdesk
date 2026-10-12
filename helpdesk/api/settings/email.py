@@ -1,6 +1,6 @@
 """Mailbox configuration through Pramaan; no vendor credentials are accepted."""
 import frappe
-from helpdesk.integrations.pramaan_mail import client
+from helpdesk.integrations.pramaan_mail import client, requires_pramaan
 
 
 @frappe.whitelist()
@@ -10,6 +10,7 @@ def list_mailboxes():
 
 
 @frappe.whitelist(methods=["POST"])
+@requires_pramaan
 def create_email_account(data: dict):
     frappe.only_for(["System Manager", "Agent Manager"])
     # Caller cannot submit vendor hosts or credentials through this endpoint.
@@ -31,6 +32,7 @@ def create_email_account(data: dict):
 
 
 @frappe.whitelist(methods=["POST"])
+@requires_pramaan
 def provision_mailbox(display_name: str, request_id: str):
     frappe.only_for(["System Manager", "Agent Manager"])
     # Monthly mailbox rental: invoked only by an explicit product action.

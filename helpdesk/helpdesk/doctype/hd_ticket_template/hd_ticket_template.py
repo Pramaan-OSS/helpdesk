@@ -11,7 +11,6 @@ from helpdesk.consts import (
     SERVER_COMPUTED_FIELDS,
     TICKET_INTERNAL_FIELD_PERMLEVEL,
 )
-from helpdesk.utils import capture_event
 
 # linked from the hide warning below
 PERMISSION_LEVEL_DOCS = (
@@ -122,9 +121,6 @@ class HDTicketTemplate(Document):
         """Live meta check, so a level changed in Customize Form counts."""
         field = frappe.get_meta("HD Ticket").get_field(fieldname)
         return field.permlevel if field else 0
-
-    def on_update(self):
-        capture_event("ticket_template_updated")
 
     def on_trash(self):
         self.prevent_default_delete()

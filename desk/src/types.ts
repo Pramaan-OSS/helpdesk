@@ -314,11 +314,6 @@ export type EmailStep = "email-list" | "email-add" | "email-edit";
 export interface EmailAccount {
   email_account_name: string;
   email_id: string;
-  service: string;
-  api_key?: string;
-  api_secret?: string;
-  password?: string;
-  frappe_mail_site?: string;
   enable_outgoing?: boolean;
   enable_incoming?: boolean;
   default_outgoing?: boolean;
@@ -700,7 +695,6 @@ declare global {
     agent: string | null;
     default_country: string;
     apps: string[];
-    telemetry: { enabled: boolean };
   }
 }
 

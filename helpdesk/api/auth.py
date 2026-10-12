@@ -1,4 +1,5 @@
 import frappe
+from helpdesk.pramaan import PramaanClient
 
 from helpdesk.utils import agent_only, get_agent_name, get_agents_team
 from helpdesk.utils import is_agent as _is_agent
@@ -59,6 +60,7 @@ def get_user():
 
     return {
         "has_desk_access": has_desk_access,
+        "pramaan_configured": PramaanClient().configured,
         "is_admin": is_admin,
         "is_agent": is_agent,
         "has_agent_record": has_agent_record,

@@ -145,3 +145,171 @@ class TestDraftActions(IntegrationTestCase):
         with self.set_user(user.name), patch("helpdesk.api.capabilities.client") as factory, self.assertRaises(frappe.PermissionError):
             draft_ticket_reply(ticket.name)
         factory.assert_not_called()
+
+
+class TestAttachmentOutcomeReview(IntegrationTestCase):
+    def setUp(self):
+        from helpdesk.test_utils import make_ticket, make_outcome_attachment
+        from helpdesk.api import outcome_reviews
+        self.actions = outcome_reviews
+        frappe.set_user("Administrator")
+        self.ticket = make_ticket()
+        self.file = make_outcome_attachment(self.ticket)
+        factory_patch = patch("helpdesk.api.outcome_reviews.client")
+        factory = factory_patch.start()
+        self.addCleanup(factory_patch.stop)
+        commit_patch = patch.object(frappe.db, "commit")
+        commit_patch.start()
+        self.addCleanup(commit_patch.stop)
+        self.client = factory.return_value
+        self.client.outcome_get.return_value = {"available": True, "effect_class": "read_only",
+            "steps": [{"capability": "document.parse"}, {"capability": "llm.complete"}]}
+        self.client.outcome_estimate.return_value = {"plan": "estimated-plan", "can_run": True,
+            "price_max_micro": 12345, "steps": [{"capability": "document.parse"}, {"capability": "llm.complete"}]}
+        self.client.outcome_run.return_value = {"status": "done", "completeness": "complete",
+            "result": {"summary": "A useful summary.", "points": [{"text": "One key point."}], "truncated": False}, "steps": []}
+
+    def test_private_bytes_are_estimated_then_only_run_after_approval(self):
+        import base64
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        self.assertEqual(review["state"], "Ready")
+        self.assertEqual(review["price_max_micro"], 12345)
+        self.assertEqual(len(review["steps"]), 2)
+        self.client.outcome_run.assert_not_called()
+        body = self.client.outcome_estimate.call_args.args[1]
+        self.assertEqual(base64.b64decode(body["input"]["content"]), self.file.get_content())
+        self.assertNotIn("url", body["input"])
+        with self.assertRaises(frappe.ValidationError):
+            self.actions.run(review["review_id"])
+        result = self.actions.run(review["review_id"], approved=True)
+        self.assertEqual(result["summary"], "A useful summary.")
+        self.assertEqual(self.client.outcome_run.call_args.args, ("document.summarize", body))
+        self.assertEqual(self.client.outcome_run.call_args.kwargs["plan"], "estimated-plan")
+        self.assertEqual(frappe.db.count("Comment", {"reference_doctype": "HD Ticket", "reference_name": self.ticket.name, "comment_type": "Comment"}), 0)
+        self.assertFalse(frappe.db.get_value("Pramaan Outcome Review", review["review_id"], "body"))
+        self.actions.run(review["review_id"], approved=True)
+        self.client.outcome_run.assert_called_once()
+
+    def test_unavailable_is_clear_and_does_not_estimate_or_run(self):
+        self.client.outcome_get.return_value = {"available": False}
+        result = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        self.assertEqual(result["state"], "Unavailable")
+        self.assertIn("unavailable", result["message"])
+        self.client.outcome_estimate.assert_not_called()
+        self.client.outcome_run.assert_not_called()
+
+    def test_changed_attachment_requires_new_estimate(self):
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        with patch.object(type(self.file), "get_content", return_value=b"Changed attachment"):
+            result = self.actions.run(review["review_id"], approved=True)
+        self.assertEqual(result["state"], "Expired")
+        self.client.outcome_run.assert_not_called()
+
+    def test_expired_plan_requires_new_approval(self):
+        with self.freeze_time("2026-10-12 10:00:00"):
+            review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        with self.freeze_time("2026-10-12 10:16:00"):
+            result = self.actions.run(review["review_id"], approved=True)
+        self.assertEqual(result["state"], "Expired")
+        self.client.outcome_run.assert_not_called()
+
+    def test_wrong_ticket_attachment_is_refused_before_estimate(self):
+        from helpdesk.test_utils import make_ticket
+        other = make_ticket()
+        with self.assertRaises(frappe.PermissionError):
+            self.actions.prepare("Summary", other.name, file_name=self.file.name)
+        self.client.outcome_estimate.assert_not_called()
+
+    def test_customer_cannot_prepare_run_poll_or_save(self):
+        from helpdesk.test_utils import create_user, unique_email
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        customer = create_user(unique_email("summary-customer"))
+        with self.set_user(customer.name):
+            for action, args in ((self.actions.prepare, {"kind": "Summary", "ticket": self.ticket.name, "file_name": self.file.name}),
+                                 (self.actions.run, {"review_id": review["review_id"], "approved": True}),
+                                 (self.actions.status, {"review_id": review["review_id"]}),
+                                 (self.actions.save_call_note, {"review_id": review["review_id"], "confirmed": True})):
+                with self.subTest(action=action.__name__), self.assertRaises(frappe.PermissionError):
+                    action(**args)
+        self.client.outcome_run.assert_not_called()
+
+    def test_another_agent_cannot_use_the_plan(self):
+        from helpdesk.test_utils import create_agent, unique_email
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        other = create_agent(unique_email("other-review-agent"))
+        with self.set_user(other.name), self.assertRaises(frappe.PermissionError):
+            self.actions.run(review["review_id"], approved=True)
+        self.client.outcome_run.assert_not_called()
+
+    def test_size_and_empty_file_limits_are_checked_before_estimate(self):
+        for content in (b"", b"x" * (10 * 1024 * 1024 + 1)):
+            with self.subTest(size=len(content)), patch.object(type(self.file), "get_content", return_value=content):
+                with self.assertRaises(frappe.ValidationError):
+                    self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        self.client.outcome_estimate.assert_not_called()
+
+    def test_uncertain_run_blocks_repeat_and_fresh_preparation(self):
+        from helpdesk.pramaan import PramaanError
+        first = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        second = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        self.client.outcome_run.side_effect = PramaanError("unavailable", uncertain=True)
+        result = self.actions.run(first["review_id"], approved=True)
+        self.assertEqual(result["state"], "Uncertain")
+        self.actions.run(first["review_id"], approved=True)
+        blocked = self.actions.run(second["review_id"], approved=True)
+        self.assertEqual(blocked["review_id"], first["review_id"])
+        again = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        self.assertEqual(again["review_id"], first["review_id"])
+        self.client.outcome_run.assert_called_once()
+        self.assertEqual(self.client.outcome_estimate.call_count, 2)
+
+    def test_pending_job_can_finish_without_a_second_run(self):
+        from helpdesk.pramaan import PramaanError
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        report = self.client.outcome_run.return_value
+        self.client.outcome_run.side_effect = PramaanError("job_pending", uncertain=True, job_id="saved-job")
+        self.assertEqual(self.actions.run(review["review_id"], approved=True)["state"], "Pending")
+        self.client.job.return_value = {"status": "done", "result": report}
+        result = self.actions.status(review["review_id"])
+        self.assertEqual(result["state"], "Completed")
+        self.client.job.assert_called_once_with("saved-job")
+        self.client.outcome_run.assert_called_once()
+
+    def test_partial_summary_is_marked_and_cannot_be_saved_as_call_note(self):
+        self.client.outcome_run.return_value["completeness"] = "partial"
+        self.client.outcome_run.return_value["result"]["truncated"] = True
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        result = self.actions.run(review["review_id"], approved=True)
+        self.assertTrue(result["partial"])
+        self.assertTrue(result["truncated"])
+        with self.assertRaises(frappe.ValidationError):
+            self.actions.save_call_note(review["review_id"], confirmed=True)
+
+    def test_run_refusals_are_clear_without_capability_fallback(self):
+        from helpdesk.pramaan import PramaanError
+        for code, state in (("approval_required", "Failed"), ("plan_changed", "Failed"),
+                            ("try_later", "Failed"), ("upstream_unavailable", "Unavailable")):
+            with self.subTest(code=code):
+                review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+                self.client.outcome_run.side_effect = PramaanError(code)
+                result = self.actions.run(review["review_id"], approved=True)
+                self.assertEqual(result["state"], state)
+                self.assertTrue(result["message"])
+        self.client.call.assert_not_called()
+
+    def test_runtime_availability_and_recipe_changes_block_the_run(self):
+        description = self.client.outcome_get.return_value.copy()
+        for change in ({"available": False}, {"effect_class": "external_reversible"}, {"steps": [{"capability": "email.send"}]}):
+            self.client.outcome_get.return_value = description
+            review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+            self.client.outcome_get.return_value = {**description, **change}
+            result = self.actions.run(review["review_id"], approved=True)
+            self.assertEqual(result["state"], "Unavailable")
+        self.client.outcome_run.assert_not_called()
+
+    def test_review_does_not_block_attachment_deletion(self):
+        review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+        frappe.delete_doc("File", self.file.name)
+        with self.assertRaises(frappe.DoesNotExistError):
+            self.actions.run(review["review_id"], approved=True)
+        self.client.outcome_run.assert_not_called()

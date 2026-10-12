@@ -234,3 +234,81 @@ class TestOutsideSettingsBoundary(IntegrationTestCase):
         from helpdesk.auth import authenticate
         with patch.object(frappe, "request", SimpleNamespace(path="/api/method/frappe.client.get")), patch.object(frappe, "form_dict", frappe._dict(doctype="HD Ticket")):
             self.assertIsNone(authenticate())
+
+
+class TestPublicFailureBoundaries(IntegrationTestCase):
+    def test_admin_telephony_page_is_not_a_retired_api(self):
+        from helpdesk.auth import authenticate
+        with patch.object(frappe.local, "request", SimpleNamespace(path="/helpdesk/admin/telephony"), create=True), patch.object(frappe.local, "form_dict", frappe._dict()):
+            authenticate()
+        with patch.object(frappe.local, "request", SimpleNamespace(path="/api/method/telephony.call"), create=True), patch.object(frappe.local, "form_dict", frappe._dict()):
+            with self.assertRaises(frappe.PermissionError):
+                authenticate()
+
+    def test_error_pages_never_include_diagnostics(self):
+        from werkzeug.wrappers import Response
+        from helpdesk.integrations.configuration import sanitise_error_response
+        for status in (403, 404, 500):
+            response = Response('Traceback File "/Users/private/app.py" frappe', status=status, content_type="text/html")
+            sanitise_error_response(response)
+            text = response.get_data(as_text=True)
+            self.assertIn("Return to Helpdesk", text)
+            for token in ("Traceback", "/Users/", "frappe", "<script", "bundle"):
+                self.assertNotIn(token, text)
+
+    def test_api_errors_preserve_validation_but_strip_traces(self):
+        import json
+        from werkzeug.wrappers import Response
+        from helpdesk.integrations.configuration import sanitise_error_response
+        body = {"exc_type": "ValidationError", "exc": "Traceback /Users/private/app.py", "exception": "private", "_server_messages": json.dumps([json.dumps({"message": "Set the calling number and your callback number in Calling settings."})])}
+        response = Response(json.dumps(body), status=417, content_type="application/json")
+        sanitise_error_response(response)
+        self.assertEqual(response.get_json()["message"], "Set the calling number and your callback number in Calling settings.")
+        self.assertEqual(response.get_json()["exc_type"], "ValidationError")
+        self.assertNotIn("private", response.get_data(as_text=True))
+        malformed = Response('["Traceback /workspace/private/app.py"]', status=500, content_type="application/json")
+        sanitise_error_response(malformed)
+        self.assertNotIn("/workspace", malformed.get_data(as_text=True))
+        for status in (403, 404, 500):
+            leaked = Response(json.dumps({"exc": "Traceback", "exception": "/workspace/app.py", "_server_messages": json.dumps([json.dumps({"message": 'File "/workspace/private/app.py" failed'})])}), status=status, content_type="application/json")
+            sanitise_error_response(leaked)
+            self.assertNotIn("/workspace", leaked.get_data(as_text=True))
+            self.assertNotIn("Traceback", leaked.get_data(as_text=True))
+
+    def test_missing_key_stops_every_external_entrypoint_before_writes(self):
+        from helpdesk.api import capabilities, calling, outcome_reviews
+        from helpdesk.api.settings import email
+        from helpdesk.pramaan import PramaanClient, MissingPramaanKey, MISSING_KEY_MESSAGE
+        actions = [(capabilities, capabilities.draft_ticket_reply), (capabilities, capabilities.start_callback),
+                   (capabilities, capabilities.enrich_customer), (capabilities, capabilities.enrich_contact),
+                   (capabilities, capabilities.parse_attachment), (outcome_reviews, outcome_reviews.prepare),
+                   (outcome_reviews, outcome_reviews.run), (calling, calling.session),
+                   (email, email.create_email_account), (email, email.provision_mailbox)]
+        for module, function in actions:
+            with patch.object(module, "client", return_value=PramaanClient(api_key="")), patch.object(frappe.db, "commit") as commit:
+                with self.assertRaises(MissingPramaanKey) as raised:
+                    function()
+                self.assertEqual(str(raised.exception), MISSING_KEY_MESSAGE)
+                self.assertEqual(raised.exception.http_status_code, 422)
+                commit.assert_not_called()
+
+    def test_system_manager_can_read_customer_invites_and_signin_settings(self):
+        from helpdesk.test_utils import create_customer
+        from helpdesk.api.settings.signin import get_data
+        manager = create_agent(unique_email("review-manager"))
+        manager.reload().add_roles("System Manager")
+        customer = create_customer("Review customer " + frappe.generate_hash(length=8))
+        with self.set_user(manager.name):
+            self.assertIsInstance(frappe.get_doc("HD Customer", customer.name).get_pending_invites(), list)
+            self.assertIn("enabled", get_data())
+
+    def test_agent_cannot_read_manager_invites_or_signin_settings(self):
+        from helpdesk.test_utils import create_customer
+        from helpdesk.api.settings.signin import get_data
+        agent = create_agent(unique_email("review-agent"))
+        customer = create_customer("Private invites " + frappe.generate_hash(length=8))
+        with self.set_user(agent.name):
+            with self.assertRaises(frappe.PermissionError):
+                frappe.get_doc("HD Customer", customer.name).get_pending_invites()
+            with self.assertRaises(frappe.PermissionError):
+                get_data()

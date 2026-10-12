@@ -274,7 +274,6 @@ import {
   newCategory,
   updateRes as updateArticle,
 } from "@/stores/knowledgeBase";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { Article, Breadcrumb, Error, FeedbackAction, Resource } from "@/types";
 import {
@@ -399,13 +398,6 @@ const article: Resource<Article> = createResource({
     title.value = data.title;
     feedback.value = data.feedback;
     if (isCustomerPortal.value) {
-      capture("article_viewed", {
-        data: {
-          user: authStore.userId,
-          article: data.name,
-          title: data.title,
-        },
-      });
       incrementArticleViews(data.name);
     }
   },
@@ -546,11 +538,6 @@ function handleArticleUpdate() {
     },
     {
       onSuccess: () => {
-        capture("article_updated", {
-          data: {
-            category: props.articleId,
-          },
-        });
         toast.success(__("Article updated successfully."));
         isDirty.value = false;
         article.reload();

@@ -44,7 +44,7 @@ for target, source in [(BENCH/'env', ROOT/'.venv'), (BENCH/'apps'/'frappe', ROOT
 (SITES/'common_site_config.json').write_text(json.dumps({
     'db_host':'127.0.0.1','db_port':13316,'use_mysqlclient':0,
     'redis_cache':'redis://127.0.0.1:16319','redis_queue':'redis://127.0.0.1:16319','redis_socketio':'redis://127.0.0.1:16319',
-    'socketio_port':19009,'webserver_port':18008,'webserver_host':'127.0.0.1','default_site':'pramaan.localhost','developer_mode':1,'serve_default_site':True,
+    'socketio_port':19009,'webserver_port':18008,'webserver_host':'127.0.0.1','default_site':'pramaan.localhost','developer_mode':0,'allow_error_traceback':0,'serve_default_site':True,
     'server_script_enabled':0,'enable_telemetry':False,'pause_scheduler':False,'disable_scheduler':False,
 }, indent=2))
 wrapper = ROOT/'.tools'/'bin'/'mariadb'
@@ -75,6 +75,8 @@ if not (SITES/'pramaan.localhost'/'site_config.json').exists():
         '--mariadb-user-host-login-scope','%','--set-default','--install-app','helpdesk',cwd=SITES,env=env)
 run(python,'-m','frappe.utils.bench_helper','frappe','--site','pramaan.localhost','enable-scheduler',cwd=SITES,env=env)
 site_config = json.loads((SITES/'pramaan.localhost'/'site_config.json').read_text())
+site_config.update(developer_mode=0, allow_error_traceback=0)
+(SITES/'pramaan.localhost'/'site_config.json').write_text(json.dumps(site_config, indent=2))
 if 'helpdesk' not in site_config.get('installed_apps', []):
     run(python,'-m','frappe.utils.bench_helper','frappe','--site','pramaan.localhost','install-app','helpdesk',cwd=SITES,env=env)
 assets=SITES/'assets';assets.mkdir(exist_ok=True)
@@ -85,4 +87,4 @@ if not (assets/'assets.json').exists():(assets/'assets.json').write_text('{}')
 if (BENCH/'.local-admin-password').exists():
     print('Local site prepared. Sign in as Administrator; local password is in .runtime/bench/.local-admin-password.')
 else:
-    print('Existing local site preserved. Sign in with its current Administrator password.')
+    print('Existing local site preserved. No saved Administrator credential exists; use its current password or reset it with ./review/local-bench set-admin-password <new-password>. This does not recover the old password.')

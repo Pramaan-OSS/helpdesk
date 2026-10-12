@@ -6,7 +6,6 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from helpdesk.utils import capture_event
 
 
 class HDTicketPriority(Document):
@@ -26,6 +25,3 @@ class HDTicketPriority(Document):
             indicator="orange",
         )
 
-    def after_insert(self):
-        if self.level != "Medium":
-            capture_event("priority_created")

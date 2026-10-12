@@ -4,8 +4,8 @@ from pathlib import PurePath
 from uuid import UUID
 
 import frappe
-from helpdesk.integrations.pramaan_mail import client
-from helpdesk.pramaan import CapabilityUnavailable, PramaanError
+from helpdesk.integrations.pramaan_mail import client, requires_pramaan
+from helpdesk.pramaan import PramaanError
 from helpdesk.utils import agent_only
 
 
@@ -16,6 +16,7 @@ def availability():
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def enrich_customer(name: str):
     customer = frappe.get_doc("HD Customer", name)
     customer.check_permission("read")
@@ -28,6 +29,7 @@ def enrich_customer(name: str):
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def enrich_contact(name: str):
     contact = frappe.get_doc("Contact", name)
     contact.check_permission("read")
@@ -39,6 +41,7 @@ def enrich_contact(name: str):
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def draft_ticket_reply(ticket: str, instruction: str = "Draft a helpful reply"):
     doc = frappe.get_doc("HD Ticket", ticket)
     doc.check_permission("read")
@@ -55,6 +58,7 @@ def draft_ticket_reply(ticket: str, instruction: str = "Draft a helpful reply"):
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def parse_attachment(file_name: str):
     doc = frappe.get_doc("File", file_name)
     doc.check_permission("read")
@@ -70,6 +74,7 @@ def parse_attachment(file_name: str):
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def draft_article(url: str, crawl: bool = False):
     frappe.has_permission("HD Article", "create", throw=True)
     capability = "web.crawl" if crawl else "web.read"
@@ -99,6 +104,7 @@ def configure_callback(number: str):
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def start_callback(ticket: str, recipient: str, request_id: str, record_audio: bool = False):
     UUID(request_id)
     doc = frappe.get_doc("HD Ticket", ticket)
@@ -130,6 +136,7 @@ def start_callback(ticket: str, recipient: str, request_id: str, record_audio: b
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def callback_status(name: str):
     record = frappe.get_doc("Pramaan Call", name)
     record.check_permission("read")
@@ -149,7 +156,7 @@ def callback_status(name: str):
 @agent_only
 def list_calls():
     # Permission-aware query; it must never expose another agent's owned records.
-    return frappe.get_list("Pramaan Call", fields=["name", "ticket", "state", "creation"], order_by="creation desc", limit_page_length=50)
+    return frappe.get_list("Pramaan Call", fields=["name", "ticket", "state", "recording_enabled", "creation"], order_by="creation desc", limit_page_length=50)
 
 
 @frappe.whitelist()
@@ -178,6 +185,7 @@ def ticket_files(ticket: str):
 
 @frappe.whitelist(methods=["POST"])
 @agent_only
+@requires_pramaan
 def transcribe_call(name: str):
     record = frappe.get_doc("Pramaan Call", name)
     record.check_permission("read")
@@ -194,6 +202,7 @@ def transcribe_call(name: str):
 
 @frappe.whitelist(methods=["GET"])
 @agent_only
+@requires_pramaan
 def play_call(name: str):
     record = frappe.get_doc("Pramaan Call", name)
     record.check_permission("read")

@@ -161,7 +161,6 @@ import {
 } from "@/composables/formCustomisation";
 import { useAuthStore } from "@/stores/auth";
 import { globalStore } from "@/stores/globalStore";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { Field } from "@/types";
 import { useUploadTracker } from "@/composables/useUploadTracker";
@@ -343,10 +342,5 @@ usePageMeta(() => ({
 }));
 
 onMounted(() => {
-  capture("new_ticket_page", {
-    data: {
-      user: userID,
-    },
-  });
 });
 </script>

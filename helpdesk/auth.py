@@ -13,6 +13,7 @@ ALLOWED_PATHS = [
     "/api/method/logout",
     "/api/method/frappe.core.doctype.user.user.sign_up",
     "/api/method/frappe.core.doctype.user.user.verify_password",
+    "/api/method/frappe.core.doctype.user.user.get_timezones",
     "/api/method/frappe.core.doctype.user.user.test_password_strength",
     "/api/method/frappe.core.doctype.communication.email.mark_email_as_seen",
     "/api/method/frappe.realtime.get_user_info",
@@ -32,7 +33,6 @@ ALLOWED_PATHS = [
     "/api/method/frappe.website.doctype.web_form.web_form.accept",
     "/api/method/frappe.core.doctype.user.user.test_password_strength",
     "/api/method/frappe.core.doctype.user.user.update_password",
-    "/api/method/frappe.utils.telemetry.pulse.client.is_enabled",
     "/api/method/frappe.client.get_value",
     "/api/method/frappe.client.get_count",
     "/api/method/frappe.client.get",
@@ -63,7 +63,11 @@ WILDCARD_PATHS = [
 def authenticate():
     # Outside-service entrypoints are blocked for every account, including admins.
     path = f"/api/method/{frappe.form_dict.cmd}" if frappe.form_dict.cmd else frappe.request.path
-    if ("frappe.integrations." in path and path not in ALLOWED_PATHS) or any(value in path for value in ("login_via_", "oauth2_logins", "/telephony", "frappe.www.login.custom")):
+    retired_api = path.startswith("/api/method/") and (
+        path.startswith(("/api/method/telephony.", "/api/method/telephony/"))
+        or any(value in path for value in ("login_via_", "oauth2_logins", ".telephony.", "frappe.www.login.custom"))
+    )
+    if (path.startswith("/api/") and "frappe.integrations." in path and path not in ALLOWED_PATHS) or retired_api:
         frappe.throw("This connection is not available yet.", frappe.PermissionError)
     restricted = {"Email Domain", "Connected App", "Social Login Key", "Server Script", "Webhook", "SMS Settings", "Notification", "Auto Email Report"}
     doctype = frappe.form_dict.get("doctype") or frappe.form_dict.get("dt")

@@ -1047,3 +1047,63 @@ def send_test_ticket_reply(ticket, message, to="customer@test.com"):
         outbox = frappe.db.get_value("Pramaan Outbox", {"communication": communication.name}, "name")
         deliver(outbox)
     return communication.reload()
+
+
+def make_outcome_attachment(ticket, content=b"A customer attachment for review."):
+    """Create a private ticket attachment for outcome review checks."""
+    return frappe.get_doc({"doctype": "File", "file_name": f"review-{frappe.generate_hash(length=8)}.txt",
+                           "is_private": 1, "attached_to_doctype": "HD Ticket",
+                           "attached_to_name": ticket.name, "content": content}).insert(ignore_permissions=True)
+
+
+def make_recorded_review_call(ticket):
+    """Create an ended owned callback with a platform recording reference."""
+    from uuid import uuid4
+    return frappe.get_doc({"doctype": "Pramaan Call", "ticket": ticket.name,
+                           "request_id": str(uuid4()), "state": "Ended", "recording_enabled": 1,
+                           "result_ref": "ref_01ARZ3NDEKTSV4RRFFQ69G5FAV"}).insert(ignore_permissions=True)
+
+
+def prepare_outcome_browser_user():
+    """Seed an isolated local browser-check account; keep its login in ignored runtime files."""
+    import json
+    from pathlib import Path
+    import secrets
+    from frappe.utils.password import update_password
+
+    user = create_agent(unique_email("outcome-browser"), first_name="Review", last_name="Fixture")
+    user.reload().add_roles("System Manager")
+    password = secrets.token_urlsafe(32)
+    update_password(user.name, password)
+    target = Path(__file__).resolve().parents[1] / ".runtime" / "outcomes-browser-user.json"
+    target.write_text(json.dumps({"user": user.name, "password": password}))
+    target.chmod(0o600)
+
+
+def prepare_outcome_browser_attachment():
+    """Seed a private attachment on the isolated browser account's ticket."""
+    import json
+    from pathlib import Path
+
+    target = Path(__file__).resolve().parents[1] / ".runtime" / "outcomes-browser-user.json"
+    fixture = json.loads(target.read_text())
+    previous = frappe.session.user
+    frappe.set_user(fixture["user"])
+    try:
+        ticket = make_ticket(subject="Attachment summary review fixture")
+        attachment = make_outcome_attachment(ticket, b"A private attachment for the browser review check.")
+        call = make_recorded_review_call(ticket)
+        fixture.update(ticket=str(ticket.name), file_name=attachment.name, call_name=call.name)
+        target.write_text(json.dumps(fixture))
+        target.chmod(0o600)
+    finally:
+        frappe.set_user(previous)
+
+
+def outcome_browser_comment_count():
+    """Read only the browser fixture's internal-comment count."""
+    import json
+    from pathlib import Path
+
+    fixture = json.loads((Path(__file__).resolve().parents[1] / ".runtime" / "outcomes-browser-user.json").read_text())
+    return frappe.db.count("Comment", {"reference_doctype": "HD Ticket", "reference_name": fixture["ticket"], "comment_type": "Comment"})

@@ -3,7 +3,6 @@ import {
   showEmailBox,
   toggleEmailBox,
 } from "@/pages/ticket/modalStates";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { RenderedSavedReply } from "@/types";
 import { createListResource, createResource, toast } from "frappe-ui";
@@ -129,7 +128,6 @@ async function applySavedReply(
   }
   insert(reply);
   recordSavedReplyUse(replyId, title);
-  capture("saved_reply_applied", { data: { source: "command_palette" } });
 }
 
 // --- per-agent usage -----------------------------------------------------

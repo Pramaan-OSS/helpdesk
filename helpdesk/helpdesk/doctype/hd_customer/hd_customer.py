@@ -332,7 +332,7 @@ class HDCustomer(Document):
 
     @frappe.whitelist()
     def get_pending_invites(self):
-        if "Agent Manager" not in frappe.get_roles():
+        if not {"Agent Manager", "System Manager"}.intersection(frappe.get_roles()):
             frappe.throw(
                 _("You do not have permission to access this resource"),
                 frappe.PermissionError,

@@ -5,7 +5,6 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint
 
-from helpdesk.utils import capture_event
 
 
 class HDArticle(Document):
@@ -45,12 +44,6 @@ class HDArticle(Document):
                     {"category": self.category, "status": "Published"},
                 )
             )
-
-    def after_insert(self):
-        count = frappe.db.count("HD Article")
-        if count == 1:
-            return
-        capture_event("article_created")
 
     def on_trash(self):
         self.check_category_length()

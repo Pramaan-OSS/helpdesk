@@ -1,7 +1,7 @@
 <template>
-  <SettingsLayoutBase title="Calling" description="Use a phone callback while browser calling is being built.">
+  <SettingsLayoutBase title="Calling" description="Call from the browser and reach your own phone.">
     <template #content><div class="space-y-4 py-4">
-      <p class="text-sm text-ink-gray-6">Browser calling is not available yet. Callbacks connect your phone to the customer's phone; they do not use your computer's microphone.</p>
+      <p class="text-sm text-ink-gray-6">The browser phone opens from the header. Callbacks connect your phone to the customer's phone; they do not use your computer's microphone.</p>
       <FormControl v-model="personal" label="Your callback phone" placeholder="+441234567890" />
       <Button :loading="busy" @click="savePersonal">Save your phone</Button>
       <template v-if="auth.isAdmin"><FormControl v-model="calling" label="Owned Pramaan calling number" placeholder="+441234567890" /><Button :loading="busy" @click="saveCalling">Save calling number</Button></template>

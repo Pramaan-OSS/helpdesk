@@ -5,7 +5,7 @@ from frappe.exceptions import DoesNotExistError
 from frappe.model.document import Document
 from frappe.model.naming import append_number_if_name_exists
 
-from helpdesk.utils import agent_only, capture_event
+from helpdesk.utils import agent_only
 
 ASSIGNMENT_DAYS = [
     "Monday",
@@ -21,7 +21,6 @@ ASSIGNMENT_DAYS = [
 class HDTeam(Document):
     def after_insert(self):
         self.create_assignment_rule()
-        self.capture_team_creation_event()
 
     def on_update(self):
         if not self.assignment_rule:
@@ -96,10 +95,6 @@ class HDTeam(Document):
             ar.users = []
             for user in members:
                 ar.append("users", {"user": user})
-
-    def capture_team_creation_event(self):
-        if self.name not in ["Product Experts", "Billing"]:
-            capture_event("team_created")
 
     def assign_condition(self, team_name: str) -> tuple[str, str]:
         condition = f"status == 'Open' and agent_group == '{team_name}'"

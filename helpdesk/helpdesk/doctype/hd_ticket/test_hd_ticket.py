@@ -1820,8 +1820,8 @@ class TestHDTicket(IntegrationTestCase):
         """
         frappe.set_user(agent)
 
-        file1 = upload_test_file("outlook.png")
-        file2 = upload_test_file("sendgrid.png")
+        file1 = upload_test_file("attachment.png")
+        file2 = upload_test_file("attachment_2.png")
 
         ticket1 = make_ticket(raised_by="customer1@test.com")
         ticket2 = make_ticket(raised_by="customer2@test.com")
@@ -1901,7 +1901,7 @@ class TestHDTicket(IntegrationTestCase):
         """Ids are deduped before anything is written, so a ticket listed twice gets
         one reply and one copy of each file."""
         frappe.set_user(agent)
-        file1 = upload_test_file("outlook.png")
+        file1 = upload_test_file("attachment.png")
         ticket = make_ticket(raised_by="customer1@test.com")
 
         bulk_reply(

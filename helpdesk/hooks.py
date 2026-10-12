@@ -35,6 +35,7 @@ sqlite_search = ["helpdesk.search_sqlite.HelpdeskSearch"]
 scheduler_events = {
     "all": [
         "helpdesk.integrations.pramaan_mail.drain",
+        "helpdesk.api.calling.ingest_all",
         "helpdesk.search.build_index_if_not_exists",
         ],
     "daily": [

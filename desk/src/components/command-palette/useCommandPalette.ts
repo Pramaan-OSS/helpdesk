@@ -1,6 +1,5 @@
 import { useTicket } from "@/composables/useTicket";
 import { router } from "@/router";
-import { capture } from "@/telemetry";
 import { __ } from "@/translation";
 import { isCustomerPortal } from "@/utils";
 import { useDebounceFn } from "@vueuse/core";
@@ -74,9 +73,6 @@ export function openPalette(): void {
   if (!isPaletteAvailable.value) return;
   isOpen.value = true;
   // Every open path routes through here, Cmd+K included, so the count is honest.
-  capture("command_palette_opened", {
-    data: { context: String(router.currentRoute.value.name ?? "") },
-  });
 }
 
 export function closePalette(): void {
@@ -120,13 +116,6 @@ export async function run(command: Command): Promise<void> {
     }
     return;
   }
-  capture("command_palette_command_run", {
-    data: {
-      command_id: command.id,
-      query_length: query.value.length,
-      depth: depth.value,
-    },
-  });
   if (command.keepOpen) {
     // Optimistic: waiting for the round trip made the row look like it ignored Enter.
     flipChecked(command);
