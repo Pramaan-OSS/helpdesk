@@ -12,7 +12,8 @@
 <script setup lang="ts">
 import { usePramaanAvailability, actionError } from "@/composables/pramaan";
 const { configured, missingKeyMessage } = usePramaanAvailability();
-import { computed, defineComponent, h, ref } from 'vue';
+import { defineComponent, h, ref } from 'vue';
+import { estimatePrice } from './estimatePrice.js';
 import { Button, Dialog, call } from 'frappe-ui';
 
 const props = defineProps<{ kind: 'Summary' | 'Call'; ticket: string; fileName?: string; callName?: string; disabled?: boolean }>();
@@ -22,7 +23,6 @@ const review = ref<any>(null);
 const error = ref('');
 const criteria = ref('The issue was described.\nA next step was agreed.');
 const basis = ref('contract');
-const price = computed(() => `$${((review.value?.price_max_micro || 0) / 1_000_000).toFixed(6)}`);
 
 async function request(method: string, inputs: Record<string, any>) {
   busy.value = true;
@@ -82,7 +82,7 @@ const ReviewBody = defineComponent({
       busy.value ? h('p', { role: 'status' }, 'Working…') : null,
       review.value?.state === 'Ready' ? h('div', { class: 'space-y-2' }, [
         h('p', { class: 'font-medium' }, `${review.value.source_label} (${review.value.source_size} bytes)`),
-        h('p', { class: 'font-medium' }, `Worst-case Pramaan outcome cost: ${price.value}`),
+        estimatePrice(review.value),
         h('ul', { class: 'list-disc pl-5' }, (review.value.steps || []).map((step: string) => h('li', step))),
         props.kind === 'Call' ? h('p', `Recording processing basis: ${review.value.basis.replace('_', ' ')}. Checks: ${(review.value.criteria || []).join(' ')}`) : null,
         h('p', 'This estimate is valid for 15 minutes. Approve only if you agree to these steps and cost.'),

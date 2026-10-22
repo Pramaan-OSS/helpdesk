@@ -1,6 +1,8 @@
 # For license information, please see license.txt
 
 import frappe
+import json
+import re
 from frappe.model.document import Document
 
 from helpdesk.api.settings.field_dependency import (
@@ -61,19 +63,37 @@ def get_form_script(
 ):
     """Returns the form script for the given doctype"""
     FormScript = frappe.qb.DocType("HD Form Script")
+    audience = FormScript.apply_to_customer_portal == is_customer_portal
+    if is_customer_portal and apply_on_new_page:
+        audience = audience | ((FormScript.is_standard == 1) & FormScript.name.like("Field Dependency-%"))
     query = (
         frappe.qb.from_(FormScript)
-        .select("script")
+        .select("name", "is_standard", "script")
         .where(FormScript.dt == dt)
         .where(FormScript.apply_to == apply_to)
         .where(FormScript.enabled == 1)
         .where(FormScript.apply_on_new_page == apply_on_new_page)
-        .where(FormScript.apply_to_customer_portal == is_customer_portal)
+        .where(audience)
     )
 
     doc = query.run(as_dict=True)
     if doc:
-        return [d.script for d in doc]
+        result = []
+        for row in doc:
+            match = re.fullmatch(r"Field Dependency-([a-zA-Z_][a-zA-Z0-9_]*)-([a-zA-Z_][a-zA-Z0-9_]*)", row.name)
+            if row.is_standard and match:
+                try:
+                    mapping = json.loads(row.script.split("//JSON: ")[-1])
+                    if isinstance(mapping, str):
+                        mapping = json.loads(mapping)
+                except (ValueError, AttributeError):
+                    continue
+                if not isinstance(mapping, dict) or any(not isinstance(key, str) or not isinstance(values, list) or any(not isinstance(value, str) for value in values) for key, values in mapping.items()):
+                    continue
+                result.append({"kind": "field_dependency", "parent": match[1], "child": match[2], "mapping": mapping})
+            else:
+                result.append(row.script)
+        return result
         # if len(doc) > 1 else doc[0].script
     else:
         return None

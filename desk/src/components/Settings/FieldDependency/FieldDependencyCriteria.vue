@@ -15,7 +15,7 @@
               {{ selections.parentField }} is set to</span
             >
             <DocumentationButton
-              url="/helpdesk/knowledge-base"
+              url="/helpdesk/guide"
               color="!text-ink-gray-6"
             />
           </div>
@@ -40,7 +40,7 @@
               {{ selections.parentField }} is set to</span
             >
             <DocumentationButton
-              url="/helpdesk/knowledge-base"
+              url="/helpdesk/guide"
               color="!text-ink-gray-6"
             />
           </div>

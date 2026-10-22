@@ -14,14 +14,12 @@ export async function seedSite(api: Api) {
   });
 }
 
-// Without a password Frappe skips the SMTP check, so mails just stay queued.
+// Owned mailbox metadata uses only the single service boundary.
 async function ensureOutgoingEmailAccount(api: Api) {
   if (await api.exists("Email Account", { email_id: OUTGOING_EMAIL })) return;
   await api.insert("Email Account", {
     email_account_name: "E2E Support",
     email_id: OUTGOING_EMAIL,
-    smtp_server: "smtp.example.invalid",
-    no_smtp_authentication: 1,
     enable_outgoing: 1,
     default_outgoing: 1,
     enable_incoming: 0,

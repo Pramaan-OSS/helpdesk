@@ -112,3 +112,20 @@ class TestEnrichmentSuggestions(IntegrationTestCase):
         self.assertEqual(result["person"], profile)
         factory.return_value.call.assert_called_once_with("people.enrich", {"email": email})
         self.assertEqual(frappe.db.get_value("Contact", contact["contact"], "first_name"), name)
+
+    def test_confirmed_no_match_is_not_an_uncertain_lookup(self):
+        from helpdesk.api.capabilities import enrich_contact, enrich_customer
+        from helpdesk.pramaan import PramaanError
+        from helpdesk.test_utils import unique_email
+        contact = create_contact("No match " + frappe.generate_hash(length=8), unique_email("no-match"), user=False)
+        customer = create_customer("No match " + frappe.generate_hash(length=8))
+        customer.domain = "example.com"
+        customer.save()
+        with patch("helpdesk.api.capabilities.client") as factory:
+            factory.return_value.call.side_effect = PramaanError("not_found")
+            self.assertEqual(enrich_contact(contact["contact"]), {"found": False, "person": {}})
+            self.assertEqual(enrich_customer(customer.name), {"found": False, "company": {}})
+            self.assertEqual(factory.return_value.call.call_count, 2)
+            factory.return_value.call.side_effect = PramaanError(uncertain=True)
+            with self.assertRaises(PramaanError):
+                enrich_contact(contact["contact"])

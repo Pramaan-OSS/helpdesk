@@ -6,16 +6,16 @@ test.describe("logged out", () => {
 
   test("login returns to the requested page, then logs out", async ({ page }) => {
     await page.goto("/helpdesk/tickets");
-    await expect(page).toHaveURL(/\/login\?redirect-to=\/helpdesk\/tickets/);
+    await expect(page).toHaveURL((url) => url.pathname === "/login" && url.searchParams.get("redirect-to") === "/helpdesk/tickets");
 
-    await page.getByRole("textbox", { name: "Email" }).fill(personas.agent.email);
-    await page.getByRole("textbox", { name: "Password" }).fill(PASSWORD);
-    await page.getByRole("button", { name: "Continue" }).click();
+    await page.getByRole("textbox", { name: "Email or username" }).fill(personas.agent.email);
+    await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
+    await page.getByRole("button", { name: "Sign in", exact: true }).click();
 
     await expect(page).toHaveURL(/\/helpdesk\/tickets$/);
     await expect(page.getByRole("button", { name: "Filter", exact: true })).toBeVisible();
 
-    await page.getByRole("button", { name: /^Helpdesk / }).click();
+    await page.getByRole("button", { name: /^Pramaan Helpdesk / }).click();
     await page.getByRole("menuitem", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login/);
   });

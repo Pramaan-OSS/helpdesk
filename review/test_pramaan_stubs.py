@@ -14,11 +14,29 @@ sys.modules[SPEC.name] = boundary
 SPEC.loader.exec_module(boundary)
 
 
+class FakeTransport:
+    """Strict wire-contract fake; no network and no permissive schema bypass."""
+    def __init__(self, response=None, status=200):
+        self.requests = []
+        self.status = status
+        self.response = response or {"text": "Suggested text"}
+
+    def __call__(self, method, url, headers, body):
+        if "Pramaan-Approved-By" in headers:
+            return 403, {"error": {"code": "forbidden", "effect": "none"}}
+        if url.endswith(("/llm.chat", "/llm.complete")):
+            boundary.generation_request(body, normalise=False)
+        self.requests.append((method, url, headers, body))
+        return self.status, self.response
+
+
 class FeatureContractTests(unittest.TestCase):
-    def test_delivered_features_are_enabled(self):
+    def test_product_feature_availability_matches_complete_flows(self):
         features = {item.feature: item for item in boundary.PramaanClient().availability()}
-        for feature in ("browser_calling", "automated_threaded_email", "social_sign_in"):
+        for feature in ("browser_calling", "automated_threaded_email"):
             self.assertTrue(features[feature].enabled, feature)
+        self.assertFalse(features["social_sign_in"].enabled)
+        self.assertIn("password sign-in", features["social_sign_in"].reason)
 
     def test_browser_session_create_sends_a_contract_shaped_request(self):
         requests = []
@@ -37,7 +55,7 @@ class FeatureContractTests(unittest.TestCase):
         self.assertEqual(method, "POST")
         self.assertTrue(url.endswith("/v1/capabilities/voice.browser-session.create"))
         self.assertEqual(headers["Idempotency-Key"], "key-1")
-        self.assertEqual(headers["Pramaan-Approved-By"], "agent@example.com")
+        self.assertNotIn("Pramaan-Approved-By", headers)
         self.assertEqual(body["origin"], "https://desk.example.com")
 
     def test_browser_actions_require_an_idempotency_key(self):

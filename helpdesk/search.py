@@ -370,3 +370,27 @@ def build_index_if_not_exists():
     search = HelpdeskSearch()
     if not search.index_exists():
         build_index()
+
+
+def refresh_article(name: str):
+    """Replace one article's local search sections after its database commit."""
+    search = HelpdeskSearch()
+    prefix = search.redis.make_key(f"{search.prefix}:HD Article:{name}").decode()
+    pattern = re.sub(r"([*?\[\]\\])", r"\\\1", prefix) + "*"
+    with search.redis.lock(search.redis.make_key(f"article-search:{name}"), timeout=30, blocking_timeout=10):
+        if not search.index_exists():
+            search.build_index()
+        for key in search.redis.scan_iter(match=pattern, count=1000):
+            key = key.decode() if isinstance(key, bytes) else key
+            if key == prefix or key.startswith(prefix + "#"):
+                search.redis.ft(search.index_name).delete_document(key)
+        if not frappe.db.exists("HD Article", name):
+            return
+        doc = frappe.get_doc("HD Article", name)
+        if doc.status != "Published":
+            return
+        for heading, section in search.get_sections(doc.content or ""):
+            row = frappe._dict(doc.as_dict())
+            row.name = name + "#" + search.scrub(heading)
+            row.content, row.headings = section, heading
+            search.index_doc(row)

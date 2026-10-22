@@ -48,7 +48,7 @@ test("sidebar fields save once per change and persist", async ({ page, api, tick
   expect(saved).toMatchObject({ priority: "Low", ticket_type: "Bug", agent_group: team });
 });
 
-test.fixme("setting a team that has no members does not error", async ({ page, ticket }) => {
+test("setting a team that has no members does not error", async ({ page, ticket }) => {
   // fresh sites ship Billing with an enabled, empty round robin rule: IndexError in get_user_round_robin
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -90,8 +90,9 @@ test("tags can be created with a colour, added and removed", async ({ page, api,
   await expect(page.getByTitle(tag)).toHaveCount(0);
 });
 
-test.fixme("tag activity reads '&', not '&amp;'", async ({ page, api, ticket }) => {
-  // log_tag_activity joins with " & ", saving sanitises it to &amp; and the log row renders text
+test("tag activity reads '&', not '&amp;'", async ({ page, api, ticket }) => {
+  // Create the tag being removed; only a customer's first ticket gets it automatically.
+  await api.call("helpdesk.api.tags.update_tags", { doctype: "HD Ticket", name: ticket.name, added: [{ name: "First Ticket" }] });
   await api.call("helpdesk.api.tags.update_tags", {
     doctype: "HD Ticket",
     name: ticket.name,
@@ -219,7 +220,7 @@ test("saved reply chips can be repointed and apply after sending", async ({ page
   await expect(page.getByRole("button", { name: /^Type / })).toContainText("Bug");
 
   await page.getByRole("button", { name: /^Team / }).click();
-  await page.getByRole("combobox", { name: "Select team" }).fill(team);
+  await page.getByRole("listbox").getByRole("combobox").fill(team);
   await page.getByRole("listbox").getByRole("option", { name: team }).click();
   await expect(page.getByRole("button", { name: /^Team / })).toContainText(team);
 
@@ -232,7 +233,7 @@ test("saved reply chips can be repointed and apply after sending", async ({ page
     .toEqual(["High", "Bug", team, true]);
 });
 
-test.fixme("a repointed chip reopens with the full list", async ({ page, apiAs, ticket }) => {
+test("a repointed chip reopens with the full list", async ({ page, apiAs, ticket }) => {
   // the picker keeps the picked label as its search text, so only that option shows
   const reply = await stagingReply(apiAs, `e2e-${uid()}`);
   await openTicket(page, ticket.name);

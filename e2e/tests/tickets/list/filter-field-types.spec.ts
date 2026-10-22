@@ -236,17 +236,13 @@ async function setTeamOnA({ api, id, names }: Context) {
 }
 
 async function assignManagerToA({ api, names }: Context) {
-  await api.call("frappe.desk.form.assign_to.add", {
-    doctype: "HD Ticket",
-    name: names.a,
-    assign_to: JSON.stringify([personas.manager.email]),
-  });
+  await api.call("run_doc_method", { dt: "HD Ticket", dn: names.a, method: "assign_agent", args: { agent: personas.manager.email } });
 }
 
 async function tagB({ api, id, names }: Context) {
-  await api.call("frappe.desk.doctype.tag.tag.add_tag", {
-    tag: `e2e-${id}`,
-    dt: "HD Ticket",
-    dn: names.b,
+  await api.call("helpdesk.api.tags.update_tags", {
+    added: [{ name: `e2e-${id}` }],
+    doctype: "HD Ticket",
+    name: names.b,
   });
 }

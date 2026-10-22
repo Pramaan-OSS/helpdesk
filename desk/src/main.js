@@ -70,8 +70,6 @@ const app = createApp(App);
 app.use(FrappeUI);
 app.use(spritePlugin);
 app.use(pinia);
-app.use(router);
-app.use(translationPlugin);
 
 for (const c in globalComponents) {
   app.component(c, globalComponents[c]);
@@ -79,22 +77,29 @@ for (const c in globalComponents) {
 
 app.config.globalProperties.$dialog = createDialog;
 
-let socket;
+function mountWorkspace() {
+  app.config.globalProperties.$socket = initSocket();
+  app.use(translationPlugin);
+  app.use(router);
+  app.mount("#app");
+}
+
 if (import.meta.env.DEV) {
+  // Resolve session setup before routing starts its own requests.
   frappeRequest({
     url: "/api/method/helpdesk.www.helpdesk.index.get_context_for_dev",
+    method: "GET",
   }).then((values) => {
-    for (let key in values) {
-      window[key] = values[key];
-    }
+    for (let key in values) window[key] = values[key];
     if (window.dir) document.documentElement.dir = window.dir;
     if (window.lang) document.documentElement.lang = window.lang;
-    socket = initSocket();
-    app.config.globalProperties.$socket = socket;
-    app.mount("#app");
+    mountWorkspace();
+  }).catch(() => {
+    const message = document.createElement("p");
+    message.textContent = "Could not load the workspace. Reload this page.";
+    message.className = "p-6 text-sm";
+    document.querySelector("#app")?.replaceChildren(message);
   });
 } else {
-  socket = initSocket();
-  app.config.globalProperties.$socket = socket;
-  app.mount("#app");
+  mountWorkspace();
 }

@@ -294,11 +294,7 @@ test("selected tickets export as CSV", async ({ page, apiAs }) => {
 });
 
 async function assign(api: Api, name: string, users: string[]) {
-  await api.call("frappe.desk.form.assign_to.add", {
-    doctype: "HD Ticket",
-    name,
-    assign_to: JSON.stringify(users),
-  });
+  for (const agent of users) await api.call("run_doc_method", { dt: "HD Ticket", dn: name, method: "assign_agent", args: { agent } });
 }
 
 async function assignees(api: Api, name: string) {

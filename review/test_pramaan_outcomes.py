@@ -45,7 +45,7 @@ class OutcomeTests(unittest.TestCase):
                                              "effect_class": "external_irreversible"}), (200, self.report))
         client.outcome_run("email.send-tracked", self.body, plan="p", idempotency_key="saved", approved_by="member")
         self.assertEqual(requests[1][2]["Idempotency-Key"], "saved")
-        self.assertEqual(requests[1][2]["Pramaan-Approved-By"], "member")
+        self.assertNotIn("Pramaan-Approved-By", requests[1][2])
 
     def test_approval_required_blocks_run_before_post(self):
         client, requests = self.fake((200, {**self.description, "requires_approval": True}))

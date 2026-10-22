@@ -5,6 +5,9 @@ import frappe
 ALLOWED_PATHS = [
     "/api/method/ping",
     "/api/method/frappe.desk.form.activity.get_activity_timeline",
+    "/api/method/frappe.desk.form.assign_to.add",
+    "/api/method/frappe.desk.form.assign_to.add_multiple",
+    "/api/method/frappe.desk.doctype.bulk_update.bulk_update.submit_cancel_or_update_docs",
     "/api/method/frappe.desk.form.activity.get_more_email_activities",
     "/api/method/frappe.desk.form.activity.get_more_milestone_activities",
     "/api/method/frappe.translate.get_boot_translations",
@@ -42,6 +45,7 @@ ALLOWED_PATHS = [
     "/api/method/frappe.client.get_list",
     "/api/method/frappe.client.rename_doc",
     "/api/method/frappe.onboarding.get_onboarding_status",
+    "/api/method/frappe.onboarding.update_user_onboarding_status",
     "/api/method/frappe.utils.print_format.download_pdf",
     "/api/method/frappe.desk.search.search_link",
     "/api/method/frappe.core.doctype.communication.email.make",
@@ -52,8 +56,13 @@ ALLOWED_PATHS = [
     "/api/method/frappe.core.api.user_invitation.get_pending_invitations",
     "/api/method/frappe.core.api.user_invitation.cancel_invitation",
     "/api/method/frappe.core.api.user_invitation.invite_by_email",
+    "/api/method/frappe.core.api.user_invitation.resend_invitation",
     "/api/method/frappe.desk.reportview.export_query",
+    "/api/method/frappe.desk.reportview.delete_items",
     "/api/method/frappe.desk.reportview.get_count",
+    "/api/method/frappe.desk.doctype.notification_log.notification_log.mark_as_read",
+    "/api/method/frappe.desk.doctype.notification_log.notification_log.mark_all_as_read",
+    "/api/method/frappe.desk.doctype.notification_log.notification_log.trigger_indicator_hide",
 ]
 
 WILDCARD_PATHS = [

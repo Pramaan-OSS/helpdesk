@@ -2843,16 +2843,15 @@ class TestHDTicketFieldPermissions(IntegrationTestCase):
                     "HD Form Script", name, force=True, ignore_missing=True
                 )
 
-    def test_new_ticket_form_runs_new_page_scripts_for_customers(self):
-        """The form cannot set new page and customer portal together, and Field
-        Dependency sets new page only, so the portal must load these too."""
+    def test_new_ticket_form_does_not_send_agent_scripts_to_customers(self):
+        """New-page custom scripts retain their audience even though they are inert."""
         make_form_script(
             self, "Perms New Page Script", "NEW_PAGE", apply_on_new_page=True
         )
         for user in (PERMS_CUSTOMER, PERMS_AGENT):
             frappe.set_user(user)
-            scripts = get_ticket_form(DEFAULT_TICKET_TEMPLATE)["_form_script"]
-            self.assertTrue(any("NEW_PAGE" in s for s in scripts))
+            scripts = get_ticket_form(DEFAULT_TICKET_TEMPLATE)["_form_script"] or []
+            self.assertEqual(any("NEW_PAGE" in s for s in scripts), user == PERMS_AGENT)
 
     def test_customer_can_submit_feedback(self):
         """The portal sends status, feedback and feedback_extra in a single

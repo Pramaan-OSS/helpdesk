@@ -9,8 +9,7 @@
     <TimelineContainer ref="timelineContainer">
       <ActivityTimeline
         ref="timelineRef"
-        class="px-5 pb-6"
-        :class="pinnedComments.length ? 'scroll-pt-14 pt-14' : 'pt-5'"
+        class="px-5 pb-6 scroll-pt-14 pt-14"
         :activities="filtered"
         :loading="_loading"
         :paginate="paginate"
@@ -69,6 +68,7 @@
               </Dropdown>
             </template>
           </EmailItem>
+          <p v-if="activity.data.delivery_message" role="alert" class="px-5 pb-3 text-sm text-ink-red-3">{{ activity.data.delivery_message }}</p>
         </template>
 
         <template #item-call="{ activity }">
@@ -143,7 +143,7 @@ import { globalStore } from "@/stores/globalStore";
 import { useUserStore } from "@/stores/user";
 import { __ } from "@/translation";
 import { TicketSymbol } from "@/types";
-import { copyActivityLink } from "@/utils";
+import { copyActivityLink, htmlToText } from "@/utils";
 import {
   ActivityTimeline,
   EmailItem,
@@ -316,25 +316,32 @@ async function refreshAndScroll() {
 // renders dark like the actor
 function withTagNamesBold(activity: LogActivity): LogActivity {
   if (activity.data?.subtype !== "info") return activity;
-  const text = activity.data.text ?? "";
+  const text = htmlToText(activity.data.text ?? "");
   const names = [...text.matchAll(/(?:added|removed) tags? ([^&]+)/g)]
     .flatMap((m) => m[1].split(","))
     .map((s) => s.trim())
     .filter(Boolean);
-  if (!names.length) return activity;
+  if (!names.length) return { ...activity, data: { ...activity.data, text } };
   return {
     ...activity,
     data: {
       ...activity.data,
+      text,
       assignees: [...(activity.data.assignees ?? []), ...names],
     },
   };
 }
 
+watch(
+  () => activities.value.filter((activity): activity is EmailActivity => activity.type === "email")
+    .map((activity) => `${activity.data.name}:${activity.data.deliveryStatus ?? ""}`).join("|"),
+  () => extras.reload()
+);
+
 function withEmailFixups(activity: EmailActivity): EmailActivity {
   const data = { ...activity.data };
-  // portal tickets have no real delivery pipeline; hide the badge
-  if (ticket.value?.doc?.via_customer_portal) delete data.deliveryStatus;
+  // Unknown tracking support must not look like confirmed delivery.
+  if (extras.data?.email_tracking?.[data.name] !== true) delete data.deliveryStatus;
   if (isPlainText(data.content)) {
     data.content = data.content.replace(/\n/g, "<br>");
   }

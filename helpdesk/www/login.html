@@ -13,26 +13,6 @@ button:disabled{opacity:0.55;cursor:not-allowed}
 p{font-size:13px;line-height:1.5;color:var(--fg-2)}
 #error{color:#b91c1c}
 a{color:#2b59d1}
-</style></head><body><main><img src="/assets/helpdesk/desk/favicon.svg" width="48" height="48" alt=""><h1>Pramaan Helpdesk</h1><p>Sign in to your support workspace.</p><form id="login"><label for="email">Email or username</label><input id="email" name="usr" autocomplete="username" required><label for="password">Password</label><input id="password" name="pwd" type="password" autocomplete="current-password" required><button type="submit">Sign in</button><p id="error" role="alert"></p></form><div id="social" hidden><hr style="margin:20px 0 0;border:0;border-top:1px solid var(--line)"><button id="social-btn" type="button" style="margin-top:16px;background:transparent;color:var(--fg);border:1px solid var(--line);font-weight:500">Continue with single sign-in</button><p id="social-error" role="alert" style="color:#9b2c2c"></p></div></main><script>
-(async function(){
-try{
-const status=await fetch('/api/method/helpdesk.api.social.status',{credentials:'same-origin'});
-if(!status.ok)return;
-if(!(await status.json()).message.enabled)return;
-document.getElementById('social').hidden=false;
-document.getElementById('social-btn').addEventListener('click',async function(){
-const button=this;button.disabled=true;document.getElementById('social-error').textContent='';
-try{
-const response=await fetch('/api/method/helpdesk.api.social.start',{credentials:'same-origin'});
-if(!response.ok)throw Error();
-const url=(await response.json()).message.authorizeUrl;
-location.assign(url);
-}catch{
-document.getElementById('social-error').textContent='Could not start sign-in. Try again.';
-button.disabled=false;}
-});
-}catch{}
-})();
-</script><script>document.querySelector('#login').addEventListener('submit',async event=>{event.preventDefault();const button=document.querySelector('button');button.disabled=true;document.querySelector('#error').textContent='';try{const response=await fetch('/api/method/login',{method:'POST',body:new FormData(event.target),credentials:'same-origin'});if(!response.ok)throw Error();const query=new URLSearchParams(location.search);const target=query.get('redirect-to');location.assign(target&&target.startsWith('/helpdesk')?target:'/helpdesk');}catch{document.querySelector('#error').textContent='Could not sign in. Check your details and try again.';button.disabled=false;}});
+</style></head><body><main><img src="/assets/helpdesk/desk/favicon.svg" width="48" height="48" alt=""><h1>Pramaan Helpdesk</h1><p>Sign in to your support workspace.</p>{% if not pramaan_configured %}<p role="status">Add PRAMAAN_API_KEY to .env</p>{% endif %}<form id="login"><label for="email">Email or username</label><input id="email" name="usr" autocomplete="username" required><label for="password">Password</label><input id="password" name="pwd" type="password" autocomplete="current-password" required><button type="submit">Sign in</button><p id="error" role="alert"></p></form></main><script>document.querySelector('#login').addEventListener('submit',async event=>{event.preventDefault();const button=document.querySelector('button');button.disabled=true;document.querySelector('#error').textContent='';try{const response=await fetch('/api/method/login',{method:'POST',body:new FormData(event.target),credentials:'same-origin'});if(!response.ok)throw Error();const query=new URLSearchParams(location.search);const target=query.get('redirect-to');location.assign(target&&target.startsWith('/helpdesk')?target:'/helpdesk');}catch{document.querySelector('#error').textContent='Could not sign in. Check your details and try again.';button.disabled=false;}});
 const socialNotice={cancelled:'Sign-in was cancelled.',expired:'The sign-in link expired. Start again.',rejected:'Sign-in was refused. Try again.',unknown:'No account matches this email. Ask your administrator to invite you.',unavailable:'Sign-in is not available right now.'}[new URLSearchParams(location.search).get('social')];
 if(socialNotice)document.querySelector('#error').textContent=socialNotice;</script></body></html>

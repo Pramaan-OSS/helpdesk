@@ -28,7 +28,9 @@ def get_comment_extras(ticket: str) -> dict:
     # the ticket gate above is the whole read rule for agent comments
     names = [row.name for row in rows]
     extras = {name: {"reactions": [], "attachments": []} for name in names}
+    from helpdesk.integrations.pramaan_mail import communication_tracking
     result = {
+        "email_tracking": communication_tracking(ticket),
         "comments": extras,
         "pinned_comments": [row.name for row in rows if row.is_pinned],
     }

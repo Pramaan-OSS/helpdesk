@@ -128,7 +128,7 @@
                 }}
                 <a
                   class="font-medium underline"
-                  href="/helpdesk/knowledge-base"
+                  href="/helpdesk/guide"
                   target="_blank"
                   >{{ __("Learn about conditions") }}</a
                 >
@@ -205,7 +205,7 @@
                 }}
                 <a
                   class="font-medium underline"
-                  href="/helpdesk/knowledge-base"
+                  href="/helpdesk/guide"
                   target="_blank"
                   >{{ __("Learn about conditions") }}</a
                 >

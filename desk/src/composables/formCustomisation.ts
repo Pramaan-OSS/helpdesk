@@ -89,7 +89,14 @@ function parseOnChangeFn(fieldMap: object, currentField: object) {
   }
 }
 
-async function parseScript(_script, _obj) {
+async function parseScript(script, obj) {
+  // Only structured local field mappings run; stored JavaScript stays inert.
+  if (script?.kind === "field_dependency" && typeof script.parent === "string" && typeof script.child === "string" && script.mapping && typeof script.mapping === "object") {
+    return { actions: [], onChange: { [script.parent]: (value) => {
+      const values = Object.hasOwn(script.mapping, value) ? script.mapping[value] : null;
+      obj.applyFilters(script.child, Array.isArray(values) ? values : null);
+    } } };
+  }
   return { actions: [], onChange: null };
 }
 

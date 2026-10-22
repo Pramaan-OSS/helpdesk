@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test as setup } from "@playwright/test";
 import { Api } from "./helpers/api";
 import { skipGettingStarted } from "./helpers/fixtures";
@@ -10,7 +11,7 @@ import {
   type PersonaKey,
 } from "./helpers/personas";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD_FILE ? readFileSync(process.env.ADMIN_PASSWORD_FILE, "utf8").trim() : process.env.ADMIN_PASSWORD || "admin");
 const PERSONAS: PersonaKey[] = [
   "admin",
   "manager",

@@ -9,7 +9,9 @@ command -v node >/dev/null
 node -e 'if (Number(process.versions.node.split(".")[0]) < 24) throw new Error("Node 24 or newer is required.")'
 mkdir -p vendor
 if [ ! -d vendor/framework/.git ]; then
-  git clone --no-checkout https://github.com/frappe/frappe.git vendor/framework
+  git init -q vendor/framework
+  git -C vendor/framework remote add origin https://github.com/frappe/frappe.git
+  git -C vendor/framework fetch --depth 1 origin e7ddbac9b5d9601e891dd57f01f4643a14f7f41c
 fi
 git -C vendor/framework checkout --detach e7ddbac9b5d9601e891dd57f01f4643a14f7f41c
 uv venv --python 3.14 .venv

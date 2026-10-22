@@ -1,5 +1,5 @@
 <template>
-  <SettingsLayoutBase title="Email Accounts" description="Connect an owned Pramaan mailbox for ticket replies and incoming email.">
+  <SettingsLayoutBase title="Email Accounts" description="Outgoing mail uses the default sender. Connect an owned mailbox to receive incoming email.">
     <template #content>
       <div class="space-y-5 py-4"><p v-if="!configured" role="status">{{ missingKeyMessage }}</p>
         <p class="text-sm text-ink-gray-6">Automatic acknowledgements and feedback emails are supported when enabled in Email Notifications. Replies preserve their email thread, including edited recipients and subject.</p>

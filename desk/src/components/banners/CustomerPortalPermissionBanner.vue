@@ -24,7 +24,7 @@
       {{ __("can see every ticket of their company and manage its contacts.") }}
       {{ __("Learn more in the") }}
       <a
-        href="/helpdesk/knowledge-base"
+        href="/helpdesk/guide"
         target="_blank"
         class="underline"
         >{{ __("documentation") }}</a

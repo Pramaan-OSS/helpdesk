@@ -70,7 +70,11 @@ test.describe("raising a ticket", () => {
 
     const category = await createCategory(api);
     const title = `Rotate ${uid()} credentials`;
-    await createArticle(api, category.name, { title });
+    const article = await createArticle(api, category.name, { title });
+    await expect.poll(async () => {
+      const matches = await (await apiAs("customer")).call("helpdesk.api.article.search", { query: title });
+      return matches.some((match) => match.name?.split("#")[0] === article.name);
+    }, { timeout: 20000 }).toBe(true);
     await page.goto("/helpdesk/my-tickets/new");
     await page.getByPlaceholder("A short description").fill(title);
     await expect(page.getByText("These articles may already cover")).toBeVisible();

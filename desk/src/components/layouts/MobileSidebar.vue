@@ -116,7 +116,7 @@ const agentPortalDropdown = computed(() => [
   {
     icon: "lucide-book-open",
     label: __("Docs"),
-    onClick: () => window.open("/helpdesk/knowledge-base"),
+    onClick: () => window.open("/helpdesk/guide"),
   },
   themeMenuItem.value,
   {

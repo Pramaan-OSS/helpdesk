@@ -3,7 +3,7 @@ import type { Api } from "./api";
 
 /** Open the settings modal from the user menu and switch to a tab. */
 export async function openSettings(page: Page, tab: string | RegExp) {
-  await page.getByRole("button", { name: /^Helpdesk / }).click();
+  await page.getByRole("button", { name: /^Pramaan Helpdesk / }).click();
   await page.getByRole("menuitem", { name: "Settings" }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByRole("button", { name: tab, exact: true }).click();

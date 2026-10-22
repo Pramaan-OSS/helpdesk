@@ -403,7 +403,7 @@ const from = computed(() => {
   )
     return [];
   return outgoingEmails.value.map((e) => ({
-    label: e.email_account + " <" + e.email_id + ">",
+    label: e.email_account ? e.email_account + " <" + e.email_id + ">" : e.email_id,
     value: e.email_id,
   }));
 });

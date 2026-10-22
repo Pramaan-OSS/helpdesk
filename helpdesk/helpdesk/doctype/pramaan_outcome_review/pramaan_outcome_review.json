@@ -16,6 +16,7 @@
     "plan",
     "steps",
     "price_max_micro",
+    "price_typical_micro",
     "state",
     "message",
     "job_id",
@@ -133,6 +134,13 @@
       "fieldtype": "Int",
       "label": "Source size",
       "read_only": 1
+    },
+    {
+      "fieldname": "price_typical_micro",
+      "fieldtype": "Data",
+      "label": "Typical charge in microdollars",
+      "read_only": 1,
+      "hidden": 1
     }
   ],
   "permissions": []

@@ -26,7 +26,7 @@ export default defineConfig(async ({ mode }) => {
         },
       },
       frappeui({
-        frappeProxy: true,
+        frappeProxy: { source: "^/(desk|app|login|api|assets|files|private|socket.io)" },
         lucideIcons: true,
         jinjaBootData: true,
         buildConfig: {

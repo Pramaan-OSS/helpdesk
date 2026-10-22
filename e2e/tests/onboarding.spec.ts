@@ -64,16 +64,15 @@ test.describe("onboarding persona form", () => {
     await expectBlocked(await pageAs("admin"));
   });
 
-  test("an admin is interrupted only while telemetry is on", async ({ pageAs }) => {
-    const withTelemetry = await pageAs("admin");
-    await forceTelemetry(withTelemetry);
-    await withTelemetry.goto("/helpdesk/tickets");
-    await expect(withTelemetry).toHaveURL(/\/helpdesk\/onboarding$/);
-
-    const withoutTelemetry = await pageAs("admin");
-    await withoutTelemetry.goto("/helpdesk/tickets");
-    await expect(withoutTelemetry.getByRole("button", { name: "Filter", exact: true })).toBeVisible();
-    await expect(withoutTelemetry).toHaveURL(/\/helpdesk\/tickets$/);
+  test("skipping the questionnaire preserves later deep links", async ({ pageAs }) => {
+    const page = await pageAs("admin");
+    await page.goto("/helpdesk/tickets");
+    await page.getByRole("button", { name: "Skip for now", exact: true }).click();
+    await expect(page).toHaveURL(/\/helpdesk\/tickets$/);
+    await page.goto("/helpdesk/admin/signin");
+    await page.reload();
+    await expect(page).toHaveURL(/\/helpdesk\/admin\/signin$/);
+    await expect(page.getByRole("button", { name: "Skip for now" })).toHaveCount(0);
   });
 });
 
@@ -85,15 +84,4 @@ async function expectBlocked(page: Page) {
   await page.goto("/helpdesk/onboarding");
   await expect(page).not.toHaveURL(/\/onboarding/);
   await expect(page.getByPlaceholder("e.g. Acme Inc.")).toHaveCount(0);
-}
-
-// The boot script assigns window.telemetry; pin it on and swallow the write.
-async function forceTelemetry(page: Page) {
-  await page.addInitScript(() => {
-    Object.defineProperty(window, "telemetry", {
-      get: () => ({ enabled: true }),
-      set: () => {},
-      configurable: true,
-    });
-  });
 }

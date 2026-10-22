@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
-export const missingKeyMessage = "This needs a Pramaan key. Ask your administrator to set PRAMAAN_API_KEY.";
+export const missingKeyMessage = "Add PRAMAAN_API_KEY to .env";
 
 export function usePramaanAvailability() {
   const auth = useAuthStore();

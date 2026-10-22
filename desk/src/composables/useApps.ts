@@ -40,7 +40,7 @@ export function useApps() {
     transform: (data: App[]) => {
       const apps = [deskApp];
       data.forEach((app) => {
-        if (app.name === "helpdesk") return;
+        if (["helpdesk", "frappe"].includes(app.name)) return;
         apps.push({
           name: app.name,
           logo: app.logo,

@@ -15,7 +15,7 @@ def get_context(context):
     return context
 
 
-@frappe.whitelist(methods=["POST"], allow_guest=True)
+@frappe.whitelist(methods=["GET", "POST"], allow_guest=True)
 def get_context_for_dev():
     if not frappe.conf.developer_mode:
         frappe.throw(_("This method is only meant for developer mode"))
@@ -31,6 +31,7 @@ def get_boot():
             "csrf_token": frappe.sessions.get_csrf_token(),
             "setup_complete": cint(frappe.get_system_settings("setup_complete")),
             "socketio_port": frappe.conf.get("socketio_port", 9000),
+            "socketio_same_origin": bool(frappe.conf.get("socketio_same_origin")),
             "session_user": frappe.session.user,
             "agent": get_agent_name(),
             "date_format": frappe.get_system_settings("date_format"),

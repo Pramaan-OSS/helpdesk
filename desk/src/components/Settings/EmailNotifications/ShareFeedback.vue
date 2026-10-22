@@ -7,7 +7,7 @@
     v-model:content="content"
     :defaultContent="defaultContent"
     v-model:enabled="enabled"
-    documentationLink="/helpdesk/knowledge-base"
+    documentationLink="/helpdesk/guide"
     :onBack="props.onBack"
     :onSubmit="onSubmit"
     :onGetDataSuccess="onGetDataSuccess"

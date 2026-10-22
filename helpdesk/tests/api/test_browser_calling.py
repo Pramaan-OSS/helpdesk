@@ -259,7 +259,7 @@ class TestCallOutcomeReview(IntegrationTestCase):
         self.client.outcome_run.side_effect = PramaanError("upstream_unavailable")
         result = self.actions.run(review["review_id"], approved=True)
         self.assertEqual(result["state"], "Unavailable")
-        self.assertIn("Call review is unavailable", result["message"])
+        self.assertIn("Call review is not available yet", result["message"])
         self.assertFalse(frappe.db.get_value("Pramaan Outcome Review", review["review_id"], "note"))
 
     def test_uncertain_call_review_never_runs_or_retrieves_a_second_time(self):
@@ -273,3 +273,41 @@ class TestCallOutcomeReview(IntegrationTestCase):
         self.assertEqual(again["review_id"], review["review_id"])
         self.client.outcome_run.assert_called_once()
         self.client.call.assert_called_once()
+
+
+class TestUnavailableCalling(IntegrationTestCase):
+    def test_browser_phone_reports_unavailable_with_a_disabled_request_record(self):
+        from helpdesk.pramaan import PramaanNotAvailable
+        from helpdesk.test_utils import make_unavailable_pramaan_client
+        agent = create_agent(unique_email("unavailable-phone"))
+        with patch("helpdesk.api.calling.client", return_value=make_unavailable_pramaan_client()), enable_calling(), self.set_user(agent.name):
+            with self.assertRaises(PramaanNotAvailable) as raised:
+                calling.session()
+        self.assertEqual(str(raised.exception), "Calling is not available yet.")
+        record = frappe.get_last_doc("Pramaan Browser Session", filters={"agent": agent.name})
+        self.assertFalse(record.enabled)
+        self.assertFalse(record.session_ref)
+        self.assertTrue(record.request_id)
+
+    def test_recording_transcription_and_review_report_unavailable(self):
+        from helpdesk.api import capabilities, outcome_reviews
+        from helpdesk.pramaan import PramaanNotAvailable
+        from helpdesk.test_utils import make_recorded_review_call, make_unavailable_pramaan_client
+        ticket = make_ticket()
+        recorded = make_recorded_review_call(ticket)
+        with self.set_user("Administrator"):
+            for available_recording, message in ((False, "Calling is not available yet."), (True, "Recording transcription is not available yet.")):
+                with patch("helpdesk.api.capabilities.client", return_value=make_unavailable_pramaan_client(available_recording=available_recording)):
+                    with self.assertRaises(PramaanNotAvailable) as raised:
+                        capabilities.transcribe_call(recorded.name)
+                self.assertEqual(str(raised.exception), message)
+            with patch("helpdesk.api.capabilities.client", return_value=make_unavailable_pramaan_client()):
+                with self.assertRaises(PramaanNotAvailable):
+                    capabilities.play_call(recorded.name)
+            with patch("helpdesk.api.outcome_reviews.client") as factory:
+                factory.return_value.call.side_effect = PramaanNotAvailable("voice.call.recording.get")
+                factory.return_value.outcome_get.return_value = {"available": True, "effect_class": "read_only", "steps": [{"capability": "audio.transcription.create"}, {"capability": "llm.complete"}]}
+                result = outcome_reviews.prepare("Call", ticket.name, call_name=recorded.name, criteria=["A next step was agreed."], basis="consent")
+                self.assertEqual(result["state"], "Unavailable")
+                self.assertEqual(result["message"], "Calling is not available yet.")
+                factory.return_value.outcome_estimate.assert_not_called()

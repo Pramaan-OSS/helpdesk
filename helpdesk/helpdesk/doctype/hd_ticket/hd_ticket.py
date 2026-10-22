@@ -579,6 +579,9 @@ class HDTicket(Document, CustomerEditController):
         if email_account := default_outgoing_email_account():
             return email_account
 
+        from helpdesk.integrations.pramaan_mail import default_sender
+        return frappe._dict(name=None, email_id=default_sender())
+
     @property
     def portal_uri(self):
         root_uri = frappe.utils.get_url()
@@ -720,6 +723,8 @@ class HDTicket(Document, CustomerEditController):
         message = self.parse_content(message)
 
         reply_to_email = sender_email.email_id
+        from helpdesk.integrations.pramaan_mail import default_sender
+        reply_address = None if reply_to_email == default_sender() else reply_to_email
         rendered_template: str | None = None
         if self.via_customer_portal:
             email_content = frappe.db.get_single_value(
@@ -756,7 +761,7 @@ class HDTicket(Document, CustomerEditController):
                 recipients=recipients,
                 reference_doctype="HD Ticket",
                 reference_name=self.name,
-                reply_to=reply_to_email,
+                reply_to=reply_address,
                 sender=reply_to_email,
                 subject=subject,
                 with_container=False,

@@ -16,6 +16,15 @@ class TestHDFormScript(FrappeTestCase):
         create_field_dependency()
         pass
 
+    def test_dependency_is_returned_as_local_data(self):
+        from helpdesk.helpdesk.doctype.hd_form_script.hd_form_script import get_form_script
+        rules = get_form_script("HD Ticket", apply_on_new_page=True)
+        rule = next(row for row in rules if isinstance(row, dict) and row.get("parent") == PARENT_FIELD)
+        self.assertEqual(rule["kind"], "field_dependency")
+        self.assertEqual(rule["child"], CHILD_FIELD)
+        self.assertEqual(rule["mapping"]["Bug"], ["Medium"])
+        self.assertNotIn("script", rule)
+
     def test_field_dependency_naming(self):
         # if we call this method, is the name of doc in the format "Field Dependency-{parent_field}-{child_field}"?
         dep_doc = frappe.get_list("HD Form Script", fields=["name", "is_standard"])[0]

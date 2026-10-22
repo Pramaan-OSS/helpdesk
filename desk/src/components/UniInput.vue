@@ -13,7 +13,7 @@
         class="w-full"
         :is="component"
         :placeholder="placeholder"
-        :disabled="field.disabled"
+        :disabled="field.disabled || field.readonly || field.read_only"
         :model-value="transValue"
         @update:model-value="emitUpdate(field.fieldname, $event)"
         variant="outline"

@@ -70,7 +70,7 @@ def sanitise_error_response(response):
     """Keep diagnostics in server logs; all error responses use neutral public text."""
     import json
     import re
-    from helpdesk.pramaan import MISSING_KEY_MESSAGE
+    from helpdesk.pramaan import MISSING_KEY_MESSAGE, GenerationConfigurationError, IncompleteGeneration
     if response.status_code < 400:
         return
     fallback = {
@@ -86,6 +86,14 @@ def sanitise_error_response(response):
         message = fallback
         if body.get("exc_type") == "MissingPramaanKey":
             message = MISSING_KEY_MESSAGE
+        elif body.get("exc_type") == "PramaanNotAvailable":
+            message = "This service is not available yet."
+        elif body.get("exc_type") == "GenerationConfigurationError":
+            message = str(GenerationConfigurationError())
+        elif body.get("exc_type") == "IncompleteGeneration":
+            message = str(IncompleteGeneration())
+        elif body.get("exc_type") == "InvalidGenerationRequest":
+            message = "The generation request could not be prepared. Ask your administrator to check its schema or messages."
         elif response.status_code < 500:
             # Only application validation messages, never exception strings/traces.
             try:
@@ -98,7 +106,7 @@ def sanitise_error_response(response):
                 pass
         public = {"message": message, "_server_messages": json.dumps([json.dumps({"message": message})])}
         # Retain only stable local types used for permission/session UI behavior.
-        if body.get("exc_type") in {"PermissionError", "AuthenticationError", "ValidationError", "RateLimitExceededError", "DoesNotExistError", "TimestampMismatchError", "LinkValidationError", "DuplicateEntryError", "MissingPramaanKey"}:
+        if body.get("exc_type") in {"PermissionError", "AuthenticationError", "ValidationError", "RateLimitExceededError", "DoesNotExistError", "TimestampMismatchError", "LinkValidationError", "DuplicateEntryError", "MissingPramaanKey", "PramaanNotAvailable", "InvalidGenerationRequest", "GenerationConfigurationError", "IncompleteGeneration"}:
             public["exc_type"] = body["exc_type"]
         response.set_data(json.dumps(public))
     else:

@@ -105,7 +105,19 @@ def get_communications(ticket: str):
         .orderby(QBCommunication.creation, order=Order.asc)
         .run(as_dict=True)
     )
+    delivery = {row.communication: row for row in frappe.get_all("Pramaan Outbox",
+        filters={"communication": ("in", [c.name for c in communications]), "state": ("in", ["Failed", "Uncertain"])},
+        fields=["communication", "error"]) } if communications else {}
+    from helpdesk.integrations.pramaan_mail import communication_tracking
+    tracking = communication_tracking(ticket)
     for c in communications:
+        c.delivery_trackable = tracking.get(c.name, False)
+        if not c.delivery_trackable:
+            c.pop("delivery_status", None)
+        failure = delivery.get(c.name)
+        c.delivery_message = ("Mailbox email is not available yet." if failure and failure.error == "Mailbox email is not available yet."
+            else "Sending could not be confirmed. Do not resend until an administrator checks the sending record." if failure and not c.delivery_trackable
+            else "Email delivery could not be confirmed. Check its status before trying again." if failure else "")
         c.attachments = get_attachments("Communication", c.name)
         user_id = c.user if c.sent_or_received == "Sent" and c.user else c.sender
         c.user = get_user_info_for_avatar(user_id)

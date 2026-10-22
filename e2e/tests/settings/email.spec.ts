@@ -8,89 +8,16 @@ const ACCOUNT = "Email Account";
 
 usePersona("admin");
 
-test("the new email account form validates each provider and reports a bad server", async ({ page, api }) => {
-  const name = `E2E Add ${uid()}`;
-  await page.goto("/helpdesk/tickets");
-  const dialog = await openSettings(page, "Email Accounts");
-  await dialog.getByRole("button", { name: "New" }).click();
-  const create = dialog.getByRole("button", { name: "Create" });
-
-  await dialog.getByText("GMail", { exact: true }).click();
-  await create.click();
-  await expect(dialog.getByText("Account name is required")).toBeVisible();
-  await dialog.getByRole("textbox", { name: "Account name" }).fill(name);
-  await create.click();
-  await expect(dialog.getByText("Email ID is required")).toBeVisible();
-  await dialog.getByRole("textbox", { name: "Email ID" }).fill("not-an-email");
-  await create.click();
-  await expect(dialog.getByText("Invalid email ID")).toBeVisible();
-  await dialog.getByRole("textbox", { name: "Email ID" }).fill(`e2e-add-${uid()}@helpdesk.test`);
-  await create.click();
-  await expect(dialog.getByText("Password is required")).toBeVisible();
-
-  await dialog.getByText("Frappe Mail", { exact: true }).click();
-  await create.click();
-  await expect(dialog.getByText("API Key is required")).toBeVisible();
-
-  await dialog.getByText("Custom", { exact: true }).click();
-  await create.click();
-  await expect(dialog.getByText("Email Domain or manual server settings are required")).toBeVisible();
-  await fillServers(dialog, "993", "587");
-  await dialog.getByRole("textbox", { name: "Password" }).fill("secret");
-  await create.click();
-  await expect(dialog.getByText("Failed to create email account, Invalid credentials")).toBeVisible();
-  expect(await api.exists(ACCOUNT, { email_account_name: name })).toBeFalsy();
-
-  await dialog.getByRole("button", { name: "Back" }).click();
-  await expect(dialog.getByRole("heading", { name: "Email Accounts" })).toBeVisible();
-});
-
-test("an email account is edited, renamed, and rejects outgoing mail without a password", async ({ page, api }) => {
-  const name = `E2E Edit ${uid()}`;
-  const renamed = `${name} Renamed`;
-  await api.insert(ACCOUNT, {
-    email_account_name: name,
-    email_id: `e2e-edit-${uid()}@helpdesk.test`,
-    email_server: "imap.e2e.invalid",
-    smtp_server: "smtp.e2e.invalid",
-    incoming_port: "993",
-    smtp_port: "587",
-    enable_incoming: 0,
-    enable_outgoing: 0,
-  });
-  try {
-    await page.goto("/helpdesk/tickets");
-    const dialog = await openSettings(page, "Email Accounts");
-    const card = accountCard(dialog, name);
-    await expect(card.getByText("Inbox", { exact: true })).toBeVisible();
-    await card.click();
-
-    const update = dialog.getByRole("button", { name: "Update Account" });
-    await expect(update).toHaveCount(0);
-    await dialog.getByRole("textbox", { name: "Outgoing Port" }).fill("2525");
-    await update.click();
-    await expect.poll(async () => (await api.get(ACCOUNT, name)).smtp_port).toBe("2525");
-
-    await accountCard(dialog, name).click();
-    await dialog.getByRole("textbox", { name: "Account name" }).fill(renamed);
-    await update.click();
-    await expect.poll(() => api.exists(ACCOUNT, { name: renamed })).toBeTruthy();
-
-    await accountCard(dialog, renamed).click();
-    await dialog.getByRole("checkbox", { name: "Enable Outgoing" }).check();
-    await update.click();
-    await expect(dialog.getByText("Failed to update email account, Invalid credentials")).toBeVisible();
-    expect((await api.get(ACCOUNT, renamed)).enable_outgoing).toBe(0);
-  } finally {
-    for (const account of [name, renamed]) {
-      if (await api.exists(ACCOUNT, { name: account })) await api.delete(ACCOUNT, account);
-    }
-  }
+test("owned mailbox connection reports unavailable without asking for vendor credentials", async ({ page }) => {
+  await page.goto("/helpdesk/admin/email-accounts");
+  await page.getByLabel("Owned mailbox address").fill("support@example.test");
+  await page.getByRole("button", { name: "Connect mailbox", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("not available yet");
+  await expect(page.getByRole("textbox", { name: /Password|Server|API Key/ })).toHaveCount(0);
 });
 
 const NOTIFICATIONS = [
-  { label: "Reply from contact", enabled: "enable_reply_email_to_agent", content: "reply_email_to_agent_content" },
-  { label: "Reply from agent", enabled: "enable_reply_email_via_agent", content: "reply_via_agent_email_content" },
+  { label: "Acknowledgement", enabled: "send_acknowledgement_email", content: "acknowledgement_email_content" },
   { label: "Share feedback", enabled: "enable_email_ticket_feedback", content: "feedback_email_content" },
 ];
 
@@ -124,7 +51,7 @@ test("each notification saves its content and switch, and share feedback its sta
 test("notification content resets to the default, and leaving unsaved edits asks first", async ({ page, api }) => {
   await page.goto("/helpdesk/tickets");
   const dialog = await openSettings(page, "Email Notifications");
-  await openNotification(dialog, "Reply from agent");
+  await openNotification(dialog, "Acknowledgement");
   const content = dialog.getByRole("textbox", { name: /Email Content/ });
   const reset = dialog.getByRole("button", { name: "Reset Content" });
   await content.fill("<p>E2E draft that is never saved</p>");
@@ -138,8 +65,8 @@ test("notification content resets to the default, and leaving unsaved edits asks
   await content.fill("<p>E2E second draft</p>");
   await dialog.getByRole("button", { name: "back to email event list" }).click();
   await page.getByRole("dialog", { name: "Unsaved changes" }).getByRole("button", { name: "Confirm" }).click();
-  await expect(dialog.getByRole("heading", { name: "Reply from agent", level: 2 })).toBeVisible();
-  expect(await setting(api, "reply_via_agent_email_content")).not.toContain("E2E second draft");
+  await expect(dialog.getByRole("heading", { name: "Email notifications", level: 1 })).toBeVisible();
+  expect(await setting(api, "acknowledgement_email_content")).not.toContain("E2E second draft");
 });
 
 test("an admin links and unlinks an outgoing email account", async ({ page, api }) => {
@@ -159,7 +86,7 @@ test("an admin links and unlinks an outgoing email account", async ({ page, api 
   }
 });
 
-test.fixme("a plain agent links an outgoing email account", async ({ page, api }) => {
+test("a plain agent links an outgoing email account", async ({ page, api }) => {
   // User.user_emails is permlevel 1, so an Agent's save silently drops the row.
   const email = `e2e-link-${uid()}@example.com`;
   await createThrowawayAgent(api, email, PASSWORD);
@@ -182,19 +109,8 @@ async function linkedAccounts(api: Api, user: string) {
   return (await api.get("User", user)).user_emails.map((row) => row.email_account);
 }
 
-function accountCard(dialog: Locator, name: string) {
-  return dialog.getByText(name, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'cursor-pointer')][1]");
-}
-
-async function fillServers(dialog: Locator, incomingPort: string, outgoingPort: string) {
-  await dialog.getByRole("textbox", { name: "Incoming Server (IMAP/POP)" }).fill("imap.e2e.invalid");
-  await dialog.getByRole("textbox", { name: "Incoming Port" }).fill(incomingPort);
-  await dialog.getByRole("textbox", { name: "Outgoing Server (SMTP)" }).fill("smtp.e2e.invalid");
-  await dialog.getByRole("textbox", { name: "Outgoing Port" }).fill(outgoingPort);
-}
-
 async function openNotification(dialog: Locator, label: string) {
-  await dialog.getByRole("listitem").filter({ hasText: label }).click();
+  await dialog.getByRole("button", { name: label, exact: true }).click();
   await expect(dialog.getByRole("heading", { name: label, level: 1 })).toBeVisible();
 }
 

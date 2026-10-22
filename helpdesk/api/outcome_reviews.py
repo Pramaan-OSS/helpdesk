@@ -20,7 +20,7 @@ STEPS = {"document.parse": "Read the attachment text", "llm.complete": "Prepare 
          "audio.transcription.create": "Transcribe the recording"}
 EXPECTED_STEPS = {"Summary": {"document.parse", "llm.complete"}, "Call": {"audio.transcription.create", "llm.complete"}}
 UNAVAILABLE = {"Summary": "Attachment summarising is unavailable. You can still open or download the attachment.",
-               "Call": "Call review is unavailable. Your call record has not changed."}
+               "Call": "Call review is not available yet. Your call record has not changed."}
 
 
 def _available(boundary, kind):
@@ -107,6 +107,8 @@ def _view(review):
                 "message": review.message or "", "can_poll": bool(review.job_id), "saved": bool(review.note and frappe.db.exists("Comment", review.note))}
     if review.state == "Ready":
         body = json.loads(review.body)
+        if review.get("price_typical_micro") not in (None, ""):
+            response["price_typical_micro"] = int(review.price_typical_micro)
         response.update(steps=json.loads(review.steps), price_max_micro=review.price_max_micro,
                         source_label=review.source_label, source_size=review.source_size,
                         criteria=[criterion["text"] for criterion in body["input"].get("criteria", [])],
@@ -189,6 +191,8 @@ def prepare(kind: str, ticket: str, file_name: str | None = None, call_name: str
                 "options": {}, "basis": {"ground": basis}}
         estimate = boundary.outcome_estimate(KINDS[kind], body)
     except PramaanError as error:
+        if error.code == "not_available_yet":
+            return {"state": "Unavailable", "message": str(error)}
         return {"state": "Unavailable" if error.code == "upstream_unavailable" else "Failed",
                 "message": UNAVAILABLE[kind] if error.code == "upstream_unavailable" else "The estimate could not be prepared. Check the input and try later."}
     if (estimate.get("can_run") is not True or not isinstance(estimate.get("plan"), str)
@@ -205,6 +209,7 @@ def prepare(kind: str, ticket: str, file_name: str | None = None, call_name: str
         "source_label": source.file_name if kind == "Summary" else f"Call on ticket {ticket} ({source.creation})",
         "source_size": source_size,
         "plan": estimate["plan"], "steps": json.dumps(steps), "price_max_micro": estimate["price_max_micro"],
+        "price_typical_micro": str(estimate["price_typical_micro"]) if estimate.get("price_typical_micro") is not None else None,
         "state": "Ready", "recording_expires": recording_expires}).insert(ignore_permissions=True)
     frappe.db.commit()
     return _view(review)

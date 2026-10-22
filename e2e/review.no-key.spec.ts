@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { skipGettingStarted } from './helpers/fixtures';
 
 const login = JSON.parse(readFileSync('.runtime/outcomes-browser-user.json', 'utf8'));
-const message = 'This needs a Pramaan key. Ask your administrator to set PRAMAAN_API_KEY.';
+const message = 'Add PRAMAAN_API_KEY to .env';
 test.use({ headless: true });
 
 test.beforeEach(async ({ page }) => {

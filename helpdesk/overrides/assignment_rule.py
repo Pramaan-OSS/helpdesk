@@ -29,6 +29,11 @@ class HelpdeskAssignmentRule(AssignmentRule):
         is available, so the ticket is never left unassigned.
         """
 
+        if self.rule in ("Round Robin", "Load Balancing") and not self.users:
+            return None
+        if self.rule == "Weighted Distribution" and not self.weighted_users:
+            return None
+
         away = get_agents_by_category("Away")
         unavailable = get_agents_by_category("Unavailable")
         if not away and not unavailable:

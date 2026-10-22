@@ -235,7 +235,11 @@ test("pinned comments cycle in a bar that never shifts the feed", async ({ page,
   const panel = page.locator("[role=tabpanel][data-state=active]");
   const rowWith = (text: string) => panel.locator(".activity", { hasText: text });
   const bar = panel.getByRole("button", { name: /Go to pinned comment/ });
-  const topOf = (text: string) => rowWith(text).evaluate((row) => row.getBoundingClientRect().top);
+  const topOf = (text: string) => rowWith(text).evaluate((row) => {
+    let parent = row.parentElement;
+    while (parent && !["auto", "scroll"].includes(getComputedStyle(parent).overflowY)) parent = parent.parentElement;
+    return row.getBoundingClientRect().top + (parent?.scrollTop || 0);
+  });
   const toggle = async (text: string, action: "Pin" | "Unpin") => {
     await rowWith(text).getByRole("button").first().click();
     await page.getByRole("menuitem", { name: action, exact: true }).click();

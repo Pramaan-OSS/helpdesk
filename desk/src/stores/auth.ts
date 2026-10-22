@@ -75,8 +75,8 @@ export const useAuthStore = defineStore("auth", () => {
   // module-scope userStorage keys in sync with the session cookie.
 
   function logout() {
-    user.value = null;
     call(URI_LOGOUT).then(() => {
+      user.value = null;
       window.location.href = LOGIN_PAGE;
     });
   }

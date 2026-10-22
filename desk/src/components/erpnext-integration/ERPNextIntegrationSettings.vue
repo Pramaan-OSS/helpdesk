@@ -58,7 +58,7 @@
           <span>
             {{ __("Install the") }}
             <a
-              href="/helpdesk/knowledge-base"
+              href="/helpdesk/guide"
               target="_blank"
               rel="noopener noreferrer"
               class="font-medium text-ink-gray-8 underline underline-offset-2 hover:text-ink-gray-9"

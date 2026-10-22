@@ -51,3 +51,6 @@ vendor/
 .runtime/
 .tools/
 .venv/
+
+# Private verification evidence
+.scratch/

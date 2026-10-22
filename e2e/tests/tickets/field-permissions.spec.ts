@@ -1,6 +1,5 @@
 import type { Api } from "../../helpers/api";
 import { expect, test } from "../../helpers/fixtures";
-import { FormScripts } from "../../helpers/form-script";
 import { snapshotSettings } from "../../helpers/settings";
 import { openTicket } from "../../helpers/ticket";
 
@@ -38,7 +37,7 @@ test.describe("field permission notice", () => {
     const dialog = page.getByRole("dialog", { name: "Ticket fields have changed" });
     await expect(dialog.getByRole("link", { name: "See how" })).toHaveAttribute(
       "href",
-      /perm-levels-in-helpdesk/
+      /^\/helpdesk\/guide$/
     );
     await dialog.getByRole("button", { name: "Got it" }).click();
     await expect(dialog).toHaveCount(0);
@@ -98,39 +97,23 @@ test.describe("Default template rows", () => {
     await expect(agent.getByText("Ticket Type", { exact: true })).toBeVisible();
   });
 
-  test("a portal script changes only the fields editable after creation", async ({
-    api,
-    pageAs,
-    ticket,
-  }) => {
+  test("the portal can write only fields marked editable after creation", async ({ api, apiAs, pageAs, ticket }) => {
     restoreTemplate = await setTemplateRows(api, [
       { fieldname: "priority", visible_to: "Everyone", editable_after_creation: 1 },
       { fieldname: "ticket_type", visible_to: "Everyone", editable_after_creation: 0 },
     ]);
     await api.update("HD Ticket", ticket.name, { priority: "High", ticket_type: "Question" });
-    const scripts = new FormScripts(api);
-    await scripts.create(
-      `return { actions: [
-        { label: "E2E Set Priority", onClick: () => ctx.updateField("priority", "Low") },
-        { label: "E2E Set Type", onClick: () => ctx.updateField("ticket_type", "Bug") },
-      ] };`,
-      { portal: true }
-    );
-    try {
-      const page = await pageAs("customer");
-      await page.goto(`/helpdesk/my-tickets/${ticket.name}`);
-      await page.getByRole("button", { name: "E2E Set Priority" }).click();
-      await expect.poll(async () => (await api.get("HD Ticket", ticket.name)).priority).toBe("Low");
-
-      const refused = page.waitForResponse((r) =>
-        r.url().endsWith("/api/method/frappe.client.set_value")
-      );
-      await page.getByRole("button", { name: "E2E Set Type" }).click();
-      expect((await refused).status()).toBe(403);
-      expect((await api.get("HD Ticket", ticket.name)).ticket_type).toBe("Question");
-    } finally {
-      await scripts.removeAll();
-    }
+    const customer = await apiAs("customer");
+    await customer.update("HD Ticket", ticket.name, { priority: "Low" });
+    const refused = await customer.raw("frappe.client.set_value", { doctype: "HD Ticket", name: ticket.name, fieldname: { ticket_type: "Bug" } });
+    expect(refused.status()).toBe(403);
+    const saved = await api.get("HD Ticket", ticket.name);
+    expect(saved.priority).toBe("Low");
+    expect(saved.ticket_type).toBe("Question");
+    const page = await pageAs("customer");
+    await page.goto(`/helpdesk/my-tickets/${ticket.name}`);
+    await expect(page.getByText("Low", { exact: true })).toBeVisible();
+    await expect(page.getByText("Question", { exact: true })).toBeVisible();
   });
 });
 

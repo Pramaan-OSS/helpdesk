@@ -46,7 +46,7 @@
     appName="helpdesk"
     title="Pramaan Helpdesk"
     :logo="logo"
-    docsLink="/helpdesk/knowledge-base"
+    docsLink="/helpdesk/guide"
   />
   <IntermediateStepModal
     v-model="showIntermediateModal"
@@ -152,7 +152,7 @@ const agentPortalDropdown = computed(() => [
   {
     icon: "lucide-book-open",
     label: __("Docs"),
-    onClick: () => window.open("/helpdesk/knowledge-base"),
+    onClick: () => window.open("/helpdesk/guide"),
   },
   {
     label: __("Shortcuts"),

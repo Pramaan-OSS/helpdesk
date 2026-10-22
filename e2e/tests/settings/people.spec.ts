@@ -163,12 +163,14 @@ async function invitationStatus(api: Api, email: string) {
   return invitation?.status;
 }
 
-// The raw key only exists in the invitation email, so read it from the queue.
+// Inspect only this disposable invitation's queued message, without displaying its key.
 async function invitationKey(api: Api, email: string) {
-  const [mail] = await api.list("Email Queue", {
-    fields: ["message"],
-    filters: [["Email Queue Recipient", "recipient", "=", email]],
+  const [mail] = await api.list("Pramaan Outbox", {
+    fields: ["payload"],
+    filters: { payload: ["like", `%${email}%`] },
   });
-  const body = mail.message.replace(/=\r?\n/g, "").replace(/=3D/g, "=");
-  return body.match(/accept_invitation\?key=(\w+)/)?.[1];
+  const body = JSON.parse(mail.payload).html;
+  const key = body.match(/accept_invitation\?key=(\w+)/)?.[1];
+  expect(key).toBeTruthy();
+  return key;
 }

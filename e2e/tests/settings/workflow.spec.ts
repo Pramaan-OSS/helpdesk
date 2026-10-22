@@ -31,7 +31,8 @@ test("an SLA policy is created with targets and working hours, then made default
 
     await expect.poll(() => api.exists(SLA, { name })).toBeTruthy();
     const sla = await api.get(SLA, name);
-    expect(sla.priorities.map((row) => row.priority).sort()).toEqual(["High", "Low", "Medium", "Urgent"]);
+    const priorities = await api.list("HD Ticket Priority");
+    expect(sla.priorities.map((row) => row.priority).sort()).toEqual(priorities.map(row => row.name).sort());
     expect(sla.support_and_resolution).toHaveLength(5);
 
     await dialog.getByRole("checkbox", { name: "Set as default SLA" }).check();
@@ -166,13 +167,13 @@ test("saved replies are created and deleting one removes only that row", async (
   }
 });
 
-test("the email account form validates, and notifications can be toggled", async ({ page, api }) => {
+test("mailbox connection and notification controls use the supported flow", async ({ page, api }) => {
   const restore = await snapshotSettings(api, ["send_acknowledgement_email"]);
   const before = (await api.get("HD Settings", "HD Settings")).send_acknowledgement_email;
   try {
     await page.goto("/helpdesk/tickets");
     const dialog = await openSettings(page, "Email Notifications");
-    await dialog.getByRole("listitem").filter({ hasText: "Acknowledgement" }).click();
+    await dialog.getByRole("button", { name: "Acknowledgement", exact: true }).click();
     await dialog.getByRole("switch").click();
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect
@@ -180,10 +181,8 @@ test("the email account form validates, and notifications can be toggled", async
       .toBe(before ? 0 : 1);
 
     await dialog.getByRole("button", { name: "Email Accounts", exact: true }).click();
-    await dialog.getByRole("button", { name: "New" }).click();
-    await dialog.getByText("Custom", { exact: true }).click();
-    await dialog.getByRole("button", { name: "Create" }).click();
-    await expect(dialog.getByText("Account name is required")).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Connect mailbox", exact: true })).toBeVisible();
+    await expect(dialog.getByRole("textbox", { name: /Password|Server/ })).toHaveCount(0);
   } finally {
     await restore();
   }

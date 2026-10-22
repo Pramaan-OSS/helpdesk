@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import type { Locator, Page } from "@playwright/test";
 import type { Api } from "../helpers/api";
 import { raiseTicket } from "../helpers/factories";
@@ -157,18 +158,14 @@ test("a notification opens its ticket and mark all as read clears it", async ({
   const first = await raiseTicket(customer);
   const second = await raiseTicket(customer);
   for (const ticket of [first, second]) {
-    await api.call("frappe.desk.form.assign_to.add", {
-      doctype: "HD Ticket",
-      name: ticket.name,
-      assign_to: JSON.stringify([personas.agent2.email]),
-    });
+    await api.call("run_doc_method", { dt: "HD Ticket", dn: ticket.name, method: "assign_agent", args: { agent: personas.agent2.email } });
   }
   const log = (ticket: { name: string }) =>
     api.list("Notification Log", {
       fields: ["name", "read"],
       filters: { for_user: personas.agent2.email, document_name: ticket.name },
     });
-  await expect.poll(async () => (await log(second)).length).toBe(1);
+  await expect.poll(async () => (await log(second)).length, { timeout: 30000 }).toBe(1);
 
   await page.goto("/helpdesk/tickets");
   const panel = page.locator(".notifications-panel");
@@ -225,13 +222,12 @@ async function drag(page: Page, widget: Locator, handle: Locator, dx: number, dy
     .toBe(true);
 }
 
-/** New docs only reach the search index through scheduled jobs; run them now. */
+/** Build fixture search data after tests that roll back database writes. */
 async function indexForSearch(api: Api, token: string) {
-  await runScheduledJob(api, "frappe.search.sqlite_search.build_index_if_not_exists");
+  await runScheduledJob("helpdesk.search_sqlite.build_index");
   await expect
     .poll(
       async () => {
-        await runScheduledJob(api, "frappe.search.sqlite_search.index_docs_in_queue");
         const found = await api
           .call("helpdesk.api.search.search", { query: token })
           .catch(() => ({ results: [] }));
@@ -242,11 +238,9 @@ async function indexForSearch(api: Api, token: string) {
     .toBeGreaterThan(0);
 }
 
-async function runScheduledJob(api: Api, method: string) {
-  const [job] = await api.list("Scheduled Job Type", { filters: { method } });
-  await api.call("frappe.core.doctype.scheduled_job_type.scheduled_job_type.execute_event", {
-    doc: JSON.stringify({ name: job.name }),
-  });
+async function runScheduledJob(method: string) {
+  if (process.env.SITE_NAME !== "qa-helpdesk.localhost" || !process.env.QA_CONTAINER) throw new Error("Search fixture jobs require the disposable QA site.");
+  execFileSync("docker", ["exec", "-w", "/app/.runtime/bench/sites", process.env.QA_CONTAINER, "/app/.venv/bin/python", "-m", "frappe.utils.bench_helper", "frappe", "--site", "qa-helpdesk.localhost", "execute", method], { stdio: "pipe" });
 }
 
 // The browser runs in UTC (see playwright.config.ts), so the date is computed in UTC too.

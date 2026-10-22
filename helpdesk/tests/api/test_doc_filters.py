@@ -230,6 +230,12 @@ class TestOutsideSettingsBoundary(IntegrationTestCase):
                 with self.assertRaises(frappe.PermissionError):
                     authenticate()
 
+    def test_local_actions_reach_their_permission_checks(self):
+        from helpdesk.auth import authenticate
+        for method in ["frappe.core.api.user_invitation.resend_invitation", "frappe.desk.reportview.delete_items", "frappe.desk.doctype.notification_log.notification_log.mark_as_read", "frappe.desk.doctype.notification_log.notification_log.mark_all_as_read", "frappe.desk.doctype.notification_log.notification_log.trigger_indicator_hide", "frappe.onboarding.update_user_onboarding_status", "frappe.desk.form.assign_to.add", "frappe.desk.form.assign_to.add_multiple", "frappe.desk.doctype.bulk_update.bulk_update.submit_cancel_or_update_docs"]:
+            with self.subTest(method=method), patch.object(frappe.local, "request", SimpleNamespace(path=f"/api/method/{method}"), create=True), patch.object(frappe.local, "form_dict", frappe._dict(doctype="HD Ticket")):
+                self.assertIsNone(authenticate())
+
     def test_local_ticket_settings_remain_accessible(self):
         from helpdesk.auth import authenticate
         with patch.object(frappe, "request", SimpleNamespace(path="/api/method/frappe.client.get")), patch.object(frappe, "form_dict", frappe._dict(doctype="HD Ticket")):
@@ -249,7 +255,7 @@ class TestPublicFailureBoundaries(IntegrationTestCase):
         from werkzeug.wrappers import Response
         from helpdesk.integrations.configuration import sanitise_error_response
         for status in (403, 404, 500):
-            response = Response('Traceback File "/Users/private/app.py" frappe', status=status, content_type="text/html")
+            response = Response('Traceback File "/workspace/private/app.py" frappe', status=status, content_type="text/html")
             sanitise_error_response(response)
             text = response.get_data(as_text=True)
             self.assertIn("Return to Helpdesk", text)
@@ -260,7 +266,7 @@ class TestPublicFailureBoundaries(IntegrationTestCase):
         import json
         from werkzeug.wrappers import Response
         from helpdesk.integrations.configuration import sanitise_error_response
-        body = {"exc_type": "ValidationError", "exc": "Traceback /Users/private/app.py", "exception": "private", "_server_messages": json.dumps([json.dumps({"message": "Set the calling number and your callback number in Calling settings."})])}
+        body = {"exc_type": "ValidationError", "exc": "Traceback /workspace/private/app.py", "exception": "private", "_server_messages": json.dumps([json.dumps({"message": "Set the calling number and your callback number in Calling settings."})])}
         response = Response(json.dumps(body), status=417, content_type="application/json")
         sanitise_error_response(response)
         self.assertEqual(response.get_json()["message"], "Set the calling number and your callback number in Calling settings.")
@@ -312,3 +318,15 @@ class TestPublicFailureBoundaries(IntegrationTestCase):
                 frappe.get_doc("HD Customer", customer.name).get_pending_invites()
             with self.assertRaises(frappe.PermissionError):
                 get_data()
+
+
+    def test_unavailable_responses_have_plain_messages_and_no_diagnostics(self):
+        import json
+        from werkzeug.wrappers import Response
+        from helpdesk.integrations.configuration import sanitise_error_response
+        for error_type, status, message in (("PramaanNotAvailable", 503, "not available yet"), ("InvalidGenerationRequest", 422, "generation request could not be prepared"), ("GenerationConfigurationError", 422, "administrator"), ("IncompleteGeneration", 422, "incomplete")):
+            response = Response(json.dumps({"exc_type": error_type, "exc": "Traceback private diagnostics", "exception": "private diagnostics"}), status=status, content_type="application/json")
+            sanitise_error_response(response)
+            self.assertIn(message, response.get_json()["message"])
+            self.assertNotIn("private", response.get_data(as_text=True))
+            self.assertNotIn("Traceback", response.get_data(as_text=True))

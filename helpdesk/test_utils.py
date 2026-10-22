@@ -1107,3 +1107,29 @@ def outcome_browser_comment_count():
 
     fixture = json.loads((Path(__file__).resolve().parents[1] / ".runtime" / "outcomes-browser-user.json").read_text())
     return frappe.db.count("Comment", {"reference_doctype": "HD Ticket", "reference_name": fixture["ticket"], "comment_type": "Comment"})
+
+
+def make_unavailable_pramaan_client(*, available_recording=False):
+    """A real boundary with a strict fake transport for unavailable voice/mail/audio."""
+    from helpdesk.pramaan import PramaanClient, generation_request
+    def transport(method, url, headers, body):
+        if url.endswith(("/llm.chat", "/llm.complete")):
+            generation_request(body, normalise=False)
+        if available_recording and url.endswith("/voice.call.recording.get"):
+            return 200, {"recording": {"fileId": "fixture-recording"}}
+        return 502, {"error": {"code": "upstream_unavailable"}}
+    return PramaanClient(api_key="fake", transport=transport)
+
+
+def make_generation_pramaan_client(*, finish_reason="stop", status=200):
+    """A strict fake generation transport for exercising the actual draft callers."""
+    from helpdesk.pramaan import PramaanClient, generation_request
+    requests = []
+    def transport(method, url, headers, body):
+        if url.endswith(("/llm.chat", "/llm.complete")):
+            generation_request(body, normalise=False)
+        requests.append((method, url, body))
+        if status == 400 and url.endswith(("/llm.chat", "/llm.complete")):
+            return 400, {"error": {"code": "invalid_request", "message": "maxTokens reached without output"}}
+        return 200, {"text": "Suggested support text", "finishReason": finish_reason}
+    return PramaanClient(api_key="fake", transport=transport), requests

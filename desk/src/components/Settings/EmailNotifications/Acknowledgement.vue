@@ -3,7 +3,7 @@
     v-model:content="content"
     :defaultContent="defaultContent"
     v-model:enabled="enabled"
-    documentationLink="/helpdesk/knowledge-base"
+    documentationLink="/helpdesk/guide"
     ref="compRef"
     name="acknowledgement"
     :title="props.notification.label"

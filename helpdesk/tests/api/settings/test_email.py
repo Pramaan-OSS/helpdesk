@@ -140,6 +140,25 @@ class TestPramaanDelivery(IntegrationTestCase):
         self.assertEqual(frappe.db.get_value("Pramaan Outbox", queued.name, "state"), "Uncertain")
         self.transport.call.assert_called_once()
 
+    def test_unavailable_delivery_is_visible_on_the_ticket_and_never_resent(self):
+        from helpdesk.integrations.pramaan_mail import sendmail, deliver
+        from helpdesk.pramaan import PramaanNotAvailable
+        from helpdesk.test_utils import make_ticket, get_latest_ticket_communication
+        from helpdesk.helpdesk.doctype.hd_ticket.api import get_communications
+        ticket = make_ticket()
+        from frappe.tests.utils import change_settings
+        with change_settings("HD Settings", {"enable_reply_email_via_agent": 1, "skip_email_workflow": 0}):
+            ticket.reply_via_agent(message="Fixture reply", to=unique_email("recipient"), from_email={"email_account": self.account, "email_id": self.address})
+        communication = get_latest_ticket_communication(ticket.name)
+        outbox = frappe.db.get_value("Pramaan Outbox", {"communication": communication.name}, "name")
+        self.transport.call.side_effect = PramaanNotAvailable("email.message.send")
+        deliver(outbox)
+        deliver(outbox)
+        self.transport.call.assert_called_once()
+        self.assertEqual(frappe.db.get_value("Pramaan Outbox", outbox, "state"), "Failed")
+        messages = get_communications(ticket.name)
+        self.assertEqual(next(row for row in messages if row.name == communication.name).delivery_message, "Mailbox email is not available yet.")
+
     def test_automated_mail_queues_the_loop_marker(self):
         from helpdesk.integrations.pramaan_mail import sendmail
         queued = sendmail(sender=self.address, recipients=unique_email("recipient"),
@@ -184,6 +203,62 @@ class TestPramaanDelivery(IntegrationTestCase):
         self.transport.call.assert_not_called()
 
 
+class TestDefaultSender(IntegrationTestCase):
+    def setUp(self):
+        frappe.set_user("Administrator")
+        self.enterContext(patch("frappe.enqueue"))
+        self.enterContext(patch.object(frappe.db, "commit"))
+        self.transport = self.enterContext(patch("helpdesk.integrations.pramaan_mail.client")).return_value
+        self.enterContext(patch("helpdesk.integrations.pramaan_mail.sender_account",
+                                return_value="Pramaan Helpdesk <noreply@updates.pramaan.one>"))
+
+    def queue(self, **kwargs):
+        from helpdesk.integrations.pramaan_mail import sendmail
+        return sendmail(recipients=unique_email("recipient"), subject="Support", message="Hello", **kwargs)
+
+    def test_default_send_uses_shared_sender_and_accepts_reference_without_inventing_message_id(self):
+        from helpdesk.integrations.pramaan_mail import deliver
+        queued = self.queue()
+        self.transport.call.return_value = {"status": "sent", "ref": "mail-reference"}
+        deliver(queued.name)
+        deliver(queued.name)
+        saved = frappe.get_doc("Pramaan Outbox", queued.name)
+        self.assertEqual(saved.state, "Accepted")
+        self.assertFalse(saved.message_id)
+        self.assertEqual(saved.result_ref, "mail-reference")
+        self.transport.call.assert_called_once()
+        args, kwargs = self.transport.call.call_args
+        self.assertEqual(args[0], "email.send")
+        self.assertEqual(args[1]["from"], "Pramaan Helpdesk <noreply@updates.pramaan.one>")
+        self.assertNotIn("replyTo", args[1])
+        self.assertNotIn("attachments", args[1])
+        self.assertEqual(kwargs["idempotency_key"], saved.idempotency_key)
+
+    def test_default_send_uploads_attachments_before_send(self):
+        from helpdesk.integrations.pramaan_mail import deliver
+        queued = self.queue(attachments=[{"fname": "notes.txt", "fcontent": "Notes"}])
+        self.transport.upload_file.return_value = {"fileId": "uploaded-document"}
+        self.transport.call.return_value = {"status": "sent", "ref": "mail-reference", "rfcMessageId": "<accepted@example.com>"}
+        deliver(queued.name)
+        self.transport.upload_file.assert_called_once_with(b"Notes", "text/plain")
+        self.assertEqual(self.transport.call.call_args.args[1]["attachments"], [{"fileId": "uploaded-document", "name": "notes.txt"}])
+        self.assertEqual(frappe.db.get_value("Pramaan Outbox", queued.name, "message_id"), "<accepted@example.com>")
+
+    def test_default_send_preserves_thread_and_does_not_retry_uncertain_delivery(self):
+        from helpdesk.integrations.pramaan_mail import deliver
+        from helpdesk.pramaan import PramaanError
+        parent = frappe.get_doc({"doctype": "Communication", "communication_type": "Communication",
+                                "communication_medium": "Email", "sent_or_received": "Received",
+                                "subject": "Support", "content": "Help", "message_id": "<parent@example.com>"}).insert()
+        queued = self.queue(in_reply_to=parent.name)
+        self.assertEqual(json.loads(frappe.db.get_value("Pramaan Outbox", queued.name, "payload"))["inReplyTo"], parent.message_id)
+        self.transport.call.side_effect = PramaanError(uncertain=True)
+        deliver(queued.name)
+        deliver(queued.name)
+        self.assertEqual(frappe.db.get_value("Pramaan Outbox", queued.name, "state"), "Uncertain")
+        self.transport.call.assert_called_once()
+
+
 class TestCallbacks(IntegrationTestCase):
     def test_callback_uses_saved_action_key_and_never_redials(self):
         from uuid import uuid4
@@ -219,3 +294,20 @@ class TestCallbacks(IntegrationTestCase):
             with self.assertRaises(PramaanError):
                 start_callback(ticket.name, "+12025550125", request_id)
         self.assertEqual(frappe.db.get_value("Pramaan Call", {"request_id": request_id}, "state"), "Uncertain")
+
+
+class TestUnavailableMailbox(IntegrationTestCase):
+    def test_owned_mailbox_connect_and_rental_show_unavailable(self):
+        from helpdesk.api.settings.email import provision_mailbox
+        from helpdesk.pramaan import PramaanNotAvailable
+        from helpdesk.test_utils import make_unavailable_pramaan_client
+        from uuid import uuid4
+        before = frappe.db.count("Email Account")
+        with self.set_user("Administrator"), patch("helpdesk.api.settings.email.client", return_value=make_unavailable_pramaan_client()):
+            with self.assertRaises(PramaanNotAvailable) as raised:
+                create_email_account(make_email_account_data(None))
+            self.assertEqual(str(raised.exception), "Mailbox email is not available yet.")
+            with self.assertRaises(PramaanNotAvailable) as raised:
+                provision_mailbox("Fixture mailbox", str(uuid4()))
+            self.assertEqual(str(raised.exception), "Mailbox email is not available yet.")
+        self.assertEqual(frappe.db.count("Email Account"), before)

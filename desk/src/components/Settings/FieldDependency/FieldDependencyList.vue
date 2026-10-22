@@ -15,7 +15,7 @@
           )
         }}
         <a
-          href="/helpdesk/knowledge-base"
+          href="/helpdesk/guide"
           target="_blank"
           class="underline"
           >{{ __("here.") }}</a

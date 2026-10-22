@@ -169,6 +169,6 @@ async function openSelectionMenu(page: Page) {
 }
 
 async function openSettings(page: Page) {
-  await page.getByRole("button", { name: /^Helpdesk / }).click();
+  await page.getByRole("button", { name: /^Pramaan Helpdesk / }).click();
   await page.getByRole("menuitem", { name: "Settings" }).click();
 }

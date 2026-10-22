@@ -137,6 +137,45 @@ class TestDraftActions(IntegrationTestCase):
         self.assertEqual(frappe.db.count("Communication", {"reference_doctype": "HD Ticket", "reference_name": ticket.name}), before)
         self.assertEqual(factory.return_value.call.call_args.args[0], "llm.complete")
 
+    def test_both_real_drafts_use_valid_messages_and_tokens_through_the_strict_fake(self):
+        from helpdesk.api.capabilities import draft_ticket_reply, draft_article
+        from helpdesk.test_utils import make_ticket, make_generation_pramaan_client
+        boundary, requests = make_generation_pramaan_client()
+        ticket = make_ticket()
+        with self.set_user("Administrator"), patch("helpdesk.api.capabilities.client", return_value=boundary):
+            self.assertEqual(draft_ticket_reply(ticket.name)["text"], "Suggested support text")
+            self.assertEqual(draft_article("https://example.test/support")["text"], "Suggested support text")
+        generation = [body for method, url, body in requests if url.endswith("/llm.complete")]
+        self.assertEqual(len(generation), 2)
+        for body in generation:
+            self.assertTrue(body["messages"])
+            self.assertGreaterEqual(body["maxTokens"], 64)
+            self.assertNotIn("prompt", body)
+
+    def test_truncated_reply_and_article_are_visible_but_incomplete_without_retry(self):
+        from helpdesk.api.capabilities import draft_ticket_reply, draft_article
+        from helpdesk.test_utils import make_ticket, make_generation_pramaan_client
+        boundary, requests = make_generation_pramaan_client(finish_reason="length")
+        ticket = make_ticket()
+        with self.set_user("Administrator"), patch("helpdesk.api.capabilities.client", return_value=boundary):
+            for result in (draft_ticket_reply(ticket.name), draft_article("https://example.test/support")):
+                self.assertEqual(result["text"], "Suggested support text")
+                self.assertTrue(result["incomplete"])
+                self.assertIn("Retry", result["message"])
+        self.assertEqual(sum(url.endswith("/llm.complete") for _, url, _ in requests), 2)
+
+    def test_reply_limit_refusal_in_both_drafts_is_configuration_error_without_retry(self):
+        from helpdesk.api.capabilities import draft_ticket_reply, draft_article
+        from helpdesk.test_utils import make_ticket, make_generation_pramaan_client
+        from helpdesk.pramaan import GenerationConfigurationError
+        boundary, requests = make_generation_pramaan_client(status=400)
+        ticket = make_ticket()
+        with self.set_user("Administrator"), patch("helpdesk.api.capabilities.client", return_value=boundary):
+            for action in (lambda: draft_ticket_reply(ticket.name), lambda: draft_article("https://example.test/support")):
+                with self.assertRaisesRegex(GenerationConfigurationError, "administrator"):
+                    action()
+        self.assertEqual(sum(url.endswith("/llm.complete") for _, url, _ in requests), 2)
+
     def test_customer_cannot_request_an_agent_draft(self):
         from helpdesk.api.capabilities import draft_ticket_reply
         from helpdesk.test_utils import make_ticket, create_user
@@ -168,6 +207,18 @@ class TestAttachmentOutcomeReview(IntegrationTestCase):
             "price_max_micro": 12345, "steps": [{"capability": "document.parse"}, {"capability": "llm.complete"}]}
         self.client.outcome_run.return_value = {"status": "done", "completeness": "complete",
             "result": {"summary": "A useful summary.", "points": [{"text": "One key point."}], "truncated": False}, "steps": []}
+
+    def test_optional_typical_price_survives_saved_review(self):
+        for typical in (None, 0, 6000):
+            with self.subTest(typical=typical):
+                self.client.outcome_estimate.return_value.pop("price_typical_micro", None)
+                if typical is not None:
+                    self.client.outcome_estimate.return_value["price_typical_micro"] = typical
+                review = self.actions.prepare("Summary", self.ticket.name, file_name=self.file.name)
+                saved = frappe.get_doc("Pramaan Outcome Review", review["review_id"])
+                self.assertEqual(self.actions._view(saved).get("price_typical_micro"), typical)
+                self.assertEqual(review["price_max_micro"], 12345)
+                self.client.outcome_run.assert_not_called()
 
     def test_private_bytes_are_estimated_then_only_run_after_approval(self):
         import base64
@@ -313,3 +364,29 @@ class TestAttachmentOutcomeReview(IntegrationTestCase):
         with self.assertRaises(frappe.DoesNotExistError):
             self.actions.run(review["review_id"], approved=True)
         self.client.outcome_run.assert_not_called()
+
+
+class TestArticleIndexRefresh(IntegrationTestCase):
+    def test_refresh_replaces_only_its_sections_and_removes_unpublished_content(self):
+        from helpdesk.search import refresh_article
+        article = frappe.get_doc("HD Article", make_article(status="Published"))
+        with patch("helpdesk.search.HelpdeskSearch") as factory:
+            index = factory.return_value
+            index.prefix = "search_doc"
+            index.index_name = "helpdesk_idx"
+            index.redis.make_key.side_effect = lambda key: ("site|" + key).encode()
+            prefix = f"site|search_doc:HD Article:{article.name}"
+            index.redis.scan_iter.return_value = [(prefix + "#old").encode(), (prefix + "-other#keep").encode()]
+            index.index_exists.return_value = False
+            index.get_sections.return_value = [("Guide", "Updated article text")]
+            index.scrub.return_value = "guide"
+            refresh_article(article.name)
+            index.build_index.assert_called_once()
+            index.redis.ft.return_value.delete_document.assert_called_once_with(prefix + "#old")
+            row = index.index_doc.call_args.args[0]
+            self.assertEqual(row.name, article.name + "#guide")
+            self.assertEqual(row.content, "Updated article text")
+            index.index_doc.reset_mock()
+            frappe.db.set_value("HD Article", article.name, "status", "Draft")
+            refresh_article(article.name)
+            index.index_doc.assert_not_called()

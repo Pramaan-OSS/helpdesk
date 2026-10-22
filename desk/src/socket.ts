@@ -5,6 +5,7 @@ const socketio_port = (window as any).socketio_port || 9000;
 declare global {
   interface Window {
     site_name: string;
+    socketio_same_origin?: boolean;
   }
 }
 
@@ -13,7 +14,7 @@ export function initSocket() {
   let siteName = window.site_name || host;
   let port = window.location.port ? `:${socketio_port}` : "";
   let protocol = port ? "http" : "https";
-  let url = `${protocol}://${host}${port}/${siteName}`;
+  let url = window.socketio_same_origin ? `${window.location.origin}/${siteName}` : `${protocol}://${host}${port}/${siteName}`;
 
   const socket = io(url, {
     withCredentials: true,
@@ -22,5 +23,3 @@ export function initSocket() {
 
   return socket;
 }
-
-export const socket = initSocket();

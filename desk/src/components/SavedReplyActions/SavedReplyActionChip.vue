@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ACTION_TYPES } from "@/components/Settings/SavedReplies/components/actionTypes";
 import { useSavedReplyActionOptions } from "@/composables/useSavedReplyActionOptions";
-import { Link } from "@framework/ui";
+import Link from "@/components/frappe-ui/Link.vue";
 import { __ } from "@/translation";
 import { SavedReplyAction } from "@/types";
 import { Badge, Combobox, Tooltip } from "frappe-ui";

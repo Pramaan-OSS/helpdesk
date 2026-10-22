@@ -26,6 +26,7 @@ interface MapValue {
 }
 
 export interface TicketCommentExtras {
+  email_tracking: Record<string, boolean>;
   comments: Record<string, CommentExtras>;
   // oldest first, so a pin's position is its "N:" in the pinned bar
   pinned_comments: string[];

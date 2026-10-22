@@ -104,6 +104,10 @@ def get_current_user_email_info():
         row for row in user_emails if row.email_account in outgoing_account_names
     ]
 
+    if not available_emails:
+        from helpdesk.integrations.pramaan_mail import default_sender
+        outgoing_emails = [{"email_account": None, "email_id": default_sender()}]
+
     return {
         "email_signature": email_signature,
         "email": email,

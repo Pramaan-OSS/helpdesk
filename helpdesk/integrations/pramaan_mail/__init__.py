@@ -7,7 +7,7 @@ from email.utils import getaddresses
 
 import frappe
 from frappe import _
-from helpdesk.pramaan import PramaanClient, PramaanError
+from helpdesk.pramaan import PramaanClient, PramaanError, email_is_trackable
 
 
 def client():
@@ -31,6 +31,10 @@ def addresses(value):
     return list(dict.fromkeys(address for _, address in getaddresses(values) if address))
 
 
+def default_sender():
+    return frappe.conf.get("pramaan_email_sender") or "Pramaan Helpdesk <noreply@updates.pramaan.one>"
+
+
 def sender_account(sender=None):
     sender = addresses(sender)
     filters = {"enable_outgoing": 1}
@@ -40,7 +44,7 @@ def sender_account(sender=None):
         filters["default_outgoing"] = 1
     account = frappe.db.get_value("Email Account", filters, ["name", "email_id"], as_dict=True)
     if not account:
-        frappe.throw(_("Choose an outgoing mailbox in Email Accounts."))
+        return default_sender()
     return account.email_id
 
 
@@ -95,27 +99,34 @@ def sendmail(recipients=None, sender=None, subject=None, message=None, **kwargs)
         attachments.append({"filename": filename, "content": base64.b64encode(content).decode(),
                             "mimeType": mimetypes.guess_type(filename)[0] or "application/octet-stream"})
     payload["attachments"] = attachments
-    capability = "email.message.send"
+    shared = inbox == default_sender()
+    if shared and (len(attachments) > 10 or sum(len(base64.b64decode(a["content"])) for a in attachments) > 6 * 1024 * 1024):
+        frappe.throw("Email attachments must total at most 6 MB across 10 files.")
+    capability = "email.send" if shared else "email.message.send"
     parent = kwargs.get("in_reply_to")
     if parent:
         comm = frappe.get_doc("Communication", parent)
         comm.check_permission("read")
         if not comm.message_id:
             frappe.throw(_("The previous email has not been accepted yet. Wait before replying."))
-        capability = "email.message.reply"
-        # Edited recipients and subject ride the reply contract's overrides, so
-        # no field of the request is dropped to keep the thread parent. An
-        # omitted override lets the platform answer the parent thread as usual.
-        payload = {"inbox": inbox, "messageId": comm.message_id, "html": payload["html"],
-                   "cc": payload["cc"], "bcc": payload["bcc"], "attachments": attachments}
-        if addresses(recipients):
-            payload["to"] = addresses(recipients)
-        if subject:
-            payload["subject"] = subject
-        if auto_submitted:
-            payload["autoSubmitted"] = auto_submitted
-        if kwargs.get("reply_to"):
-            payload["replyTo"] = addresses(kwargs["reply_to"])[0]
+        if shared:
+            import re
+            if not re.fullmatch(r"<[^<>\s]+@[^<>\s]+>", comm.message_id):
+                frappe.throw("The previous email has no confirmed thread identifier. Start a new message instead.")
+            payload["inReplyTo"] = comm.message_id
+        else:
+            capability = "email.message.reply"
+            # Keep edited recipients and subject on the owned-mailbox reply.
+            payload = {"inbox": inbox, "messageId": comm.message_id, "html": payload["html"],
+                       "cc": payload["cc"], "bcc": payload["bcc"], "attachments": attachments}
+            if addresses(recipients):
+                payload["to"] = addresses(recipients)
+            if subject:
+                payload["subject"] = subject
+            if auto_submitted:
+                payload["autoSubmitted"] = auto_submitted
+            if kwargs.get("reply_to"):
+                payload["replyTo"] = addresses(kwargs["reply_to"])[0]
     if not (addresses(recipients) or payload.get("cc") or payload.get("bcc")):
         frappe.throw(_("Choose at least one recipient."))
     outbox = frappe.get_doc({"doctype": "Pramaan Outbox", "capability": capability,
@@ -137,7 +148,18 @@ def deliver(name):
     outbox.db_set("state", "Sending")
     frappe.db.commit()
     try:
-        result = client().call(outbox.capability, json.loads(outbox.payload),
+        payload = json.loads(outbox.payload)
+        if outbox.capability == "email.send":
+            uploaded = []
+            for attachment in payload.pop("attachments", []):
+                file = client().upload_file(base64.b64decode(attachment["content"]), attachment["mimeType"])
+                uploaded.append({"fileId": file["fileId"], "name": attachment["filename"]})
+            if uploaded:
+                payload["attachments"] = uploaded
+            for key in ("cc", "bcc"):
+                if not payload.get(key):
+                    payload.pop(key, None)
+        result = client().call(outbox.capability, payload,
                                idempotency_key=outbox.idempotency_key, approved_by=outbox.requested_by)
     except PramaanError as error:
         outbox.db_set({"state": "Uncertain" if error.uncertain else "Failed", "error": str(error)})
@@ -152,15 +174,18 @@ def deliver(name):
         frappe.db.commit()
         return
     # Only a real accepted message id can become another reply's parent.
-    message_id = result.get("messageId")
-    if not message_id:
+    shared = outbox.capability == "email.send"
+    message_id = result.get("rfcMessageId") if shared else result.get("messageId")
+    accepted = bool(message_id) or (shared and result.get("ref") and result.get("status") in {"sent", "queued"})
+    if not accepted:
         outbox.db_set({"state": "Uncertain", "error": "Delivery could not be confirmed. Check before trying again."})
         finish_legacy_queue(outbox, "Error")
         frappe.db.commit()
         return
-    outbox.db_set({"state": "Accepted", "message_id": message_id, "result_ref": result.get("ref", ""), "error": ""})
+    outbox.db_set({"state": "Accepted", "message_id": message_id or "", "result_ref": result.get("ref", ""), "error": "",
+                   "delivery_tracking": "Enabled" if email_is_trackable(outbox.capability, result) else "Disabled"})
     if outbox.communication:
-        frappe.db.set_value("Communication", outbox.communication, {"message_id": message_id, "delivery_status": "Sent"})
+        frappe.db.set_value("Communication", outbox.communication, {"message_id": message_id or "", "delivery_status": "Sent"})
     finish_legacy_queue(outbox, "Sent")
     frappe.db.commit()
 
@@ -187,3 +212,14 @@ def install_transport(**kwargs):
     install_local_boundaries()
     frappe.sendmail = sendmail
     frappe.email.sendmail = sendmail
+
+
+def communication_tracking(ticket):
+    """Return tracking visibility only after the caller checks ticket access."""
+    communications = frappe.get_all("Communication", filters={"reference_doctype": "HD Ticket", "reference_name": ticket}, fields=["name", "email_account"])
+    result = {row.name: bool(row.email_account) for row in communications}
+    if not result:
+        return result
+    for row in frappe.get_all("Pramaan Outbox", filters={"communication": ["in", list(result)]}, fields=["communication", "capability", "delivery_tracking"], order_by="creation asc"):
+        result[row.communication] = email_is_trackable(row.capability, stored=row.delivery_tracking)
+    return result

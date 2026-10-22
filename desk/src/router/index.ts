@@ -1,3 +1,4 @@
+import { ensureSession } from "@/session";
 import { useScreenSize } from "@/composables/screen";
 import { canViewPersona, personaInterrupt } from "@/persona";
 import { useAuthStore } from "@/stores/auth";
@@ -23,6 +24,7 @@ declare module "vue-router" {
 // Pages that render inside the portal chrome; PortalRoot picks the agent or
 // customer shell from the session.
 const portalRoutes = [
+  { path: "/guide", name: "WorkspaceGuide", component: () => import("@/pages/Guide.vue") },
   // Agent Portal Routes
   {
     path: "",
@@ -234,20 +236,14 @@ export const router = createRouter({
 router.beforeEach(async (to, _, next) => {
   const authStore = useAuthStore();
   isCustomerPortal.value = to.meta.public || false;
-  if (authStore.isLoggedIn) {
-    await authStore.init();
+  if (!(await ensureSession(authStore, to.fullPath, (url: string) => window.location.assign(url)))) {
+    return next(false);
   }
 
   const interrupt = personaInterrupt(to, authStore);
   if (interrupt) return next(interrupt);
 
-  if (!authStore.isLoggedIn) {
-    const redirectURL = to.fullPath !== "/" ? to.fullPath : "";
-
-    window.location.href =
-      LOGIN_PAGE +
-      (redirectURL ? `?redirect-to=/helpdesk${redirectURL}` : "/helpdesk");
-  } else if (to.name === "TicketAgent" && !authStore.isAgent) {
+  if (to.name === "TicketAgent" && !authStore.isAgent) {
     const ticketId = to.params.ticketId;
     next({
       name: "TicketCustomer",
@@ -260,8 +256,8 @@ router.beforeEach(async (to, _, next) => {
   }
 });
 
-router.afterEach(async (to) => {
-  if (to.meta.public) return;
+router.afterEach(async (to, _, failure) => {
+  if (failure || to.meta.public) return;
   const { users } = useUserStore();
   if (!users?.fetched) {
     await users.fetch();

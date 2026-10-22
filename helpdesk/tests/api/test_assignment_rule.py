@@ -59,3 +59,12 @@ class TestAssignmentRulesList(IntegrationTestCase):
         with self.set_user(self.customer["user"]):
             with self.assertRaises(frappe.PermissionError):
                 get_assignment_rules_list()
+
+
+class TestEmptyAssignmentPool(IntegrationTestCase):
+    def test_an_empty_team_rule_leaves_the_ticket_unassigned(self):
+        name = make_assignment_rule(f"Empty pool {frappe.generate_hash(length=6)}", "HD Ticket")
+        rule = frappe.get_doc("Assignment Rule", name)
+        for method in ("Round Robin", "Load Balancing"):
+            rule.rule = method
+            self.assertIsNone(rule.get_user({"doctype": "HD Ticket"}))

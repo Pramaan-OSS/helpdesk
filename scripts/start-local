@@ -5,7 +5,7 @@ export FRAPPE_BENCH_ROOT="$root/.runtime/bench"
 export NODE_PATH="$root/.runtime/socket/node_modules"
 export FRAPPE_PRELOAD_DATABASE_DRIVERS=none
 export PATH="$root/.tools/nodebin/bin:$root/.tools/bin:$PATH"
-node "$root/vendor/framework/socketio.js" > "$root/.runtime/socket.log" 2>&1 &
+node --preserve-symlinks --preserve-symlinks-main "$root/.runtime/bench/apps/frappe/socketio.js" > "$root/.runtime/socket.log" 2>&1 &
 socket_pid=$!
 worker_pid=""
 scheduler_pid=""

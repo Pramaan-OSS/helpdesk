@@ -88,7 +88,7 @@
           <div class="flex items-center justify-between">
             <FormLabel :label="__('Response')" required />
             <DocumentationButton
-              url="/helpdesk/knowledge-base"
+              url="/helpdesk/guide"
             />
           </div>
           <PreviewDialog v-model="previewDialog" />

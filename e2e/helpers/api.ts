@@ -29,19 +29,19 @@ export class Api {
   }
 
   async get<T = Doc>(doctype: string, name: string): Promise<T> {
-    return (await this.send("get", this.path(doctype, name))).data;
+    return this.call("frappe.client.get", { doctype, name });
   }
 
   async insert<T = Doc>(doctype: string, doc: Doc): Promise<T> {
-    return (await this.send("post", this.path(doctype), doc)).data;
+    return this.call("frappe.client.insert", { doc: { ...doc, doctype } });
   }
 
   async update<T = Doc>(doctype: string, name: string, doc: Doc): Promise<T> {
-    return (await this.send("put", this.path(doctype, name), doc)).data;
+    return this.call("frappe.client.set_value", { doctype, name, fieldname: doc });
   }
 
   async delete(doctype: string, name: string) {
-    await this.send("delete", this.path(doctype, name));
+    await this.call("frappe.client.delete", { doctype, name });
   }
 
   async exists(doctype: string, filters: Doc): Promise<string | undefined> {
@@ -49,26 +49,13 @@ export class Api {
     return rows[0]?.name;
   }
 
-  async list<T = Doc>(
-    doctype: string,
-    options: { fields?: string[]; filters?: Doc; limit?: number } = {}
-  ): Promise<T[]> {
-    const params = new URLSearchParams({
-      fields: JSON.stringify(options.fields || ["name"]),
-      filters: JSON.stringify(options.filters || {}),
-      limit_page_length: String(options.limit || 0),
-    });
-    return (await this.send("get", `${this.path(doctype)}?${params}`)).data;
+  async list<T = Doc>(doctype: string, options: { fields?: string[]; filters?: Doc; limit?: number } = {}): Promise<T[]> {
+    return this.call("frappe.client.get_list", { doctype, fields: options.fields || ["name"], filters: options.filters || {}, limit_page_length: options.limit || 0 });
   }
 
   /** Raw request for tests that assert on failures (permission checks). */
   raw(method: string, args: Doc = {}) {
     return this.context.post(`/api/method/${method}`, { data: args });
-  }
-
-  private path(doctype: string, name?: string) {
-    const base = `/api/resource/${encodeURIComponent(doctype)}`;
-    return name ? `${base}/${encodeURIComponent(name)}` : base;
   }
 
   private async send(verb: "get" | "post" | "put" | "delete", url: string, data?: Doc) {

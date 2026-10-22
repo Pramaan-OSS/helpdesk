@@ -45,6 +45,16 @@ class HDArticle(Document):
                 )
             )
 
+    def on_update(self):
+        self.queue_search_update()
+
+    def after_delete(self):
+        self.queue_search_update()
+
+    def queue_search_update(self):
+        if not frappe.in_test:
+            frappe.enqueue("helpdesk.search.refresh_article", name=self.name, enqueue_after_commit=True)
+
     def on_trash(self):
         self.check_category_length()
 

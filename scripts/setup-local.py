@@ -87,4 +87,4 @@ if not (assets/'assets.json').exists():(assets/'assets.json').write_text('{}')
 if (BENCH/'.local-admin-password').exists():
     print('Local site prepared. Sign in as Administrator; local password is in .runtime/bench/.local-admin-password.')
 else:
-    print('Existing local site preserved. No saved Administrator credential exists; use its current password or reset it with ./review/local-bench set-admin-password <new-password>. This does not recover the old password.')
+    print('Existing local site preserved. No saved Administrator credential exists; use its current password or run ./review/local-bench execute helpdesk.local_credentials.reset to generate a replacement in .runtime/bench/.local-admin-password. The old password cannot be recovered.')

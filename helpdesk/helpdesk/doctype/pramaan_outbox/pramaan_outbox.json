@@ -12,7 +12,8 @@
     "requested_by",
     "message_id",
     "result_ref",
-    "error"
+    "error",
+    "delivery_tracking"
   ],
   "fields": [
     {
@@ -64,6 +65,13 @@
       "fieldname": "error",
       "fieldtype": "Small Text",
       "label": "Error"
+    },
+    {
+      "fieldname": "delivery_tracking",
+      "fieldtype": "Select",
+      "label": "Delivery Tracking",
+      "options": "Unknown\nEnabled\nDisabled",
+      "default": "Unknown"
     }
   ],
   "permissions": [

@@ -125,7 +125,8 @@ test("ticket automation settings save status updates, auto close and the banner"
     // The field is debounced; the error clearing shows 5 reached the form.
     await expect(dayError).toBeHidden();
 
-    await settingRow(dialog, "Outside working hours notice").getByRole("switch").click();
+    const outsideHours = settingRow(dialog, "Outside working hours notice").getByRole("switch");
+    if (await outsideHours.getAttribute("aria-checked") !== "true") await outsideHours.click();
     const banner = dialog.getByPlaceholder("Enter Notification Message");
     const defaultMessage = await banner.inputValue();
     expect(defaultMessage).not.toBe("");
