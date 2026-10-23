@@ -1,0 +1,98 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PRAMAAN_API_KEY: ""
+  PRAMAAN_FAKE: "1"
+  DO_NOT_TRACK: "1"
+  NEXT_TELEMETRY_DISABLED: "1"
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: review/ci-requirements.txt
+      - run: python -m pip install -r review/ci-requirements.txt
+      - run: flake8 --config .github/helpers/.flake8_strict helpdesk
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: desk/package-lock.json
+      - run: bash scripts/ci-frontend-setup
+      - run: npm --prefix desk ci --no-audit --no-fund
+      - run: npm --prefix desk run typecheck:baseline
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: review/ci-requirements.txt
+      - run: python -m pip install -r review/ci-requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: desk/package-lock.json
+      - run: bash scripts/ci-frontend-setup
+      - run: npm --prefix desk ci --no-audit --no-fund
+      - run: python -m unittest discover -s review -p 'test_*.py' -v
+      - run: npm --prefix desk test
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: desk/package-lock.json
+      - run: bash scripts/ci-frontend-setup
+      - run: npm --prefix desk ci --no-audit --no-fund
+      - run: npm run build
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      database:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: ci-only
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s --health-timeout 5s --health-retries 60
+      cache:
+        image: redis:7.4.11-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t helpdesk-ci -f docker/Dockerfile .
+      - run: docker run --rm --network "$CI_NETWORK" -e PRAMAAN_API_KEY -e PRAMAAN_FAKE -e DO_NOT_TRACK -e NEXT_TELEMETRY_DISABLED -e FRAPPE_BENCH_ROOT=/app/.runtime/bench -e HELPDESK_SITE_NAME=ci.localhost -e LOCAL_DB_PASSWORD=ci-only -e HELPDESK_ADMIN_PASSWORD=ci-only -e HELPDESK_ENCRYPTION_KEY=Y2ktb25seS1lbmNyeXB0aW9uLWtleS0wMTIzNDU2Nzg= helpdesk-ci bash review/ci-site-tests
+        env:
+          CI_NETWORK: ${{ job.services.database.network }}

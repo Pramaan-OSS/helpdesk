@@ -33,8 +33,3 @@ repos:
     hooks:
       - id: isort
         args: [--profile, black]
-
-ci:
-  autoupdate_schedule: weekly
-  skip: []
-  submodules: false

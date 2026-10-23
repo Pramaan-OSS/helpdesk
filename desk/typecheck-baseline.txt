@@ -1,0 +1,235 @@
+src/components/command-palette/fuzzyScore.check.ts: TS2307: Cannot find module 'node:assert/strict' or its corresponding type declarations.
+src/components/command-palette/fuzzyScore.check.ts: TS2379: Argument of type '{ keywords: undefined; id: string; title: string; titleSuffix?: string; group: string; icon?: Component; iconProps?: Record<string, unknown>; subtitle?: string; hint?: string; ... 9 more ...; perform?: () => void; }' is not assignable to parameter of type 'Command' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties. Types of property 'keywords' are incompatible. Type 'undefined' is not assignable to type 'string'.
+src/components/command-palette/savedReplyRanking.check.ts: TS2307: Cannot find module 'node:assert/strict' or its corresponding type declarations.
+src/components/command-palette/tagCommands.ts: TS2339: Property '_user_tags' does not exist on type 'HDTicket'.
+src/components/command-palette/tagCommands.ts: TS2339: Property '_user_tags' does not exist on type 'HDTicket'.
+src/components/conditions-filter/filterableFields.ts: TS7006: Parameter 'data' implicitly has an 'any' type.
+src/components/conditions-filter/filterableFields.ts: TS7006: Parameter 'field' implicitly has an 'any' type.
+src/components/conditions-filter/filterableFields.ts: TS7006: Parameter 'field' implicitly has an 'any' type.
+src/components/editor/config.ts: TS2551: Property 'cleanStyles' does not exist on type 'ChainedCommands'. Did you mean 'clearStyles'?
+src/components/listViewFilters.check.ts: TS2307: Cannot find module 'node:assert/strict' or its corresponding type declarations.
+src/components/Settings/agents.ts: TS2740: Type 'ListResource<HDAgent>' is missing the following properties from type 'ListResource<HDAgent>': start, pageLength, debug, hasPreviousPage, and 5 more.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS18046: 'options' is of type 'unknown'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7005: Variable '_fields' implicitly has an 'any[]' type.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7006: Parameter 'o' implicitly has an 'any' type.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7034: Variable '_fields' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/Settings/FieldDependency/fieldDependency.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/components/Settings/Holiday/utils.ts: TS2532: Object is possibly 'undefined'.
+src/components/Settings/Holiday/utils.ts: TS2532: Object is possibly 'undefined'.
+src/components/Settings/SavedReplies/components/actionTypes.ts: TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/components/Settings/settingsModal.ts: TS2322: Type '({ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | ... 8 more ... | { ...; })[]' is not assignable to type '({ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | { ...; })[] | { ...; }[] | ({ ...; } | ... 2 more ... | { ...; })[] | ({ ...; } | ... 1 more ... | { ...; })[]'. Type '({ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | ... 8 more ... | { ...; })[]' is not assignable to type '({ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | { ...; })[]'. Type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | ... 8 more ... | { ...; }' is not assignable to type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | { ...; }'. Type '{ label: string; icon: Raw<FunctionalComponent<SVGAttributes, {}, any, {}>>; component: Raw<DefineComponent>; }' is not assignable to type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | { ...; }'. Type '{ label: string; icon: Raw<FunctionalComponent<SVGAttributes, {}, any, {}>>; component: Raw<DefineComponent>; }' is not assignable to type '{ label: string; icon: Raw<DefineComponent>; component: Raw<DefineComponent>; }'. Types of property 'icon' are incompatible. Type 'Raw<FunctionalComponent<SVGAttributes, {}, any, {}>>' is not assignable to type 'Raw<DefineComponent>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties. Type 'Raw<FunctionalComponent<SVGAttributes, {}, any, {}>>' is not assignable to type 'ComponentPublicInstanceConstructor<CreateComponentPublicInstanceWithMixins<Readonly<ExtractPropTypes<{}>>, {}, {}, ComputedOptions, MethodOptions, ComponentOptionsMixin, ... 19 more ..., {}>, ... 4 more ..., MethodOptions>'. Type 'FunctionalComponent<SVGAttributes, {}, any, {}> & { [RawSymbol]?: true; }' provides no match for the signature 'new (...args: any[]): CreateComponentPublicInstanceWithMixins<Readonly<ExtractPropTypes<{}>>, {}, {}, ComputedOptions, MethodOptions, ComponentOptionsMixin, ... 19 more ..., {}>'.
+src/components/Settings/settingsModal.ts: TS2339: Property 'condition' does not exist on type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | ... 8 more ... | { ...; }'. Property 'condition' does not exist on type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; }'.
+src/components/Settings/settingsModal.ts: TS2339: Property 'condition' does not exist on type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; } | ... 8 more ... | { ...; }'. Property 'condition' does not exist on type '{ label: string; icon: VNode<RendererNode, RendererElement, { [key: string]: any; }>; component: Raw<DefineComponent>; }'.
+src/components/Settings/settingsModal.ts: TS2532: Object is possibly 'undefined'.
+src/components/Settings/settingsModal.ts: TS2532: Object is possibly 'undefined'.
+src/components/Settings/Sla/utils.ts: TS7006: Parameter 'seconds' implicitly has an 'any' type.
+src/composables/contact.ts: TS2322: Type 'ContactBundle | undefined' is not assignable to type 'ContactBundle'. Type 'undefined' is not assignable to type 'ContactBundle'.
+src/composables/contact.ts: TS2322: Type 'Resource<any>' is not assignable to type 'Resource<ContactFeedbackChartData>'. Property 'method' is optional in type 'Resource<any>' but required in type 'Resource<ContactFeedbackChartData>'.
+src/composables/contact.ts: TS2339: Property 'timezone' does not exist on type '{}'.
+src/composables/contact.ts: TS2339: Property 'timezone' does not exist on type '{}'.
+src/composables/contact.ts: TS2339: Property 'timezone' does not exist on type 'Contact'.
+src/composables/contact.ts: TS2578: Unused '@ts-expect-error' directive.
+src/composables/contact.ts: TS2739: Type 'DocumentResource<any>' is missing the following properties from type 'DocumentResource<Contact>': promise, update
+src/composables/contact.ts: TS2740: Type 'ListResource<HDTicket>' is missing the following properties from type 'ListResource<HDTicket>': start, pageLength, debug, hasPreviousPage, and 5 more.
+src/composables/customer.ts: TS2739: Type 'DocumentResource<any>' is missing the following properties from type 'DocumentResource<HDCustomer>': promise, update
+src/composables/customer.ts: TS2739: Type 'DocumentResource<any>' is missing the following properties from type 'DocumentResource<HDCustomer>': promise, update
+src/composables/formCustomisation.ts: TS2532: Object is possibly 'undefined'.
+src/composables/formCustomisation.ts: TS2538: Type 'undefined' cannot be used as an index type.
+src/composables/formCustomisation.ts: TS2538: Type 'undefined' cannot be used as an index type.
+src/composables/formCustomisation.ts: TS2538: Type 'undefined' cannot be used as an index type.
+src/composables/formCustomisation.ts: TS2538: Type 'undefined' cannot be used as an index type.
+src/composables/formCustomisation.ts: TS7005: Variable 'actions' implicitly has an 'any[]' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'code' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'doc' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'expression' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'f' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'f' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'field' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'obj' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'obj' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'script' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7006: Parameter 'value' implicitly has an 'any' type.
+src/composables/formCustomisation.ts: TS7034: Variable 'actions' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/composables/formCustomisation.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/composables/formCustomisation.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/composables/formCustomisation.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/composables/realtime.ts: TS2344: Type 'Record<string, string[]> | null' does not satisfy the constraint 'object'. Type 'null' is not assignable to type 'object'.
+src/composables/shortcuts.ts: TS2322: Type 'undefined' is not assignable to type 'boolean'.
+src/composables/shortcuts.ts: TS6133: 'e' is declared but its value is never read.
+src/composables/useActiveTabManager.ts: TS7006: Parameter 'hash' implicitly has an 'any' type.
+src/composables/useActiveTabManager.ts: TS7006: Parameter 'tab' implicitly has an 'any' type.
+src/composables/useActiveTabManager.ts: TS7006: Parameter 'tab' implicitly has an 'any' type.
+src/composables/useActiveTabManager.ts: TS7006: Parameter 'tab' implicitly has an 'any' type.
+src/composables/useActiveTabManager.ts: TS7006: Parameter 'tabs' implicitly has an 'any' type.
+src/composables/useSavedReplyActionOptions.ts: TS6133: 'computed' is declared but its value is never read.
+src/composables/useSLA.ts: TS2769: No overload matches this call. Overload 1 of 2, '(getter: ComputedGetter<SLAMetric | null>, debugOptions?: DebuggerOptions | undefined): ComputedRef<SLAMetric | null>', gave the following error. Argument of type '() => SLAMetric | { delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "orange" | "green" | "red" | "blue" | "violet"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; } | null' is not assignable to parameter of type 'ComputedGetter<SLAMetric | null>'. Type 'SLAMetric | { delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "blue" | "green" | "red" | "violet" | "orange"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; } | null' is not assignable to type 'SLAMetric | null'. Type '{ delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "orange" | "green" | "red" | "blue" | "violet"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; }' is not assignable to type 'SLAMetric' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties. Types of property 'calendarDelay' are incompatible. Type 'string | undefined' is not assignable to type 'string'. Type 'undefined' is not assignable to type 'string'. Overload 2 of 2, '(options: WritableComputedOptions<SLAMetric | null, SLAMetric | null>, debugOptions?: DebuggerOptions | undefined): WritableComputedRef<...>', gave the following error. Argument of type '() => SLAMetric | { delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "orange" | "green" | "red" | "blue" | "violet"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; } | null' is not assignable to parameter of type 'WritableComputedOptions<SLAMetric | null, SLAMetric | null>'.
+src/composables/useSLA.ts: TS2769: No overload matches this call. Overload 1 of 2, '(getter: ComputedGetter<SLAMetric | null>, debugOptions?: DebuggerOptions | undefined): ComputedRef<SLAMetric | null>', gave the following error. Argument of type '() => SLAMetric | { delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "orange" | "green" | "red" | "blue" | "violet"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; } | null' is not assignable to parameter of type 'ComputedGetter<SLAMetric | null>'. Type 'SLAMetric | { delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "blue" | "green" | "red" | "violet" | "orange"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; } | null' is not assignable to type 'SLAMetric | null'. Type '{ delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "orange" | "green" | "red" | "blue" | "violet"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; }' is not assignable to type 'SLAMetric' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties. Types of property 'calendarDelay' are incompatible. Type 'string | undefined' is not assignable to type 'string'. Type 'undefined' is not assignable to type 'string'. Overload 2 of 2, '(options: WritableComputedOptions<SLAMetric | null, SLAMetric | null>, debugOptions?: DebuggerOptions | undefined): WritableComputedRef<...>', gave the following error. Argument of type '() => SLAMetric | { delayInWorkingHours: boolean; calendarDelay: string | undefined; state: SLAState; value: string; color: "orange" | "green" | "red" | "blue" | "violet"; dueBy: string; actual: string; delay: string; fulfilledIn?: string; } | null' is not assignable to parameter of type 'WritableComputedOptions<SLAMetric | null, SLAMetric | null>'.
+src/composables/useTicket.ts: TS2322: Type 'import("<desk>/node_modules/frappe-ui/src/resources/resources").Resource<import("<desk>/src/components/ticket-agent/analytics/types").TicketAnalytics>' is not assignable to type 'import("<desk>/src/types").Resource<import("<desk>/src/components/ticket-agent/analytics/types").TicketAnalytics>'. Property 'method' is optional in type 'Resource<TicketAnalytics>' but required in type 'Resource<TicketAnalytics>'.
+src/composables/useTicket.ts: TS2322: Type 'import("<desk>/node_modules/frappe-ui/src/resources/resources").Resource<import("<desk>/src/composables/useTicket").TicketCommentExtras>' is not assignable to type 'import("<desk>/src/types").Resource<import("<desk>/src/composables/useTicket").TicketCommentExtras>'. Property 'method' is optional in type 'Resource<TicketCommentExtras>' but required in type 'Resource<TicketCommentExtras>'.
+src/composables/useTicket.ts: TS2322: Type 'import("<desk>/node_modules/frappe-ui/src/resources/resources").Resource<import("<desk>/src/types").RecentSimilarTicket>' is not assignable to type 'import("<desk>/src/types").Resource<import("<desk>/src/types").RecentSimilarTicket>'. Property 'method' is optional in type 'Resource<RecentSimilarTicket>' but required in type 'Resource<RecentSimilarTicket>'.
+src/composables/useTicket.ts: TS2322: Type 'import("<desk>/node_modules/frappe-ui/src/resources/resources").Resource<import("<desk>/src/types").TicketAssignee[]>' is not assignable to type 'import("<desk>/src/types").Resource<import("<desk>/src/types").TicketAssignee[]>'. Property 'method' is optional in type 'Resource<TicketAssignee[]>' but required in type 'Resource<TicketAssignee[]>'.
+src/composables/useTicket.ts: TS2322: Type 'import("<desk>/node_modules/frappe-ui/src/resources/resources").Resource<import("<desk>/src/types").TicketContact>' is not assignable to type 'import("<desk>/src/types").Resource<import("<desk>/src/types").TicketContact>'. Property 'method' is optional in type 'Resource<TicketContact>' but required in type 'Resource<TicketContact>'.
+src/composables/useTicket.ts: TS2322: Type 'import("<desk>/node_modules/frappe-ui/src/resources/resources").Resource<Record<string, any>[]>' is not assignable to type 'import("<desk>/src/types").Resource<Record<string, any>[]>'. Property 'method' is optional in type 'Resource<Record<string, any>[]>' but required in type 'Resource<Record<string, any>[]>'.
+src/composables/useTicket.ts: TS2322: Type 'MapValue | undefined' is not assignable to type 'MapValue'. Type 'undefined' is not assignable to type 'MapValue'.
+src/composables/useTicket.ts: TS2614: Module '"*.vue"' has no exported member 'CommentExtras'. Did you mean to use 'import CommentExtras from "*.vue"' instead?
+src/composables/useTicket.ts: TS2739: Type 'DocumentResource<HDTicket>' is missing the following properties from type 'DocumentResource<HDTicket>': promise, update
+src/composables/useTicket.ts: TS7006: Parameter 'error' implicitly has an 'any' type.
+src/composables/useView.ts: TS18048: 'views.data.length' is possibly 'undefined'.
+src/composables/useView.ts: TS2304: Cannot find name 'LucideAlignJustify'.
+src/composables/useView.ts: TS2322: Type 'null' is not assignable to type 'string'.
+src/composables/useView.ts: TS2339: Property 'is_standard' does not exist on type 'View'.
+src/composables/useView.ts: TS2339: Property 'is_standard' does not exist on type 'View'.
+src/composables/useView.ts: TS2339: Property 'is_standard' does not exist on type 'View'.
+src/composables/useView.ts: TS2741: Property 'name' is missing in type '{ dt: string; type: string; label: any; icon: any; route_name: string; order_by: any; filters: string; columns: string; rows: string; pinned: any; public: any; is_customer_portal: boolean; }' but required in type 'View'.
+src/composables/useView.ts: TS2769: No overload matches this call. Overload 1 of 3, '(message: string, ...args: Replacement[]): string', gave the following error. Argument of type '(string | undefined)[]' is not assignable to parameter of type 'Replacement'. Overload 2 of 3, '(message: string, args: Replacement[]): string', gave the following error. Type 'string | undefined' is not assignable to type 'Replacement'. Type 'undefined' is not assignable to type 'Replacement'.
+src/composables/useView.ts: TS2790: The operand of a 'delete' operator must be optional.
+src/composables/useView.ts: TS7006: Parameter 'd' implicitly has an 'any' type.
+src/composables/useView.ts: TS7006: Parameter 'd' implicitly has an 'any' type.
+src/composables/useView.ts: TS7006: Parameter 'e' implicitly has an 'any' type.
+src/composables/useView.ts: TS7053: Element implicitly has an 'any' type because expression of type '"doctype"' can't be used to index type 'View'. Property 'doctype' does not exist on type 'View'.
+src/composables/useView.ts: TS7053: Element implicitly has an 'any' type because expression of type '"dt"' can't be used to index type '{ is_customer_portal: boolean; }'. Property 'dt' does not exist on type '{ is_customer_portal: boolean; }'.
+src/composables/useView.ts: TS7053: Element implicitly has an 'any' type because expression of type '"user"' can't be used to index type '{ is_customer_portal: boolean; }'. Property 'user' does not exist on type '{ is_customer_portal: boolean; }'.
+src/router/index.ts: TS7016: Could not find a declaration file for module '@/session'. '<desk>/src/session.js' implicitly has an 'any' type.
+src/stores/agent.ts: TS18047: 'agents.data' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRuleData.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS18047: 'assignmentRulesErrors.value' is possibly 'null'.
+src/stores/assignmentRules.ts: TS2769: No overload matches this call. Overload 1 of 2, '(o: {}): string[]', gave the following error. Argument of type 'Record<string, any> | null' is not assignable to parameter of type '{}'. Type 'null' is not assignable to type '{}'. Overload 2 of 2, '(o: object): string[]', gave the following error. Argument of type 'Record<string, any> | null' is not assignable to parameter of type 'object'. Type 'null' is not assignable to type 'object'.
+src/stores/assignmentRules.ts: TS2769: No overload matches this call. Overload 1 of 2, '(o: {}): string[]', gave the following error. Argument of type 'Record<string, any> | null' is not assignable to parameter of type '{}'. Type 'null' is not assignable to type '{}'. Overload 2 of 2, '(o: object): string[]', gave the following error. Argument of type 'Record<string, any> | null' is not assignable to parameter of type 'object'. Type 'null' is not assignable to type 'object'.
+src/stores/auth.ts: TS2322: Type 'null' is not assignable to type 'string'.
+src/stores/auth.ts: TS2322: Type 'Ref<string | null, string | null>' is not assignable to type 'Ref<string, string>'. Type 'string | null' is not assignable to type 'string'. Type 'null' is not assignable to type 'string'.
+src/stores/auth.ts: TS6133: 'router' is declared but its value is never read.
+src/stores/docTickets.ts: TS2322: Type 'Resource<any>' is not assignable to type 'Resource<number>'. Property 'method' is optional in type 'Resource<any>' but required in type 'Resource<number>'.
+src/stores/docTickets.ts: TS2740: Type 'ListResource<any>' is missing the following properties from type 'ListResource<HDTicket>': start, pageLength, debug, hasPreviousPage, and 5 more.
+src/stores/globalStore.ts: TS18047: 'app' is possibly 'null'.
+src/stores/holidayList.ts: TS2339: Property 'day' does not exist on type 'never'.
+src/stores/holidayList.ts: TS2339: Property 'isSameOrBefore' does not exist on type 'Dayjs'.
+src/stores/holidayList.ts: TS2339: Property 'repetition' does not exist on type 'never'.
+src/stores/holidayList.ts: TS2339: Property 'weekly_off' does not exist on type 'never'.
+src/stores/holidayList.ts: TS2345: Argument of type 'Holiday' is not assignable to parameter of type 'never'.
+src/stores/holidayList.ts: TS2345: Argument of type 'null' is not assignable to parameter of type 'string | Date'.
+src/stores/holidayList.ts: TS2769: No overload matches this call. Overload 1 of 4, '(value: string | number | Date): Date', gave the following error. Argument of type 'null' is not assignable to parameter of type 'string | number | Date'. Overload 2 of 4, '(value: string | number): Date', gave the following error. Argument of type 'null' is not assignable to parameter of type 'string | number'.
+src/stores/holidayList.ts: TS2769: No overload matches this call. Overload 1 of 4, '(value: string | number | Date): Date', gave the following error. Argument of type 'null' is not assignable to parameter of type 'string | number | Date'. Overload 2 of 4, '(value: string | number): Date', gave the following error. Argument of type 'null' is not assignable to parameter of type 'string | number'.
+src/stores/knowledgeBase.ts: TS6133: 'name' is declared but its value is never read.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'action' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'article' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'articleId' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'articles' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'articles' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'articles' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'articles' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'category' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'category' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'category' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'category' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'content' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'doc' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'name' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'source' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'source' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'target' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'target' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'title' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'title' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'title' implicitly has an 'any' type.
+src/stores/knowledgeBase.ts: TS7031: Binding element 'value' implicitly has an 'any' type.
+src/stores/meta.ts: TS2322: Type 'string' is not assignable to type 'null'.
+src/stores/meta.ts: TS2538: Type 'null' cannot be used as an index type.
+src/stores/meta.ts: TS7006: Parameter 'f' implicitly has an 'any' type.
+src/stores/meta.ts: TS7006: Parameter 'f' implicitly has an 'any' type.
+src/stores/meta.ts: TS7006: Parameter 'res' implicitly has an 'any' type.
+src/stores/meta.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/stores/meta.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/stores/meta.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/stores/meta.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'. No index signature with a parameter of type 'string' was found on type '{}'.
+src/stores/sla.ts: TS2339: Property 'default_priority' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'priority' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'priority' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'resolution_time' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'resolution_time' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'resolution_time' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'response_time' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'response_time' does not exist on type 'never'.
+src/stores/sla.ts: TS2339: Property 'response_time' does not exist on type 'never'.
+src/stores/sla.ts: TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'. Type 'undefined' is not assignable to type 'number'.
+src/stores/ticketPriority.ts: TS2305: Module '"@/types/doctypes"' has no exported member 'HDTicketPriority'.
+src/stores/ticketStatus.ts: TS2322: Type 'string | undefined' is not assignable to type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/stores/ticketStatus.ts: TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/stores/ticketStatus.ts: TS7053: Element implicitly has an 'any' type because expression of type '"parsed_color"' can't be used to index type 'HDTicketStatus'. Property 'parsed_color' does not exist on type 'HDTicketStatus'.
+src/stores/user.ts: TS7006: Parameter 'email' implicitly has an 'any' type.
+src/stores/user.ts: TS7006: Parameter 'email' implicitly has an 'any' type.
+src/stores/user.ts: TS7006: Parameter 'error' implicitly has an 'any' type.
+src/stores/user.ts: TS7006: Parameter 'users' implicitly has an 'any' type.
+src/stores/user.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/stores/user.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/stores/user.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/stores/user.ts: TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/tiptap-extensions.ts: TS18048: 'currentState.schema.nodes.paragraph' is possibly 'undefined'.
+src/tiptap-extensions.ts: TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/tiptap-extensions.ts: TS2532: Object is possibly 'undefined'.
+src/tiptap-extensions.ts: TS6133: 'doc' is declared but its value is never read.
+src/tiptap-extensions.ts: TS6133: 'offset' is declared but its value is never read.
+src/tiptap-extensions.ts: TS7006: Parameter 'f' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7006: Parameter 'f' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7006: Parameter 'field' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7006: Parameter 'm' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7006: Parameter 'node' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7006: Parameter 'pos' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7031: Binding element 'dispatch' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7031: Binding element 'state' implicitly has an 'any' type.
+src/tiptap-extensions.ts: TS7031: Binding element 'tr' implicitly has an 'any' type.
+src/types/doctypes.ts: TS2300: Duplicate identifier 'weight'.
+src/types/doctypes.ts: TS2300: Duplicate identifier 'weight'.
+src/utils.ts: TS18047: 'body' is possibly 'null'.
+src/utils.ts: TS2322: Type 'string | null' is not assignable to type 'string | undefined'. Type 'null' is not assignable to type 'string | undefined'.
+src/utils.ts: TS2322: Type 'string | null' is not assignable to type 'string | undefined'. Type 'null' is not assignable to type 'string | undefined'.
+src/utils.ts: TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/utils.ts: TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/utils.ts: TS2379: Argument of type '{ conditions: any[]; fieldPrefix: string | undefined; }' is not assignable to parameter of type '{ conditions: any[]; fieldPrefix?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties. Types of property 'fieldPrefix' are incompatible. Type 'string | undefined' is not assignable to type 'string'. Type 'undefined' is not assignable to type 'string'.
+src/utils.ts: TS2532: Object is possibly 'undefined'.
+src/utils.ts: TS6133: 'title' is declared but its value is never read.
+src/utils.ts: TS7006: Parameter 'col' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'columns' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'date' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'date' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'date' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'date' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'editor' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'email' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'event' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'icon' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'message' implicitly has an 'any' type.
+src/utils.ts: TS7006: Parameter 'title' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'active' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'icon' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'isConfirmingDelete' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'onClick' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'onConfirmDelete' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'option' implicitly has an 'any' type.
+src/utils.ts: TS7031: Binding element 'variant' implicitly has an 'any' type.
+src/utils.ts: TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ default: string; arabic: string; }'. No index signature with a parameter of type 'string' was found on type '{ default: string; arabic: string; }'.

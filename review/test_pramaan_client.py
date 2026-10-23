@@ -104,7 +104,9 @@ class ClientTests(unittest.TestCase):
         with patch.object(boundary, "build_opener") as opener:
             opener.return_value.open.side_effect = HTTPError("https://pramaan.test", 404, "not found", {}, payload)
             with self.assertRaises(boundary.PramaanError) as refused:
-                boundary.PramaanClient(api_key="fake").call("people.enrich", {"email": "person@example.com"})
+                client = boundary.PramaanClient(api_key="fake")
+                client._transport = client._http  # Only the mocked HTTP decoder is exercised.
+                client.call("people.enrich", {"email": "person@example.com"})
         self.assertEqual(refused.exception.code, "not_found")
         self.assertFalse(refused.exception.uncertain)
 
@@ -136,6 +138,7 @@ class ClientTests(unittest.TestCase):
         from urllib.error import HTTPError
         payload = io.BytesIO(json.dumps({"error": {"code": "upstream_unavailable", "message": "private upstream diagnostics"}}).encode())
         client = boundary.PramaanClient(api_key="fake", base_url="https://pramaan.test")
+        client._transport = client._http  # Only the mocked HTTP decoder is exercised.
         with patch.object(boundary, "build_opener") as opener:
             opener.return_value.open.side_effect = HTTPError("https://pramaan.test", 502, "unavailable", {}, payload)
             with self.assertRaises(boundary.PramaanNotAvailable) as raised:

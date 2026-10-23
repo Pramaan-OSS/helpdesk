@@ -1,3 +1,5 @@
+[![CI](https://github.com/Pramaan-OSS/pramaan-helpdesk/actions/workflows/ci.yml/badge.svg)](https://github.com/Pramaan-OSS/pramaan-helpdesk/actions/workflows/ci.yml)
+
 # Pramaan Helpdesk
 
 Pramaan Helpdesk is a support workspace for tickets, customers, contacts, knowledge-base articles and private attachments, with a consistent design system across the app. Email, calling, drafting, enrichment and document processing use one server-side Pramaan client.

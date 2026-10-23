@@ -107,6 +107,7 @@ class OutcomeTests(unittest.TestCase):
 
     def test_real_http_error_body_is_normalized_without_leaking(self):
         client = boundary.PramaanClient(api_key="fake")
+        client._transport = client._http  # Only the mocked HTTP decoder is exercised.
         for status in (403, 409, 429, 502):
             error = HTTPError("https://api.pramaan.dev", status, "private", {},
                               io.BytesIO(b'{"error":{"code":"upstream_unavailable","message":"private secret"}}'))

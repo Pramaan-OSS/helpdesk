@@ -37,6 +37,8 @@ class GenerationLengthTests(unittest.TestCase):
         with patch.object(boundary, "build_opener") as opener:
             opener.return_value.open.side_effect = failure
             with self.assertRaisesRegex(boundary.GenerationConfigurationError, "administrator") as raised:
-                boundary.PramaanClient(api_key="fake").call("llm.complete", {"messages": [{"role": "user", "content": "Draft"}]})
+                client = boundary.PramaanClient(api_key="fake")
+                client._transport = client._http  # Only the mocked HTTP decoder is exercised.
+                client.call("llm.complete", {"messages": [{"role": "user", "content": "Draft"}]})
         self.assertNotIn("hidden", str(raised.exception))
         self.assertEqual(opener.return_value.open.call_count, 1)
