@@ -14,6 +14,18 @@ if [ ! -d vendor/framework/.git ]; then
   git -C vendor/framework fetch --depth 1 origin e7ddbac9b5d9601e891dd57f01f4643a14f7f41c
 fi
 git -C vendor/framework checkout --detach e7ddbac9b5d9601e891dd57f01f4643a14f7f41c
+# Build the desk alongside the app frontend so each image carries its own bundle map.
+build_bench="$root/.runtime/build-bench"
+mkdir -p "$build_bench/apps" "$build_bench/sites/assets"
+ln -sfn "$root/vendor/framework" "$build_bench/apps/frappe"
+printf 'frappe\n' > "$build_bench/sites/apps.txt"
+printf '{}' > "$build_bench/sites/assets/assets.json"
+(cd vendor/framework && npm install --no-audit --no-fund \
+  && ln -sfn "$root/vendor/framework/node_modules" "$root/vendor/framework/frappe/public/node_modules" \
+  && FRAPPE_BENCH_ROOT="$build_bench" npm run production)
+mkdir -p "$root/vendor/framework/frappe/public/dist"
+cp -R "$build_bench/sites/assets/frappe/dist/." "$root/vendor/framework/frappe/public/dist/"
+cp "$build_bench/sites/assets/assets.json" "$root/review/built-assets.json"
 uv venv --python 3.14 .venv
 uv pip install --python .venv/bin/python -r review/runtime-lock.txt
 uv pip install --python .venv/bin/python --no-deps -e vendor/framework -e .
