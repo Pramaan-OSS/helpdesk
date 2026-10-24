@@ -166,6 +166,7 @@ before_tests = "helpdesk.test_utils.before_tests"
 auth_hooks = ["helpdesk.auth.authenticate"]
 
 before_request = ["helpdesk.integrations.pramaan_mail.install_transport"]
+update_website_context = ["helpdesk.desk_redirect.redirect_to_helpdesk"]
 before_job = ["helpdesk.integrations.pramaan_mail.install_transport"]
 
 after_request = ["helpdesk.integrations.configuration.restrict_browser_connections"]

@@ -11,7 +11,7 @@ def setup_complete(args=None):
         return
     # Create first Agent for the user
     new_user = frappe.db.get_list(
-        "User", filters={"email": email}, limit=1, pluck="name"
+        "User", filters={"email" if args.get("email") else "name": email}, limit=1, pluck="name"
     )
     if not new_user:
         return

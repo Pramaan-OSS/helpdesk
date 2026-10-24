@@ -48,6 +48,7 @@ for name, source in [("helpdesk", ROOT / "helpdesk/public"), ("frappe", ROOT / "
 # The list persists in the sites volume; the bundles belong to this image.
 (assets / "assets.json").write_text((ROOT / "review/built-assets.json").read_text())
 bench("--site", SITE, "migrate")
+bench("--site", SITE, "execute", "helpdesk.setup.first_run.complete")
 bench("--site", SITE, "enable-scheduler")
 from helpdesk.pramaan import PramaanClient
 (BENCH / ".outside-configured").write_text("yes" if PramaanClient().configured else "no")

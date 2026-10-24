@@ -57,6 +57,11 @@ wrapper.chmod(0o755)
 mysql = wrapper.with_name('mysql')
 if not mysql.exists():mysql.symlink_to(wrapper)
 env = {**os.environ, 'FRAPPE_PRELOAD_DATABASE_DRIVERS':'none', 'PATH':str(wrapper.parent)+os.pathsep+os.environ['PATH']}
+if (ROOT / '.env').exists():
+    for line in (ROOT / '.env').read_text().splitlines():
+        key, separator, value = line.partition('=')
+        if separator and key.strip() in {'HELPDESK_TIMEZONE', 'HELPDESK_CURRENCY'}:
+            env.setdefault(key.strip(), value.strip().strip('\"\''))
 python = str(ROOT/'.venv'/'bin'/'python')
 if not (SITES/'pramaan.localhost'/'site_config.json').exists():
     # Wait for this local database to be ready, without contacting any outside API.
@@ -79,6 +84,8 @@ site_config.update(developer_mode=0, allow_error_traceback=0)
 (SITES/'pramaan.localhost'/'site_config.json').write_text(json.dumps(site_config, indent=2))
 if 'helpdesk' not in site_config.get('installed_apps', []):
     run(python,'-m','frappe.utils.bench_helper','frappe','--site','pramaan.localhost','install-app','helpdesk',cwd=SITES,env=env)
+run(python,'-m','frappe.utils.bench_helper','frappe','--site','pramaan.localhost','execute',
+    'helpdesk.setup.first_run.complete',cwd=SITES,env=env)
 assets=SITES/'assets';assets.mkdir(exist_ok=True)
 for name, source in [('helpdesk', ROOT/'helpdesk'/'public'),('frappe',ROOT/'vendor'/'framework'/'frappe'/'public')]:
     link=assets/name
